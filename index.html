@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Dashboard Pleno | Central de Ferramentas</title>
+    <!-- Tailwind + Fonts -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0e1117;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Classe para a borda lateral do item ativo */
+        .active-nav-border {
+            border-left: 4px solid #f5c842 !important;
+            background-color: #3a3a4e !important;
+            color: #e1e2eb !important;
+            font-weight: 600 !important;
+        }
+        iframe {
+            border: none;
+            background-color: #0e1117;
+        }
+        /* Animações suaves para o loader e transições de iframe */
+        .iframe-transition {
+            transition: opacity 0.2s ease-in-out;
+        }
+        /* Scrollbar customizada para dar um toque profissional */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1e2f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f5c842;
+            border-radius: 4px;
+        }
+    </style>
+    <!-- Tailwind Custom Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        tertiary: "#eae7ff",
+                        "on-secondary-container": "#b5b3c9",
+                        "primary-fixed": "#ffe08f",
+                        "on-secondary-fixed-variant": "#454558",
+                        "tertiary-container": "#cdcbe4",
+                        "secondary-fixed": "#e3e0f8",
+                        "on-tertiary-fixed": "#1a1a2c",
+                        "surface-bright": "#363940",
+                        "primary-container": "#f5c842",
+                        background: "#0e1117",
+                        "on-primary-fixed": "#241a00",
+                        "on-surface-variant": "#d1c5ae",
+                        "surface-container": "#1e1e2f",
+                        error: "#ffb4ab",
+                        "surface-dim": "#101319",
+                        "on-primary-container": "#6c5400",
+                        "on-error": "#690005",
+                        "on-tertiary": "#2e2f42",
+                        "surface-container-highest": "#32353c",
+                        "surface-container-high": "#272a31",
+                        "on-secondary-fixed": "#1a1a2b",
+                        "on-primary": "#3d2e00",
+                        "error-container": "#93000a",
+                        "on-surface": "#e1e2eb",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary": "#2f2f41",
+                        "on-background": "#e1e2eb",
+                        "tertiary-fixed-dim": "#c6c4dd",
+                        "on-tertiary-fixed-variant": "#454559",
+                        secondary: "#c6c4db",
+                        "inverse-primary": "#755b00",
+                        "surface-container-low": "#191c22",
+                        "inverse-surface": "#e1e2eb",
+                        "inverse-on-surface": "#2e3037",
+                        "primary-fixed-dim": "#eec13c",
+                        "surface-tint": "#eec13c",
+                        primary: "#ffe7af",
+                        "outline-variant": "#3a3a4e",
+                        "on-primary-fixed-variant": "#584400",
+                        "tertiary-fixed": "#e2e0fa",
+                        "surface-variant": "#32353c",
+                        "on-tertiary-container": "#55556a",
+                        "secondary-fixed-dim": "#c6c4db",
+                        "secondary-container": "#3a3a4e",
+                        outline: "#9a907b",
+                        "surface-container-lowest": "#0b0e14",
+                        surface: "#101319"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.125rem",
+                        lg: "0.25rem",
+                        xl: "0.5rem",
+                        full: "0.75rem"
+                    },
+                    spacing: {
+                        gutter: "24px",
+                        "margin-desktop": "32px",
+                        "container-max": "1440px",
+                        "sidebar-width": "260px",
+                        "margin-mobile": "16px",
+                        unit: "8px"
+                    },
+                    fontFamily: {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-sm": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "label-md": ["Hanken Grotesk"],
+                        "data-mono": ["JetBrains Mono"]
+                    },
+                    fontSize: {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-body-md text-on-surface">
+
+    <!-- Sidebar (Menu Lateral) -->
+    <aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container border-r border-outline-variant flex flex-col z-40" id="sidebar">
+        <!-- Cabeçalho da Marca -->
+        <div class="px-6 py-8 flex flex-col gap-1">
+            <h1 class="font-headline-md text-headline-md font-bold text-primary">Dashboard Pleno</h1>
+            <p class="text-on-surface-variant font-label-md text-label-md uppercase tracking-widest">Ferramentas Financeiras</p>
+        </div>
+
+        <!-- Links de Navegação -->
+        <nav class="flex-grow flex flex-col mt-4">
+            <!-- App 1: Carteiras Recomendadas -->
+            <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
+                    data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/"
+                    data-name="carteiras">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+                <span>Carteiras Recomendadas</span>
+            </button>
+            <!-- App 2: Relatório Mensal -->
+            <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
+                    data-url="https://pabloads2020-lang.github.io/Relatorio-mensal/"
+                    data-name="relatorio">
+                <span class="material-symbols-outlined">description</span>
+                <span>Relatório Mensal</span>
+            </button>
+            <!-- App 3: Gerador IPS -->
+            <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
+                    data-url="https://pabloads2020-lang.github.io/IPS/"
+                    data-name="ips">
+                <span class="material-symbols-outlined">assignment_turned_in</span>
+                <span>Gerador IPS</span>
+            </button>
+        </nav>
+
+        <!-- Rodapé da Sidebar (Perfil do Usuário) -->
+        <div class="p-6 border-t border-outline-variant flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-secondary-container overflow-hidden">
+                <img alt="User Profile" class="w-full h-full object-cover"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuDR8HHKYsVI0Biwd7mEMzzBVSHPHv6ofllfgzATDhagunqMBLTK3J3KyMqPRCTwxfIqedUOFl1QM3LRs0XOcEuMWDn5XqAAQhID7oDynn29wE5EolJGSqI5zbJqePoa7MGrgdhiAeuKA5MvpZAUSZQN9A2x_WM88B270ywOOCwNHMySCjDbHtNyfQJ0OhlNkLqpk-_mXGMTceTP5FoDqYYmKtvsO9BXp8Y6R43BbveuEp9qjzoU5yLGTjY6OwHshyOF3sGGwQ_BtZk">
+            </div>
+            <div class="flex flex-col overflow-hidden">
+                <span class="text-body-md font-bold text-on-surface truncate">Admin Financial</span>
+                <span class="text-label-md text-on-surface-variant truncate">Master Access</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Área de Conteúdo Principal -->
+    <main class="flex-grow ml-[260px] h-full flex flex-col relative bg-background">
+        <!-- Topo (Header) -->
+        <header class="flex justify-between items-center w-full px-gutter h-16 bg-surface border-b border-outline-variant sticky top-0 z-30">
+            <div class="flex items-center gap-4">
+                <span class="font-headline-sm text-headline-sm font-semibold text-primary">Pleno Finance</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <!-- Barra de Pesquisa (Placeholder) -->
+                <div class="hidden md:flex items-center bg-surface-container-high px-4 py-2 rounded-lg border border-outline-variant focus-within:ring-2 focus-within:ring-primary-container transition-all">
+                    <span class="material-symbols-outlined text-on-surface-variant">search</span>
+                    <input class="bg-transparent border-none focus:ring-0 text-body-md text-on-surface ml-2 w-64" placeholder="Procurar documentos..." type="text">
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-secondary-container/30">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-secondary-container/30">
+                        <span class="material-symbols-outlined">settings</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Container do Iframe com Loader Aprimorado -->
+        <div class="flex-grow w-full h-full overflow-hidden bg-background relative">
+            <!-- Loader -->
+            <div id="iframe-loader" class="absolute inset-0 flex items-center justify-center bg-background/90 z-20 transition-opacity duration-300 opacity-0 pointer-events-none">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="w-12 h-12 border-4 border-primary-container border-t-transparent rounded-full animate-spin"></div>
+                    <p class="text-primary font-label-md">Carregando ferramenta...</p>
+                </div>
+            </div>
+            <!-- Iframe principal -->
+            <iframe id="content-frame" class="w-full h-full iframe-transition" src="about:blank" title="Ferramenta Financeira"></iframe>
+        </div>
+    </main>
+
+    <script>
+        // URLs dos apps (fácil manutenção futura)
+        const APPS = {
+            carteiras: "https://pabloads2020-lang.github.io/Carteiras-recomendadas/",
+            relatorio: "https://pabloads2020-lang.github.io/Relatorio-mensal/",
+            ips: "https://pabloads2020-lang.github.io/IPS/"
+        };
+
+        // Estado atual
+        let currentApp = null;
+        const iframe = document.getElementById('content-frame');
+        const loader = document.getElementById('iframe-loader');
+        let loadTimeout = null;
+
+        // Função para atualizar o iframe
+        function updateIframe(url, appName) {
+            if (currentApp === appName) return;
+
+            currentApp = appName;
+            
+            // Mostra o loader
+            loader.style.opacity = '1';
+            loader.style.pointerEvents = 'auto';
+            
+            // Pequeno delay visual (transição suave)
+            iframe.style.opacity = '0.5';
+            
+            // Configura timeout caso o iframe demore demais
+            if (loadTimeout) clearTimeout(loadTimeout);
+            loadTimeout = setTimeout(() => {
+                if (loader.style.opacity === '1') {
+                    loader.style.opacity = '0';
+                    loader.style.pointerEvents = 'none';
+                    iframe.style.opacity = '1';
+                }
+            }, 15000); // 15 segundos máximo
+            
+            // Atualiza o src do iframe
+            iframe.src = url;
+        }
+
+        // Quando o iframe terminar de carregar
+        iframe.onload = function() {
+            if (loadTimeout) clearTimeout(loadTimeout);
+            loader.style.opacity = '0';
+            loader.style.pointerEvents = 'none';
+            iframe.style.opacity = '1';
+        };
+
+        // Tratamento de erro do iframe
+        iframe.onerror = function() {
+            console.error("Erro ao carregar o iframe");
+            if (loadTimeout) clearTimeout(loadTimeout);
+            loader.style.opacity = '0';
+            loader.style.pointerEvents = 'none';
+            iframe.style.opacity = '1';
+        };
+
+        // Configuração dos botões da sidebar + persistência via localStorage
+        const navItems = document.querySelectorAll('.nav-item');
+        
+        function setActiveButton(activeButton) {
+            navItems.forEach(btn => {
+                btn.classList.remove('active-nav-border');
+                btn.classList.remove('bg-secondary-container');
+                btn.classList.remove('font-bold');
+                btn.classList.add('text-on-surface-variant');
+            });
+            activeButton.classList.add('active-nav-border');
+            activeButton.classList.add('bg-secondary-container');
+            activeButton.classList.add('font-bold');
+            activeButton.classList.remove('text-on-surface-variant');
+        }
+
+        // Adiciona eventos aos botões e restaura último app acessado
+        navItems.forEach(btn => {
+            const url = btn.getAttribute('data-url');
+            const name = btn.getAttribute('data-name');
+            btn.addEventListener('click', () => {
+                setActiveButton(btn);
+                updateIframe(url, name);
+                localStorage.setItem('lastApp', name);
+            });
+        });
+        
+        // Restaura última ferramenta utilizada
+        const lastApp = localStorage.getItem('lastApp');
+        if (lastApp && APPS[lastApp]) {
+            const targetButton = Array.from(navItems).find(btn => btn.getAttribute('data-name') === lastApp);
+            if (targetButton) {
+                setActiveButton(targetButton);
+                updateIframe(APPS[lastApp], lastApp);
+            } else {
+                // Fallback: primeiro app
+                setActiveButton(navItems[0]);
+                updateIframe(APPS.carteiras, 'carteiras');
+            }
+        } else {
+            // Nenhum app salvo: ativa o primeiro (Carteiras)
+            setActiveButton(navItems[0]);
+            updateIframe(APPS.carteiras, 'carteiras');
+        }
+    </script>
+</body>
+</html>
