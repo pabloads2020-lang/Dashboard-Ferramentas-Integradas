@@ -19,7 +19,6 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        /* Classe para a borda lateral do item ativo */
         .active-nav-border {
             border-left: 4px solid #f5c842 !important;
             background-color: #3a3a4e !important;
@@ -30,11 +29,9 @@
             border: none;
             background-color: #0e1117;
         }
-        /* Animações suaves para o loader e transições de iframe */
         .iframe-transition {
             transition: opacity 0.2s ease-in-out;
         }
-        /* Scrollbar customizada para dar um toque profissional */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -47,7 +44,6 @@
             border-radius: 4px;
         }
     </style>
-    <!-- Tailwind Custom Config -->
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -158,14 +154,21 @@
                 <span class="material-symbols-outlined">account_balance_wallet</span>
                 <span>Carteiras Recomendadas</span>
             </button>
-            <!-- App 2: Relatório Mensal -->
+            <!-- App 2: Rebalanceamento-2 -->
+            <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
+                    data-url="https://pabloads2020-lang.github.io/Rebalanceamento-2/"
+                    data-name="rebalanceamento">
+                <span class="material-symbols-outlined">balance</span>
+                <span>Rebalanceamento</span>
+            </button>
+            <!-- App 3: Relatório Mensal -->
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/Relatorio-mensal/"
                     data-name="relatorio">
                 <span class="material-symbols-outlined">description</span>
                 <span>Relatório Mensal</span>
             </button>
-            <!-- App 3: Gerador IPS -->
+            <!-- App 4: Gerador IPS -->
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/IPS/"
                     data-name="ips">
@@ -229,6 +232,7 @@
         // URLs dos apps (fácil manutenção futura)
         const APPS = {
             carteiras: "https://pabloads2020-lang.github.io/Carteiras-recomendadas/",
+            rebalanceamento: "https://pabloads2020-lang.github.io/Rebalanceamento-2/",
             relatorio: "https://pabloads2020-lang.github.io/Relatorio-mensal/",
             ips: "https://pabloads2020-lang.github.io/IPS/"
         };
@@ -249,10 +253,10 @@
             loader.style.opacity = '1';
             loader.style.pointerEvents = 'auto';
             
-            // Pequeno delay visual (transição suave)
+            // Pequeno delay visual
             iframe.style.opacity = '0.5';
             
-            // Configura timeout caso o iframe demore demais
+            // Timeout caso o iframe demore
             if (loadTimeout) clearTimeout(loadTimeout);
             loadTimeout = setTimeout(() => {
                 if (loader.style.opacity === '1') {
@@ -260,9 +264,8 @@
                     loader.style.pointerEvents = 'none';
                     iframe.style.opacity = '1';
                 }
-            }, 15000); // 15 segundos máximo
+            }, 15000);
             
-            // Atualiza o src do iframe
             iframe.src = url;
         }
 
@@ -299,7 +302,7 @@
             activeButton.classList.remove('text-on-surface-variant');
         }
 
-        // Adiciona eventos aos botões e restaura último app acessado
+        // Adiciona eventos aos botões
         navItems.forEach(btn => {
             const url = btn.getAttribute('data-url');
             const name = btn.getAttribute('data-name');
@@ -318,12 +321,10 @@
                 setActiveButton(targetButton);
                 updateIframe(APPS[lastApp], lastApp);
             } else {
-                // Fallback: primeiro app
                 setActiveButton(navItems[0]);
                 updateIframe(APPS.carteiras, 'carteiras');
             }
         } else {
-            // Nenhum app salvo: ativa o primeiro (Carteiras)
             setActiveButton(navItems[0]);
             updateIframe(APPS.carteiras, 'carteiras');
         }
