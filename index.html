@@ -145,16 +145,16 @@
             <p class="text-on-surface-variant font-label-md text-label-md uppercase tracking-widest">Ferramentas Financeiras</p>
         </div>
 
-        <!-- Links de Navegação -->
+        <!-- Links de Navegação (4 apps) -->
         <nav class="flex-grow flex flex-col mt-4">
-            <!-- App 1: Carteiras Recomendadas -->
+            <!-- App 1: Carteira Recomendada (singular) -->
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/"
                     data-name="carteiras">
                 <span class="material-symbols-outlined">account_balance_wallet</span>
-                <span>Carteiras Recomendadas</span>
+                <span>Carteira Recomendada</span>
             </button>
-            <!-- App 2: Rebalanceamento-2 -->
+            <!-- App 2: Rebalanceamento -->
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/Rebalanceamento-2/"
                     data-name="rebalanceamento">
@@ -177,43 +177,21 @@
             </button>
         </nav>
 
-        <!-- Rodapé da Sidebar (Perfil do Usuário) -->
+        <!-- Rodapé da Sidebar (com sua foto e nome) -->
         <div class="p-6 border-t border-outline-variant flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-secondary-container overflow-hidden">
                 <img alt="User Profile" class="w-full h-full object-cover"
-                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuDR8HHKYsVI0Biwd7mEMzzBVSHPHv6ofllfgzATDhagunqMBLTK3J3KyMqPRCTwxfIqedUOFl1QM3LRs0XOcEuMWDn5XqAAQhID7oDynn29wE5EolJGSqI5zbJqePoa7MGrgdhiAeuKA5MvpZAUSZQN9A2x_WM88B270ywOOCwNHMySCjDbHtNyfQJ0OhlNkLqpk-_mXGMTceTP5FoDqYYmKtvsO9BXp8Y6R43BbveuEp9qjzoU5yLGTjY6OwHshyOF3sGGwQ_BtZk">
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yh2vkLWrOQ89P0Z9tbaVWCYK-fpN09-euyU64ttgORw8cMgmmSgaDwbyS9UvG8ngrUVJgIntrMtOxnBYCBr1hAPkYQm2xUNrLsdI0hJb0I7Vjz1kgelN8b-IjTJHeuX8xLitouyZumU1cDb_5qciKeK8RKA0Cx3xVCCjv8C-iufLhbYahgAcI3Dkg2cXaQYUYbnnzeEsCQNUhqqYkTG3vsN9QMIX7ji7QQb4eTairjx02qTNg6dHVCLQO6PX3JONpAieSsBYMxulGQ">
             </div>
             <div class="flex flex-col overflow-hidden">
-                <span class="text-body-md font-bold text-on-surface truncate">Admin Financial</span>
-                <span class="text-label-md text-on-surface-variant truncate">Master Access</span>
+                <span class="text-body-md font-bold text-on-surface truncate">Pablo B. Freire</span>
+                <span class="text-label-md text-on-surface-variant truncate">Criador</span>
             </div>
         </div>
     </aside>
 
-    <!-- Área de Conteúdo Principal -->
+    <!-- Área de Conteúdo Principal (sem header) -->
     <main class="flex-grow ml-[260px] h-full flex flex-col relative bg-background">
-        <!-- Topo (Header) -->
-        <header class="flex justify-between items-center w-full px-gutter h-16 bg-surface border-b border-outline-variant sticky top-0 z-30">
-            <div class="flex items-center gap-4">
-                <span class="font-headline-sm text-headline-sm font-semibold text-primary">Pleno Finance</span>
-            </div>
-            <div class="flex items-center gap-6">
-                <!-- Barra de Pesquisa (Placeholder) -->
-                <div class="hidden md:flex items-center bg-surface-container-high px-4 py-2 rounded-lg border border-outline-variant focus-within:ring-2 focus-within:ring-primary-container transition-all">
-                    <span class="material-symbols-outlined text-on-surface-variant">search</span>
-                    <input class="bg-transparent border-none focus:ring-0 text-body-md text-on-surface ml-2 w-64" placeholder="Procurar documentos..." type="text">
-                </div>
-                <div class="flex items-center gap-4">
-                    <button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-secondary-container/30">
-                        <span class="material-symbols-outlined">notifications</span>
-                    </button>
-                    <button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-secondary-container/30">
-                        <span class="material-symbols-outlined">settings</span>
-                    </button>
-                </div>
-            </div>
-        </header>
-
         <!-- Container do Iframe com Loader Aprimorado -->
         <div class="flex-grow w-full h-full overflow-hidden bg-background relative">
             <!-- Loader -->
@@ -229,7 +207,7 @@
     </main>
 
     <script>
-        // URLs dos apps (fácil manutenção futura)
+        // URLs dos apps (fácil manutenção)
         const APPS = {
             carteiras: "https://pabloads2020-lang.github.io/Carteiras-recomendadas/",
             rebalanceamento: "https://pabloads2020-lang.github.io/Rebalanceamento-2/",
@@ -237,26 +215,19 @@
             ips: "https://pabloads2020-lang.github.io/IPS/"
         };
 
-        // Estado atual
         let currentApp = null;
         const iframe = document.getElementById('content-frame');
         const loader = document.getElementById('iframe-loader');
         let loadTimeout = null;
 
-        // Função para atualizar o iframe
         function updateIframe(url, appName) {
             if (currentApp === appName) return;
-
             currentApp = appName;
             
-            // Mostra o loader
             loader.style.opacity = '1';
             loader.style.pointerEvents = 'auto';
-            
-            // Pequeno delay visual
             iframe.style.opacity = '0.5';
             
-            // Timeout caso o iframe demore
             if (loadTimeout) clearTimeout(loadTimeout);
             loadTimeout = setTimeout(() => {
                 if (loader.style.opacity === '1') {
@@ -269,7 +240,6 @@
             iframe.src = url;
         }
 
-        // Quando o iframe terminar de carregar
         iframe.onload = function() {
             if (loadTimeout) clearTimeout(loadTimeout);
             loader.style.opacity = '0';
@@ -277,7 +247,6 @@
             iframe.style.opacity = '1';
         };
 
-        // Tratamento de erro do iframe
         iframe.onerror = function() {
             console.error("Erro ao carregar o iframe");
             if (loadTimeout) clearTimeout(loadTimeout);
@@ -286,7 +255,7 @@
             iframe.style.opacity = '1';
         };
 
-        // Configuração dos botões da sidebar + persistência via localStorage
+        // Configuração dos botões
         const navItems = document.querySelectorAll('.nav-item');
         
         function setActiveButton(activeButton) {
@@ -302,7 +271,6 @@
             activeButton.classList.remove('text-on-surface-variant');
         }
 
-        // Adiciona eventos aos botões
         navItems.forEach(btn => {
             const url = btn.getAttribute('data-url');
             const name = btn.getAttribute('data-name');
