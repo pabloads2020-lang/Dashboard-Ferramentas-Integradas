@@ -3,13 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
-    <title>Hub Financeiro | Dashboard de Ferramentas</title>
+    <title>Hub Financeiro | Painel de Ferramentas</title>
     <!-- Tailwind + Fonts -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <style>
-        /* Reset e base */
         * {
             margin: 0;
             padding: 0;
@@ -25,7 +24,6 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        /* Sidebar padrão desktop */
         .sidebar {
             position: fixed;
             left: 0;
@@ -40,7 +38,6 @@
             transition: transform 0.3s ease-in-out;
             transform: translateX(0);
         }
-        /* Overlay para mobile quando sidebar aberta */
         .sidebar-overlay {
             position: fixed;
             inset: 0;
@@ -49,7 +46,6 @@
             display: none;
             backdrop-filter: blur(2px);
         }
-        /* Botão hambúrguer (mobile) */
         .menu-btn {
             position: fixed;
             top: 16px;
@@ -64,7 +60,6 @@
             color: #f5c842;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
-        /* Estilo do item ativo */
         .active-nav-border {
             border-left: 4px solid #f5c842 !important;
             background-color: #3a3a4e !important;
@@ -80,7 +75,6 @@
         .iframe-transition {
             transition: opacity 0.2s ease-in-out;
         }
-        /* Scrollbar customizada */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -91,7 +85,6 @@
             background: #f5c842;
             border-radius: 4px;
         }
-        /* Responsivo: até 768px */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -112,7 +105,6 @@
             }
         }
     </style>
-    <!-- Tailwind config (mantido igual ao seu) -->
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -179,19 +171,16 @@
 </head>
 <body>
 
-    <!-- Botão hambúrguer (mobile) -->
     <button class="menu-btn" id="menuToggle">
         <span class="material-symbols-outlined">menu</span>
     </button>
 
-    <!-- Overlay para fechar sidebar no mobile -->
     <div class="sidebar-overlay" id="overlay"></div>
 
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="px-6 py-8 flex flex-col gap-1">
-            <h1 class="font-headline-md text-headline-md font-bold text-primary">Dashboard Pleno</h1>
-            <p class="text-on-surface-variant font-label-md text-label-md uppercase tracking-widest">Ferramentas Financeiras</p>
+            <h1 class="font-headline-md text-headline-md font-bold text-primary">Hub Financeiro</h1>
+            <p class="text-on-surface-variant font-label-md text-label-md uppercase tracking-widest">Painel de Ferramentas</p>
         </div>
 
         <nav class="flex-grow flex flex-col mt-4">
@@ -233,7 +222,6 @@
         </div>
     </aside>
 
-    <!-- Conteúdo principal -->
     <main class="flex-grow h-full flex flex-col relative bg-background" style="margin-left: 260px;">
         <div class="flex-grow w-full h-full overflow-hidden bg-background relative">
             <div id="iframe-loader" class="absolute inset-0 flex items-center justify-center bg-background/90 z-20 transition-opacity duration-300 opacity-0 pointer-events-none">
@@ -247,7 +235,6 @@
     </main>
 
     <script>
-        // URLs dos apps
         const APPS = {
             carteiras: "https://pabloads2020-lang.github.io/Carteiras-recomendadas/",
             rebalanceamento: "https://pabloads2020-lang.github.io/Rebalanceamento-2/",
@@ -308,7 +295,6 @@
                 setActiveButton(btn);
                 updateIframe(url, name);
                 localStorage.setItem('lastApp', name);
-                // Em mobile, fechar sidebar após clique
                 if (window.innerWidth <= 768) {
                     document.getElementById('sidebar').classList.remove('open');
                     document.getElementById('overlay').classList.remove('active');
@@ -316,7 +302,6 @@
             });
         });
 
-        // Restaurar última ferramenta
         const lastApp = localStorage.getItem('lastApp');
         if (lastApp && APPS[lastApp]) {
             const targetButton = Array.from(navItems).find(btn => btn.getAttribute('data-name') === lastApp);
@@ -332,7 +317,6 @@
             updateIframe(APPS.carteiras, 'carteiras');
         }
 
-        // Lógica do menu hambúrguer
         const menuBtn = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
@@ -348,7 +332,6 @@
         menuBtn.addEventListener('click', openSidebar);
         overlay.addEventListener('click', closeSidebar);
 
-        // Ao redimensionar para desktop, garante que a sidebar fique visível e remova overlay
         window.addEventListener('resize', () => {
             if (window.innerWidth > 768) {
                 sidebar.classList.remove('open');
