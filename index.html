@@ -392,20 +392,8 @@
         });
 
         const homeBtn = Array.from(navItems).find(btn => btn.getAttribute('data-name') === 'home');
-        const lastApp = localStorage.getItem('lastApp');
-        if (lastApp && APPS[lastApp]) {
-            const targetButton = Array.from(navItems).find(btn => btn.getAttribute('data-name') === lastApp);
-            if (targetButton) {
-                setActiveButton(targetButton);
-                updateIframe(APPS[lastApp], lastApp);
-            } else {
-                setActiveButton(homeBtn);
-                showHome();
-            }
-        } else {
-            setActiveButton(homeBtn);
-            showHome();
-        }
+        setActiveButton(homeBtn);
+        showHome();
 
         const menuBtn = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
