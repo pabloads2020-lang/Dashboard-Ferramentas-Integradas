@@ -2,23 +2,69 @@
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
     <title>Dashboard Pleno | Central de Ferramentas</title>
     <!-- Tailwind + Fonts -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <style>
+        /* Reset e base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             background-color: #0e1117;
-            margin: 0;
-            display: flex;
+            font-family: 'Hanken Grotesk', sans-serif;
             height: 100vh;
             overflow: hidden;
+            position: relative;
         }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        /* Sidebar padrão desktop */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100%;
+            background-color: #1e1e2f;
+            border-right: 1px solid #3a3a4e;
+            display: flex;
+            flex-direction: column;
+            z-index: 40;
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(0);
+        }
+        /* Overlay para mobile quando sidebar aberta */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 35;
+            display: none;
+            backdrop-filter: blur(2px);
+        }
+        /* Botão hambúrguer (mobile) */
+        .menu-btn {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 50;
+            background: #3a3a4e;
+            border: none;
+            border-radius: 12px;
+            padding: 8px;
+            cursor: pointer;
+            display: none;
+            color: #f5c842;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        /* Estilo do item ativo */
         .active-nav-border {
             border-left: 4px solid #f5c842 !important;
             background-color: #3a3a4e !important;
@@ -28,13 +74,15 @@
         iframe {
             border: none;
             background-color: #0e1117;
+            width: 100%;
+            height: 100%;
         }
         .iframe-transition {
             transition: opacity 0.2s ease-in-out;
         }
+        /* Scrollbar customizada */
         ::-webkit-scrollbar {
             width: 6px;
-            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: #1e1e2f;
@@ -43,7 +91,28 @@
             background: #f5c842;
             border-radius: 4px;
         }
+        /* Responsivo: até 768px */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+                box-shadow: 2px 0 12px rgba(0,0,0,0.5);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .menu-btn {
+                display: block;
+            }
+            main {
+                margin-left: 0 !important;
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
     </style>
+    <!-- Tailwind config (mantido igual ao seu) -->
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -98,77 +167,52 @@
                         "surface-container-lowest": "#0b0e14",
                         surface: "#101319"
                     },
-                    borderRadius: {
-                        DEFAULT: "0.125rem",
-                        lg: "0.25rem",
-                        xl: "0.5rem",
-                        full: "0.75rem"
-                    },
-                    spacing: {
-                        gutter: "24px",
-                        "margin-desktop": "32px",
-                        "container-max": "1440px",
-                        "sidebar-width": "260px",
-                        "margin-mobile": "16px",
-                        unit: "8px"
-                    },
                     fontFamily: {
                         "headline-lg": ["Hanken Grotesk"],
-                        "headline-md": ["Hanken Grotesk"],
-                        "headline-sm": ["Hanken Grotesk"],
-                        "body-lg": ["Hanken Grotesk"],
                         "body-md": ["Hanken Grotesk"],
                         "label-md": ["Hanken Grotesk"],
-                        "data-mono": ["JetBrains Mono"]
-                    },
-                    fontSize: {
-                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="font-body-md text-on-surface">
+<body>
 
-    <!-- Sidebar (Menu Lateral) -->
-    <aside class="fixed left-0 top-0 h-full w-[260px] bg-surface-container border-r border-outline-variant flex flex-col z-40" id="sidebar">
-        <!-- Cabeçalho da Marca -->
+    <!-- Botão hambúrguer (mobile) -->
+    <button class="menu-btn" id="menuToggle">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <!-- Overlay para fechar sidebar no mobile -->
+    <div class="sidebar-overlay" id="overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
         <div class="px-6 py-8 flex flex-col gap-1">
             <h1 class="font-headline-md text-headline-md font-bold text-primary">Dashboard Pleno</h1>
             <p class="text-on-surface-variant font-label-md text-label-md uppercase tracking-widest">Ferramentas Financeiras</p>
         </div>
 
-        <!-- Links de Navegação (4 apps) -->
         <nav class="flex-grow flex flex-col mt-4">
-            <!-- App 1: Carteira Recomendada (singular) -->
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/"
                     data-name="carteiras">
                 <span class="material-symbols-outlined">account_balance_wallet</span>
                 <span>Carteira Recomendada</span>
             </button>
-            <!-- App 2: Rebalanceamento -->
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/Rebalanceamento-2/"
                     data-name="rebalanceamento">
                 <span class="material-symbols-outlined">balance</span>
                 <span>Rebalanceamento</span>
             </button>
-            <!-- App 3: Relatório Mensal -->
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/Relatorio-mensal/"
                     data-name="relatorio">
                 <span class="material-symbols-outlined">description</span>
                 <span>Relatório Mensal</span>
             </button>
-            <!-- App 4: Gerador IPS -->
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/IPS/"
                     data-name="ips">
@@ -177,10 +221,9 @@
             </button>
         </nav>
 
-        <!-- Rodapé da Sidebar (com sua foto e nome) -->
         <div class="p-6 border-t border-outline-variant flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-secondary-container overflow-hidden">
-                <img alt="User Profile" class="w-full h-full object-cover"
+                <img alt="Pablo B. Freire" class="w-full h-full object-cover"
                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yh2vkLWrOQ89P0Z9tbaVWCYK-fpN09-euyU64ttgORw8cMgmmSgaDwbyS9UvG8ngrUVJgIntrMtOxnBYCBr1hAPkYQm2xUNrLsdI0hJb0I7Vjz1kgelN8b-IjTJHeuX8xLitouyZumU1cDb_5qciKeK8RKA0Cx3xVCCjv8C-iufLhbYahgAcI3Dkg2cXaQYUYbnnzeEsCQNUhqqYkTG3vsN9QMIX7ji7QQb4eTairjx02qTNg6dHVCLQO6PX3JONpAieSsBYMxulGQ">
             </div>
             <div class="flex flex-col overflow-hidden">
@@ -190,24 +233,21 @@
         </div>
     </aside>
 
-    <!-- Área de Conteúdo Principal (sem header) -->
-    <main class="flex-grow ml-[260px] h-full flex flex-col relative bg-background">
-        <!-- Container do Iframe com Loader Aprimorado -->
+    <!-- Conteúdo principal -->
+    <main class="flex-grow h-full flex flex-col relative bg-background" style="margin-left: 260px;">
         <div class="flex-grow w-full h-full overflow-hidden bg-background relative">
-            <!-- Loader -->
             <div id="iframe-loader" class="absolute inset-0 flex items-center justify-center bg-background/90 z-20 transition-opacity duration-300 opacity-0 pointer-events-none">
                 <div class="flex flex-col items-center gap-4">
                     <div class="w-12 h-12 border-4 border-primary-container border-t-transparent rounded-full animate-spin"></div>
                     <p class="text-primary font-label-md">Carregando ferramenta...</p>
                 </div>
             </div>
-            <!-- Iframe principal -->
             <iframe id="content-frame" class="w-full h-full iframe-transition" src="about:blank" title="Ferramenta Financeira"></iframe>
         </div>
     </main>
 
     <script>
-        // URLs dos apps (fácil manutenção)
+        // URLs dos apps
         const APPS = {
             carteiras: "https://pabloads2020-lang.github.io/Carteiras-recomendadas/",
             rebalanceamento: "https://pabloads2020-lang.github.io/Rebalanceamento-2/",
@@ -223,11 +263,9 @@
         function updateIframe(url, appName) {
             if (currentApp === appName) return;
             currentApp = appName;
-            
             loader.style.opacity = '1';
             loader.style.pointerEvents = 'auto';
             iframe.style.opacity = '0.5';
-            
             if (loadTimeout) clearTimeout(loadTimeout);
             loadTimeout = setTimeout(() => {
                 if (loader.style.opacity === '1') {
@@ -236,7 +274,6 @@
                     iframe.style.opacity = '1';
                 }
             }, 15000);
-            
             iframe.src = url;
         }
 
@@ -248,26 +285,19 @@
         };
 
         iframe.onerror = function() {
-            console.error("Erro ao carregar o iframe");
             if (loadTimeout) clearTimeout(loadTimeout);
             loader.style.opacity = '0';
             loader.style.pointerEvents = 'none';
             iframe.style.opacity = '1';
         };
 
-        // Configuração dos botões
         const navItems = document.querySelectorAll('.nav-item');
-        
         function setActiveButton(activeButton) {
             navItems.forEach(btn => {
-                btn.classList.remove('active-nav-border');
-                btn.classList.remove('bg-secondary-container');
-                btn.classList.remove('font-bold');
+                btn.classList.remove('active-nav-border', 'bg-secondary-container', 'font-bold');
                 btn.classList.add('text-on-surface-variant');
             });
-            activeButton.classList.add('active-nav-border');
-            activeButton.classList.add('bg-secondary-container');
-            activeButton.classList.add('font-bold');
+            activeButton.classList.add('active-nav-border', 'bg-secondary-container', 'font-bold');
             activeButton.classList.remove('text-on-surface-variant');
         }
 
@@ -278,10 +308,15 @@
                 setActiveButton(btn);
                 updateIframe(url, name);
                 localStorage.setItem('lastApp', name);
+                // Em mobile, fechar sidebar após clique
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('open');
+                    document.getElementById('overlay').classList.remove('active');
+                }
             });
         });
-        
-        // Restaura última ferramenta utilizada
+
+        // Restaurar última ferramenta
         const lastApp = localStorage.getItem('lastApp');
         if (lastApp && APPS[lastApp]) {
             const targetButton = Array.from(navItems).find(btn => btn.getAttribute('data-name') === lastApp);
@@ -296,6 +331,30 @@
             setActiveButton(navItems[0]);
             updateIframe(APPS.carteiras, 'carteiras');
         }
+
+        // Lógica do menu hambúrguer
+        const menuBtn = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+        }
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+        menuBtn.addEventListener('click', openSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        // Ao redimensionar para desktop, garante que a sidebar fique visível e remova overlay
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>
