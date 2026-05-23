@@ -201,6 +201,12 @@
                 <span class="material-symbols-outlined">balance</span>
                 <span>Rebalanceamento</span>
             </button>
+           <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
+                   data-url="https://pabloads2020-lang.github.io/Extrato-Analitico/"
+                   data-name="extrato">
+               <span class="material-symbols-outlined">receipt_long</span>
+               <span>Extrato Analítico</span>
+            </button>
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/Relatorio-mensal/"
                     data-name="relatorio">
@@ -267,6 +273,16 @@
                             <p style="font-family:'Hanken Grotesk',sans-serif;font-size:0.8rem;color:#9a907b;line-height:1.5;">Calcule os ajustes necessários para reequilibrar a carteira.</p>
                         </button>
 
+<button class="tool-card text-left p-5 rounded-2xl transition-all duration-200"
+        style="background-color:#1e1e2f;border:1px solid #3a3a4e;"
+        data-target="extrato">
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background-color:#3a3a4e;">
+        <span class="material-symbols-outlined" style="color:#f5c842;font-size:20px;">receipt_long</span>
+    </div>
+    <p style="font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:0.95rem;color:#e1e2eb;margin-bottom:4px;">Extrato Analítico</p>
+    <p style="font-family:'Hanken Grotesk',sans-serif;font-size:0.8rem;color:#9a907b;line-height:1.5;">Analise os extratos e movimentações da carteira.</p>
+</button>
+
                         <button class="tool-card text-left p-5 rounded-2xl transition-all duration-200"
                                 style="background-color:#1e1e2f;border:1px solid #3a3a4e;"
                                 data-target="relatorio">
@@ -300,6 +316,7 @@
         const APPS = {
             carteiras: "https://pabloads2020-lang.github.io/Carteiras-recomendadas/",
             rebalanceamento: "https://pabloads2020-lang.github.io/Rebalanceamento-2/",
+            extrato: "https://pabloads2020-lang.github.io/Extrato-Analitico/",
             relatorio: "https://pabloads2020-lang.github.io/Relatorio-mensal/",
             ips: "https://pabloads2020-lang.github.io/IPS/"
         };
