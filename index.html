@@ -45,7 +45,7 @@
                 width: 64px;
             }
             .sidebar.expanded {
-                width: 260px;
+                width: 300px;   /* ← ajustado para 300px (antes 260px) */
             }
             .sidebar .nav-text,
             .sidebar .brand-sub,
@@ -79,7 +79,7 @@
                 transition: margin-left 0.3s ease-in-out;
             }
             main.expanded-margin {
-                margin-left: 260px;
+                margin-left: 300px; /* ← ajustado para 300px */
             }
             /* Botão FAB (Início) escondido em desktop */
             .fab-home {
@@ -330,12 +330,12 @@
                 <span class="material-symbols-outlined">assignment_turned_in</span>
                 <span class="nav-text">Gerador IPS</span>
             </button>
-            <!-- NOVO: Calendário de Vencimentos -->
+            <!-- Calendário de Vencimentos -->
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/"
                     data-name="calendario">
                 <span class="material-symbols-outlined">calendar_month</span>
-                <span class="nav-text">Calendário Vencimentos</span>
+                <span class="nav-text">Calendário de Vencimentos</span>
             </button>
         </nav>
 
@@ -406,12 +406,12 @@
                             <p style="font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:0.85rem;color:#e1e2eb;margin-bottom:4px;line-height:1.3;">Gerador IPS</p>
                             <p style="font-family:'Hanken Grotesk',sans-serif;font-size:0.7rem;color:#9a907b;line-height:1.4;">Crie a Política de Investimentos do cliente automaticamente.</p>
                         </button>
-                        <!-- NOVO CARD: Calendário de Vencimentos -->
+                        <!-- Card do Calendário de Vencimentos -->
                         <button class="tool-card text-left p-4 rounded-2xl transition-all duration-200" style="background-color:#1e1e2f;border:1px solid #3a3a4e;" data-target="calendario">
                             <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style="background-color:#3a3a4e;">
                                 <span class="material-symbols-outlined" style="color:#e0ac2c;font-size:20px;">calendar_month</span>
                             </div>
-                            <p style="font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:0.85rem;color:#e1e2eb;margin-bottom:4px;line-height:1.3;">Calendário Vencimentos</p>
+                            <p style="font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:0.85rem;color:#e1e2eb;margin-bottom:4px;line-height:1.3;">Calendário de Vencimentos</p>
                             <p style="font-family:'Hanken Grotesk',sans-serif;font-size:0.7rem;color:#9a907b;line-height:1.4;">Acompanhe vencimentos de ativos e envie lembretes via WhatsApp.</p>
                         </button>
                     </div>
