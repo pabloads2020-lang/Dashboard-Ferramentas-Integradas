@@ -38,6 +38,12 @@
             overflow-x: hidden;
             overflow-y: auto;
             white-space: nowrap;
+            /* Esconde a barra de rolagem por padrão */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .sidebar::-webkit-scrollbar {
+            display: none;
         }
         /* Desktop: recolhida por padrão (apenas ícones) */
         @media (min-width: 821px) {
@@ -45,7 +51,21 @@
                 width: 64px;
             }
             .sidebar.expanded {
-                width: 300px;   /* ← ajustado para 300px (antes 260px) */
+                width: 300px;
+                /* Mostra a barra de rolagem quando expandido */
+                scrollbar-width: auto;
+                -ms-overflow-style: auto;
+            }
+            .sidebar.expanded::-webkit-scrollbar {
+                display: block;
+                width: 6px;
+            }
+            .sidebar.expanded::-webkit-scrollbar-track {
+                background: #1e1e2f;
+            }
+            .sidebar.expanded::-webkit-scrollbar-thumb {
+                background: #e0ac2c;
+                border-radius: 4px;
             }
             .sidebar .nav-text,
             .sidebar .brand-sub,
@@ -79,9 +99,8 @@
                 transition: margin-left 0.3s ease-in-out;
             }
             main.expanded-margin {
-                margin-left: 300px; /* ← ajustado para 300px */
+                margin-left: 300px;
             }
-            /* Botão FAB (Início) escondido em desktop */
             .fab-home {
                 display: none !important;
             }
@@ -93,6 +112,13 @@
                 width: 280px;
                 box-shadow: 2px 0 12px rgba(0,0,0,0.5);
                 transition: transform 0.3s ease-in-out;
+                /* No mobile, a barra de rolagem pode aparecer normalmente */
+                scrollbar-width: auto;
+                -ms-overflow-style: auto;
+            }
+            .sidebar::-webkit-scrollbar {
+                display: block;
+                width: 6px;
             }
             .sidebar.open {
                 transform: translateX(0);
@@ -123,7 +149,6 @@
                 justify-content: flex-start;
                 padding: 1.5rem;
             }
-            /* Botão flutuante "Início" */
             .fab-home {
                 position: fixed;
                 bottom: 24px;
@@ -151,7 +176,6 @@
                 font-size: 28px;
                 font-variation-settings: 'FILL' 1;
             }
-            /* Esconder FAB quando estiver na home */
             .fab-home.hidden {
                 display: none;
             }
@@ -282,7 +306,6 @@
 
     <div class="sidebar-overlay" id="overlay"></div>
 
-    <!-- Botão flutuante "Início" (mobile) -->
     <button class="fab-home hidden" id="fabHome">
         <span class="material-symbols-outlined">home</span>
     </button>
@@ -330,12 +353,17 @@
                 <span class="material-symbols-outlined">assignment_turned_in</span>
                 <span class="nav-text">Gerador IPS</span>
             </button>
-            <!-- Calendário de Vencimentos -->
             <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
                     data-url="https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/"
                     data-name="calendario">
                 <span class="material-symbols-outlined">calendar_month</span>
                 <span class="nav-text">Calendário de Vencimentos</span>
+            </button>
+            <button class="nav-item flex items-center gap-3 px-6 py-4 transition-all duration-200 hover:bg-secondary-container/50 text-on-surface-variant"
+                    data-url="https://pabloads2020-lang.github.io/Emissores-Bancarios/"
+                    data-name="emissores">
+                <span class="material-symbols-outlined">account_balance</span>
+                <span class="nav-text">Emissores Bancários</span>
             </button>
         </nav>
 
@@ -406,13 +434,19 @@
                             <p style="font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:0.85rem;color:#e1e2eb;margin-bottom:4px;line-height:1.3;">Gerador IPS</p>
                             <p style="font-family:'Hanken Grotesk',sans-serif;font-size:0.7rem;color:#9a907b;line-height:1.4;">Crie a Política de Investimentos do cliente automaticamente.</p>
                         </button>
-                        <!-- Card do Calendário de Vencimentos -->
                         <button class="tool-card text-left p-4 rounded-2xl transition-all duration-200" style="background-color:#1e1e2f;border:1px solid #3a3a4e;" data-target="calendario">
                             <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style="background-color:#3a3a4e;">
                                 <span class="material-symbols-outlined" style="color:#e0ac2c;font-size:20px;">calendar_month</span>
                             </div>
                             <p style="font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:0.85rem;color:#e1e2eb;margin-bottom:4px;line-height:1.3;">Calendário de Vencimentos</p>
                             <p style="font-family:'Hanken Grotesk',sans-serif;font-size:0.7rem;color:#9a907b;line-height:1.4;">Acompanhe vencimentos de ativos e envie lembretes via WhatsApp.</p>
+                        </button>
+                        <button class="tool-card text-left p-4 rounded-2xl transition-all duration-200" style="background-color:#1e1e2f;border:1px solid #3a3a4e;" data-target="emissores">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center mb-3" style="background-color:#3a3a4e;">
+                                <span class="material-symbols-outlined" style="color:#e0ac2c;font-size:20px;">account_balance</span>
+                            </div>
+                            <p style="font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:0.85rem;color:#e1e2eb;margin-bottom:4px;line-height:1.3;">Emissores Bancários</p>
+                            <p style="font-family:'Hanken Grotesk',sans-serif;font-size:0.7rem;color:#9a907b;line-height:1.4;">Consulte ratings, scores e indicadores de instituições financeiras.</p>
                         </button>
                     </div>
                     <p style="font-family:'Hanken Grotesk',sans-serif;font-size:0.75rem;color:#454558;">Selecione uma ferramenta acima ou pelo menu lateral</p>
@@ -429,7 +463,8 @@
             extrato: "https://pabloads2020-lang.github.io/Extrato-Analitico/",
             relatorio: "https://pabloads2020-lang.github.io/Relatorio-mensal/",
             ips: "https://pabloads2020-lang.github.io/IPS/",
-            calendario: "https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/"
+            calendario: "https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/",
+            emissores: "https://pabloads2020-lang.github.io/Emissores-Bancarios/"
         };
 
         let currentApp = null;
@@ -445,10 +480,8 @@
             loader.style.opacity = '0';
             loader.style.pointerEvents = 'none';
             currentApp = 'home';
-            // Atualizar botão flutuante "Início" (esconder na home)
             const fab = document.getElementById('fabHome');
             if (fab) fab.classList.add('hidden');
-            // Atualizar item "Início" como ativo na sidebar
             const homeBtn = Array.from(navItems).find(btn => btn.getAttribute('data-name') === 'home');
             if (homeBtn) setActiveButton(homeBtn);
         }
@@ -472,7 +505,6 @@
             }, 15000);
             iframe.src = url;
 
-            // Mostrar botão flutuante "Início" no mobile (<=820px)
             const fab = document.getElementById('fabHome');
             if (window.innerWidth <= 820) {
                 fab.classList.remove('hidden');
@@ -534,7 +566,6 @@
         setActiveButton(homeBtn);
         showHome();
 
-        // Sidebar hover expand (desktop)
         const sidebar = document.getElementById('sidebar');
         const main = document.getElementById('mainContent');
         let hoverTimer;
@@ -570,7 +601,6 @@
                 sidebar.classList.remove('expanded');
                 main.classList.remove('expanded-margin');
             }
-            // Controlar visibilidade do FAB ao redimensionar
             const fab = document.getElementById('fabHome');
             if (window.innerWidth <= 820 && currentApp !== 'home') {
                 fab.classList.remove('hidden');
@@ -579,7 +609,6 @@
             }
         });
 
-        // Menu hambúrguer (mobile)
         const menuBtn = document.getElementById('menuToggle');
         const overlay = document.getElementById('overlay');
         function openSidebarMobile() {
@@ -593,7 +622,6 @@
         menuBtn.addEventListener('click', openSidebarMobile);
         overlay.addEventListener('click', closeSidebarMobile);
 
-        // Botão flutuante "Início" (mobile)
         const fabHome = document.getElementById('fabHome');
         fabHome.addEventListener('click', () => {
             showHome();
