@@ -40,7 +40,7 @@
             display: flex;
             flex-direction: column;
             transition: background .2s, color .2s;
-            font-size: 15px; /* base ajustada */
+            font-size: 15px;
         }
 
         /* ── Topbar unificada ── */
@@ -49,16 +49,34 @@
             background: var(--bg2); border-bottom: 1px solid var(--border);
             display: flex; align-items: center;
             justify-content: space-between;
-            padding: 0 1.2rem;
-            gap: 14px;
+            padding: 0 1rem;
+            gap: 12px;
             z-index: 100;
             position: relative;
         }
         .topbar-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             flex-shrink: 0;
+        }
+        /* Botão hambúrguer (mobile/tablet) */
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text2);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            transition: background .2s;
+        }
+        .menu-toggle:hover {
+            background: var(--bg3);
+            color: var(--gold);
+        }
+        .menu-toggle .material-symbols-outlined {
+            font-size: 22px;
         }
         .topbar-center {
             position: absolute;
@@ -137,8 +155,7 @@
         @media (max-width: 680px) {
             .topbar-back-btn span:not(.material-symbols-outlined) { display: none; }
             .topbar-new-btn span:not(.material-symbols-outlined) { display: none; }
-            .topbar-back-btn { padding: 5px 8px; }
-            .topbar-new-btn { padding: 5px 8px; }
+            .topbar-back-btn, .topbar-new-btn { padding: 5px 8px; }
             .active-tool-name { font-size: 13px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
             .topbar-clock { font-size: 10px; padding: 4px 6px; }
             .topbar-title { font-size: 12px; }
@@ -152,6 +169,15 @@
             .topbar { flex-wrap: wrap; justify-content: center; height: auto; padding: 8px; gap: 8px; }
             .topbar-left, .topbar-right { flex: 1; }
             .topbar-center { order: 2; width: 100%; text-align: center; margin-top: 4px; }
+        }
+
+        /* Mostrar botão hambúrguer em tablets e celulares */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
 
         /* ── LAYOUT PRINCIPAL ── */
@@ -299,6 +325,7 @@
             white-space: nowrap;
         }
 
+        /* Sidebar mobile/tablet com overlay e botão hambúrguer */
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
@@ -336,61 +363,54 @@
                 max-width: 160px;
             }
             .sidebar-overlay {
-                display: block !important;
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 40;
+                visibility: hidden;
+                opacity: 0;
+                transition: opacity .2s, visibility .2s;
+            }
+            .sidebar-overlay.active {
+                visibility: visible;
+                opacity: 1;
             }
             .topbar-clock {
                 display: none;
             }
         }
 
-        /* ── MAIN / WELCOME - CENTRALIZADO E SEM SCROLL ── */
+        /* ── MAIN / WELCOME - CORRIGIDO PARA ROLAR NO CELULAR ── */
         .main-content { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
         
         #welcome-screen {
-            position: absolute; inset: 0; overflow-y: auto;
-            background: var(--bg); display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
+            position: absolute; inset: 0;
+            overflow-y: auto;           /* rolagem vertical normal */
+            background: var(--bg);
+            display: block;             /* sem flex centralizador */
+            padding: 20px 16px 40px;
         }
         .welcome-inner { 
-            width: 100%; 
             max-width: 1050px; 
-            margin: auto; 
-            padding: 12px 20px 20px;
+            margin: 0 auto;            /* centraliza horizontalmente */
+            width: 100%;
         }
-        .welcome-hero { 
-            text-align: center; 
-            margin-bottom: 20px;
-        }
-        .hub-icon {
-            width: 44px; height: 44px;
-            border-radius: 16px;
-            background: var(--amber); display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 10px;
-            box-shadow: 0 6px 14px rgba(224,172,44,.3);
-        }
-        .hub-icon .material-symbols-outlined { font-size: 24px; color: #241a00; font-variation-settings: 'FILL' 1; }
-        .welcome-title { font-size: 1.6rem; font-weight: 800; color: var(--gold); letter-spacing: -.02em; margin-bottom: 6px; }
-        .welcome-sub { font-size: 0.85rem; color: var(--text3); max-width: 500px; margin: 0 auto; line-height: 1.45; }
+        .welcome-hero { text-align: center; margin-bottom: 24px; }
+        .hub-icon { width: 48px; height: 48px; border-radius: 18px; background: var(--amber); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 6px 14px rgba(224,172,44,.3); }
+        .hub-icon .material-symbols-outlined { font-size: 26px; color: #241a00; font-variation-settings: 'FILL' 1; }
+        .welcome-title { font-size: 1.7rem; font-weight: 800; color: var(--gold); letter-spacing: -.02em; margin-bottom: 8px; }
+        .welcome-sub { font-size: 0.9rem; color: var(--text3); max-width: 520px; margin: 0 auto; line-height: 1.45; }
         
-        .tools-section-label {
-            font-size: 10px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 1.2px; color: var(--text3); margin-bottom: 10px;
-            padding-left: 2px;
-        }
-        .tools-group { margin-bottom: 22px; }
-        .tools-grid { 
-            display: grid; 
-            gap: 14px; 
-            grid-template-columns: repeat(5, 1fr); 
-        }
-        /* Cards quadrados */
+        .tools-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text3); margin: 24px 0 12px 0; padding-left: 2px; }
+        .tools-group { margin-bottom: 20px; }
+        .tools-grid { display: grid; gap: 14px; grid-template-columns: repeat(5, 1fr); }
+        
         .tool-card {
             background: var(--bg2); 
             border: 1px solid var(--border);
             border-radius: 16px; 
-            padding: 12px 10px; 
+            padding: 14px 12px; 
             cursor: pointer;
             text-align: left; 
             font-family: inherit; 
@@ -398,68 +418,38 @@
             transition: border-color .15s, background .15s, transform .15s;
             display: flex;
             flex-direction: column;
-            min-height: 118px;
+            min-height: 130px;
             justify-content: space-between;
         }
         .tool-card:hover { border-color: var(--amber); background: var(--bg3); transform: translateY(-2px); }
-        .tool-card-icon {
-            width: 32px; height: 32px; border-radius: 10px;
-            background: var(--bg3); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 10px;
-        }
-        .tool-card-icon .material-symbols-outlined { font-size: 18px; color: var(--amber); }
-        .tool-card-name { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.3; }
+        .tool-card-icon { width: 36px; height: 36px; border-radius: 12px; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+        .tool-card-icon .material-symbols-outlined { font-size: 20px; color: var(--amber); }
+        .tool-card-name { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
         .tool-card-desc { font-size: 0.7rem; color: var(--text3); line-height: 1.35; }
-        .welcome-hint { 
-            font-size: 0.75rem; color: var(--text3); text-align: center; 
-            margin-top: 12px; 
-        }
+        .welcome-hint { font-size: 0.75rem; color: var(--text3); text-align: center; margin-top: 24px; }
 
-        /* responsividade do grid */
-        @media (max-width: 1024px) { 
-            .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; } 
-            .welcome-inner { max-width: 850px; }
-        }
-        @media (max-width: 780px)  { 
-            .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } 
-            .welcome-inner { padding: 8px 16px; }
-        }
-        @media (max-width: 540px)  { 
-            .tools-grid { grid-template-columns: 1fr; } 
-            .tool-card { min-height: auto; }
-        }
+        @media (max-width: 1024px) { .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
+        @media (max-width: 780px) { .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+        @media (max-width: 540px) { .tools-grid { grid-template-columns: 1fr; } .tool-card { min-height: auto; } }
 
         /* Iframe area */
-        #iframe-wrap {
-            position: absolute; inset: 0; display: none; flex-direction: column; z-index: 5;
-        }
-        iframe {
-            flex: 1; border: none; background: var(--bg);
-            width: 100%; display: block;
-        }
-        #iframe-loader {
-            position: absolute; inset: 0;
-            background: rgba(13,15,23,.9); display: flex;
-            align-items: center; justify-content: center;
-            z-index: 20; transition: opacity .2s; opacity: 0; pointer-events: none;
-        }
-        .spinner {
-            width: 36px; height: 36px; border-radius: 50%;
-            border: 3px solid var(--border); border-top-color: var(--amber);
-            animation: spin .7s linear infinite;
-        }
+        #iframe-wrap { position: absolute; inset: 0; display: none; flex-direction: column; z-index: 5; }
+        iframe { flex: 1; border: none; background: var(--bg); width: 100%; display: block; }
+        #iframe-loader { position: absolute; inset: 0; background: rgba(13,15,23,.9); display: flex; align-items: center; justify-content: center; z-index: 20; transition: opacity .2s; opacity: 0; pointer-events: none; }
+        .spinner { width: 36px; height: 36px; border-radius: 50%; border: 3px solid var(--border); border-top-color: var(--amber); animation: spin .7s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loader-label { font-size: 12px; color: var(--text3); margin-top: 10px; }
 
-        .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-style: normal; font-weight: 400; font-size: 20px; line-height: 1; letter-spacing: normal; text-transform: none; white-space: nowrap; word-wrap: normal; -webkit-font-smoothing: antialiased; }
-        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; }
+        .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-style: normal; font-weight: 400; font-size: 20px; line-height: 1; }
     </style>
 </head>
 <body>
 
 <header class="topbar">
     <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
         <div class="pbf-badge">PBF</div>
         <span class="topbar-title">Hub Financeiro</span>
         <button class="topbar-back-btn" id="backBtnIntegrated" style="display: none;">
@@ -598,6 +588,30 @@
     const toolNameSpan = document.getElementById('activeToolNameDisplay');
     const newTabBtn = document.getElementById('newTabBtnIntegrated');
     const navItems = document.querySelectorAll('.nav-item');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const menuToggle = document.getElementById('menuToggle');
+
+    function openMobileSidebar() {
+        sidebar.classList.add('mobile-open');
+        overlay.classList.add('active');
+    }
+
+    function closeMobileSidebar() {
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('active');
+    }
+
+    menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (sidebar.classList.contains('mobile-open')) {
+            closeMobileSidebar();
+        } else {
+            openMobileSidebar();
+        }
+    });
+
+    overlay.addEventListener('click', closeMobileSidebar);
 
     function setActive(name) {
         navItems.forEach(b => b.classList.toggle('active', b.dataset.name === name));
@@ -608,7 +622,7 @@
         currentApp = 'home';
         iframe.src = 'about:blank';
         iframeWrap.style.display = 'none';
-        welcome.style.display = 'flex';
+        welcome.style.display = 'block';
         loader.style.opacity = '0';
         loader.style.pointerEvents = 'none';
         backBtn.style.display = 'none';
@@ -664,11 +678,6 @@
     document.querySelectorAll('.tool-card').forEach(card => {
         card.addEventListener('click', () => loadApp(card.dataset.target));
     });
-
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    function closeMobileSidebar() { sidebar.classList.remove('mobile-open'); overlay.style.display = 'none'; }
-    overlay.addEventListener('click', closeMobileSidebar);
 
     function updateClock() {
         const el = document.getElementById('topClock');
