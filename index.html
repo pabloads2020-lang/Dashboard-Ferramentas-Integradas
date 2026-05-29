@@ -32,19 +32,27 @@
         }
 
         body {
-            background: var(--bg); font-family: 'DM Sans', sans-serif;
-            color: var(--text); height: 100vh; overflow: hidden;
-            display: flex; flex-direction: column; transition: background .2s, color .2s;
+            background: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: background .2s, color .2s;
+            font-size: 15px; /* base ajustada */
         }
 
         /* ── Topbar unificada ── */
         .topbar {
-            height: 54px; flex-shrink: 0;
+            height: 52px; flex-shrink: 0;
             background: var(--bg2); border-bottom: 1px solid var(--border);
             display: flex; align-items: center;
             justify-content: space-between;
-            padding: 0 1.2rem; gap: 16px;
-            z-index: 100; position: relative;
+            padding: 0 1.2rem;
+            gap: 14px;
+            z-index: 100;
+            position: relative;
         }
         .topbar-left {
             display: flex;
@@ -76,7 +84,7 @@
             white-space: nowrap; 
         }
         .topbar-back-btn {
-            display: inline-flex; align-items: center; gap: 6px;
+            display: inline-flex; align-items: center; gap: 5px;
             background: transparent; border: 1px solid var(--border);
             border-radius: 8px; color: var(--text2);
             font-family: inherit; font-size: 12px; font-weight: 500;
@@ -104,7 +112,7 @@
             background: transparent; border: 1px solid var(--border);
             border-radius: 8px; color: var(--text3);
             font-family: inherit; font-size: 11px; font-weight: 500;
-            padding: 5px 10px; cursor: pointer; transition: .15s;
+            padding: 5px 9px; cursor: pointer; transition: .15s;
             white-space: nowrap;
         }
         .topbar-new-btn:hover {
@@ -149,7 +157,7 @@
         /* ── LAYOUT PRINCIPAL ── */
         .layout { display: flex; flex: 1; overflow: hidden; }
 
-        /* ===== SIDEBAR - IGUAL AO PRINT (sem amarelo nos títulos) ===== */
+        /* ===== SIDEBAR ===== */
         .sidebar {
             width: var(--sidebar-collapsed);
             flex-shrink: 0;
@@ -166,36 +174,31 @@
             width: var(--sidebar-w);
             box-shadow: 6px 0 24px rgba(0,0,0,.4);
         }
-
-        /* Títulos das seções no estilo do print: tom neutro (não amarelo) */
         .nav-section-label {
-            font-size: 08px;
+            font-size: 8px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: var(--text2);      /* cor neutra clara, como no print */
+            letter-spacing: 1px;
+            color: var(--text2);
             padding: 0;
             height: 0;
             overflow: hidden;
             opacity: 0;
             white-space: nowrap;
             transition: all .2s ease;
-            margin-top: 8px;
+            margin-top: 6px;
         }
-        /* Quando a sidebar expandir (hover ou mobile) */
         .sidebar:hover .nav-section-label,
         .sidebar.mobile-open .nav-section-label {
             padding: 12px 16px 6px;
             height: auto;
             opacity: 1;
         }
-
-        /* Itens de navegação */
         .nav-item {
             display: flex;
             align-items: center;
             gap: 0;
-            padding: 11px 0;
+            padding: 10px 0;
             justify-content: center;
             cursor: pointer;
             border: none;
@@ -230,7 +233,7 @@
         .sidebar:hover .nav-item,
         .sidebar.mobile-open .nav-item {
             justify-content: flex-start;
-            padding: 11px 0;
+            padding: 10px 0;
             gap: 0;
         }
         .nav-item-label {
@@ -248,8 +251,6 @@
             opacity: 1;
             max-width: 220px;
         }
-
-        /* Footer do sidebar (avatar + nome) */
         .sidebar-footer {
             margin-top: auto;
             border-top: 1px solid var(--border);
@@ -298,11 +299,10 @@
             white-space: nowrap;
         }
 
-        /* Responsivo mobile */
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                top: 54px;
+                top: 52px;
                 left: 0;
                 bottom: 0;
                 transform: translateX(-100%);
@@ -343,50 +343,92 @@
             }
         }
 
-        /* ── MAIN / WELCOME (inalterado) ── */
+        /* ── MAIN / WELCOME - CENTRALIZADO E SEM SCROLL ── */
         .main-content { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        
         #welcome-screen {
             position: absolute; inset: 0; overflow-y: auto;
-            background: var(--bg); display: flex; flex-direction: column;
-            align-items: center; padding: 40px 24px; z-index: 10;
+            background: var(--bg); display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
         }
-        .welcome-inner { width: 100%; max-width: 960px; }
-        .welcome-hero { text-align: center; margin-bottom: 40px; }
+        .welcome-inner { 
+            width: 100%; 
+            max-width: 1050px; 
+            margin: auto; 
+            padding: 12px 20px 20px;
+        }
+        .welcome-hero { 
+            text-align: center; 
+            margin-bottom: 20px;
+        }
         .hub-icon {
-            width: 60px; height: 60px; border-radius: 18px;
+            width: 44px; height: 44px;
+            border-radius: 16px;
             background: var(--amber); display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 16px; box-shadow: 0 8px 24px rgba(224,172,44,.3);
+            margin: 0 auto 10px;
+            box-shadow: 0 6px 14px rgba(224,172,44,.3);
         }
-        .hub-icon .material-symbols-outlined { font-size: 28px; color: #241a00; font-variation-settings: 'FILL' 1; }
-        .welcome-title { font-size: 1.6rem; font-weight: 800; color: var(--gold); letter-spacing: -.02em; margin-bottom: 8px; }
-        .welcome-sub { font-size: .9rem; color: var(--text3); max-width: 420px; margin: 0 auto; line-height: 1.6; }
+        .hub-icon .material-symbols-outlined { font-size: 24px; color: #241a00; font-variation-settings: 'FILL' 1; }
+        .welcome-title { font-size: 1.6rem; font-weight: 800; color: var(--gold); letter-spacing: -.02em; margin-bottom: 6px; }
+        .welcome-sub { font-size: 0.85rem; color: var(--text3); max-width: 500px; margin: 0 auto; line-height: 1.45; }
+        
         .tools-section-label {
             font-size: 10px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 1.5px; color: var(--text3); margin-bottom: 12px;
+            letter-spacing: 1.2px; color: var(--text3); margin-bottom: 10px;
             padding-left: 2px;
         }
-        .tools-group { margin-bottom: 32px; }
-        .tools-grid { display: grid; gap: 12px; grid-template-columns: repeat(5, 1fr); }
-        @media (max-width: 1024px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 640px)  { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 400px)  { .tools-grid { grid-template-columns: 1fr; } }
+        .tools-group { margin-bottom: 22px; }
+        .tools-grid { 
+            display: grid; 
+            gap: 14px; 
+            grid-template-columns: repeat(5, 1fr); 
+        }
+        /* Cards quadrados */
         .tool-card {
-            background: var(--bg2); border: 1px solid var(--border);
-            border-radius: 14px; padding: 16px; cursor: pointer;
-            text-align: left; font-family: inherit; width: 100%;
+            background: var(--bg2); 
+            border: 1px solid var(--border);
+            border-radius: 16px; 
+            padding: 12px 10px; 
+            cursor: pointer;
+            text-align: left; 
+            font-family: inherit; 
+            width: 100%;
             transition: border-color .15s, background .15s, transform .15s;
+            display: flex;
+            flex-direction: column;
+            min-height: 118px;
+            justify-content: space-between;
         }
         .tool-card:hover { border-color: var(--amber); background: var(--bg3); transform: translateY(-2px); }
         .tool-card-icon {
-            width: 36px; height: 36px; border-radius: 10px;
+            width: 32px; height: 32px; border-radius: 10px;
             background: var(--bg3); border: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .tool-card-icon .material-symbols-outlined { font-size: 18px; color: var(--amber); }
-        .tool-card-name { font-size: .82rem; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
-        .tool-card-desc { font-size: .7rem; color: var(--text3); line-height: 1.4; }
-        .welcome-hint { font-size: .72rem; color: var(--text3); text-align: center; margin-top: 8px; }
+        .tool-card-name { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.3; }
+        .tool-card-desc { font-size: 0.7rem; color: var(--text3); line-height: 1.35; }
+        .welcome-hint { 
+            font-size: 0.75rem; color: var(--text3); text-align: center; 
+            margin-top: 12px; 
+        }
+
+        /* responsividade do grid */
+        @media (max-width: 1024px) { 
+            .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; } 
+            .welcome-inner { max-width: 850px; }
+        }
+        @media (max-width: 780px)  { 
+            .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } 
+            .welcome-inner { padding: 8px 16px; }
+        }
+        @media (max-width: 540px)  { 
+            .tools-grid { grid-template-columns: 1fr; } 
+            .tool-card { min-height: auto; }
+        }
 
         /* Iframe area */
         #iframe-wrap {
@@ -408,7 +450,7 @@
             animation: spin .7s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .loader-label { font-size: 12px; color: var(--text3); margin-top: 12px; }
+        .loader-label { font-size: 12px; color: var(--text3); margin-top: 10px; }
 
         .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-style: normal; font-weight: 400; font-size: 20px; line-height: 1; letter-spacing: normal; text-transform: none; white-space: nowrap; word-wrap: normal; -webkit-font-smoothing: antialiased; }
         .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; }
@@ -416,7 +458,6 @@
 </head>
 <body>
 
-<!-- Topbar unificada -->
 <header class="topbar">
     <div class="topbar-left">
         <div class="pbf-badge">PBF</div>
@@ -441,19 +482,12 @@
 
 <div class="layout">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    
-    <!-- SIDEBAR EXATAMENTE COMO O PRINT: MENU, Início, Ferramentas, Consultas, rodapé -->
     <aside class="sidebar" id="sidebar">
-        <!-- Título MENU -->
-        <div class="nav-section-label" style="margin-top: 8px;">MENU</div>
-        
-        <!-- Item Início -->
+        <div class="nav-section-label" style="margin-top: 6px;">MENU</div>
         <button class="nav-item active" data-name="home" data-label="Início" data-url="">
             <span class="material-symbols-outlined">home</span>
             <span class="nav-item-label">Início</span>
         </button>
-
-        <!-- Seção FERRAMENTAS -->
         <div class="nav-section-label">FERRAMENTAS</div>
         <button class="nav-item" data-name="carteiras" data-label="Carteira Recomendada" data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/">
             <span class="material-symbols-outlined">account_balance_wallet</span>
@@ -475,8 +509,6 @@
             <span class="material-symbols-outlined">assignment_turned_in</span>
             <span class="nav-item-label">Gerador IPS</span>
         </button>
-
-        <!-- Seção CONSULTAS -->
         <div class="nav-section-label">CONSULTAS</div>
         <button class="nav-item" data-name="calendario" data-label="Calendário de Vencimentos" data-url="https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/">
             <span class="material-symbols-outlined">calendar_month</span>
@@ -494,8 +526,6 @@
             <span class="material-symbols-outlined">show_chart</span>
             <span class="nav-item-label">Fundos Aprovados</span>
         </button>
-
-        <!-- Rodapé -->
         <div class="sidebar-footer">
             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yh2vkLWrOQ89P0Z9tbaVWCYK-fpN09-euyU64ttgORw8cMgmmSgaDwbyS9UvG8ngrUVJgIntrMtOxnBYCBr1hAPkYQm2xUNrLsdI0hJb0I7Vjz1kgelN8b-IjTJHeuX8xLitouyZumU1cDb_5qciKeK8RKA0Cx3xVCCjv8C-iufLhbYahgAcI3Dkg2cXaQYUYbnnzeEsCQNUhqqYkTG3vsN9QMIX7ji7QQb4eTairjx02qTNg6dHVCLQO6PX3JONpAieSsBYMxulGQ" alt="Pablo B. Freire">
             <div class="user-info">
@@ -516,20 +546,20 @@
                 <div class="tools-group">
                     <div class="tools-section-label">Ferramentas</div>
                     <div class="tools-grid">
-                        <button class="tool-card" data-target="carteiras"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance_wallet</span></div><div class="tool-card-name">Carteira Recomendada</div><div class="tool-card-desc">Visualize a alocação ideal por perfil de investidor.</div></button>
-                        <button class="tool-card" data-target="rebalanceamento"><div class="tool-card-icon"><span class="material-symbols-outlined">balance</span></div><div class="tool-card-name">Rebalanceamento</div><div class="tool-card-desc">Calcule os ajustes necessários para reequilibrar a carteira.</div></button>
-                        <button class="tool-card" data-target="extrato"><div class="tool-card-icon"><span class="material-symbols-outlined">receipt_long</span></div><div class="tool-card-name">Extrato Analítico</div><div class="tool-card-desc">Analise os extratos e movimentações da carteira.</div></button>
-                        <button class="tool-card" data-target="relatorio"><div class="tool-card-icon"><span class="material-symbols-outlined">description</span></div><div class="tool-card-name">Relatório Mensal</div><div class="tool-card-desc">Gere relatórios consolidados de desempenho mensal.</div></button>
-                        <button class="tool-card" data-target="ips"><div class="tool-card-icon"><span class="material-symbols-outlined">assignment_turned_in</span></div><div class="tool-card-name">Gerador IPS</div><div class="tool-card-desc">Crie a Política de Investimentos do cliente automaticamente.</div></button>
+                        <button class="tool-card" data-target="carteiras"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance_wallet</span></div><div class="tool-card-name">Carteira Recomendada</div><div class="tool-card-desc">Visualize a alocação ideal por perfil.</div></button>
+                        <button class="tool-card" data-target="rebalanceamento"><div class="tool-card-icon"><span class="material-symbols-outlined">balance</span></div><div class="tool-card-name">Rebalanceamento</div><div class="tool-card-desc">Calcule os ajustes para reequilibrar.</div></button>
+                        <button class="tool-card" data-target="extrato"><div class="tool-card-icon"><span class="material-symbols-outlined">receipt_long</span></div><div class="tool-card-name">Extrato Analítico</div><div class="tool-card-desc">Analise extratos e movimentações.</div></button>
+                        <button class="tool-card" data-target="relatorio"><div class="tool-card-icon"><span class="material-symbols-outlined">description</span></div><div class="tool-card-name">Relatório Mensal</div><div class="tool-card-desc">Consolidado de desempenho mensal.</div></button>
+                        <button class="tool-card" data-target="ips"><div class="tool-card-icon"><span class="material-symbols-outlined">assignment_turned_in</span></div><div class="tool-card-name">Gerador IPS</div><div class="tool-card-desc">Política de Investimentos automática.</div></button>
                     </div>
                 </div>
                 <div class="tools-group">
                     <div class="tools-section-label">Consultas</div>
                     <div class="tools-grid">
-                        <button class="tool-card" data-target="calendario"><div class="tool-card-icon"><span class="material-symbols-outlined">calendar_month</span></div><div class="tool-card-name">Calendário de Vencimentos</div><div class="tool-card-desc">Acompanhe vencimentos e envie lembretes via WhatsApp.</div></button>
-                        <button class="tool-card" data-target="emissores"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance</span></div><div class="tool-card-name">Emissores Bancários</div><div class="tool-card-desc">Consulte ratings, scores e indicadores financeiros.</div></button>
-                        <button class="tool-card" data-target="credito-privado"><div class="tool-card-icon"><span class="material-symbols-outlined">credit_card</span></div><div class="tool-card-name">Crédito Privado</div><div class="tool-card-desc">Ativos de crédito privado, debêntures e CRI/CRA.</div></button>
-                        <button class="tool-card" data-target="fundos-aprovados"><div class="tool-card-icon"><span class="material-symbols-outlined">show_chart</span></div><div class="tool-card-name">Fundos Aprovados</div><div class="tool-card-desc">Fundos aprovados pelo comitê de alocações.</div></button>
+                        <button class="tool-card" data-target="calendario"><div class="tool-card-icon"><span class="material-symbols-outlined">calendar_month</span></div><div class="tool-card-name">Calendário de Vencimentos</div><div class="tool-card-desc">Acompanhe vencimentos via WhatsApp.</div></button>
+                        <button class="tool-card" data-target="emissores"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance</span></div><div class="tool-card-name">Emissores Bancários</div><div class="tool-card-desc">Ratings, scores e indicadores.</div></button>
+                        <button class="tool-card" data-target="credito-privado"><div class="tool-card-icon"><span class="material-symbols-outlined">credit_card</span></div><div class="tool-card-name">Crédito Privado</div><div class="tool-card-desc">Debêntures, CRI/CRA e ativos.</div></button>
+                        <button class="tool-card" data-target="fundos-aprovados"><div class="tool-card-icon"><span class="material-symbols-outlined">show_chart</span></div><div class="tool-card-name">Fundos Aprovados</div><div class="tool-card-desc">Fundos aprovados pelo comitê.</div></button>
                     </div>
                 </div>
                 <p class="welcome-hint">Selecione uma ferramenta acima ou pelo menu lateral</p>
@@ -586,6 +616,7 @@
         newTabBtn.style.display = 'none';
         setActive('home');
         localStorage.removeItem('lastApp');
+        closeMobileSidebar();
     }
 
     function loadApp(name) {
