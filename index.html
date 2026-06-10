@@ -488,6 +488,23 @@
 </button>
 
 <script>
+    // ── Proteção contra sidebar duplicada ─────────────────────────────────────
+    // Se esta página for carregada DENTRO de um iframe (ex.: botão "Voltar ao
+    // início" de uma ferramenta filha), escapa para o contexto pai em vez de
+    // renderizar o hub dentro do frame.
+    if (window.self !== window.top) {
+        try {
+            // Tenta navegar o frame pai de volta ao hub
+            window.top.location.href = window.location.href;
+        } catch(e) {
+            // Cross-origin: pede via postMessage
+            window.parent.postMessage({ action: 'hubNavigate', target: 'home' }, '*');
+        }
+        // Para tudo – não renderiza nada neste frame
+        document.documentElement.innerHTML = '';
+        throw new Error('Hub carregado em iframe – redirecionando para o pai.');
+    }
+
     const APPS = {
         carteiras:         { url: "https://pabloads2020-lang.github.io/Carteiras-recomendadas/",    label: "Carteira Recomendada" },
         rebalanceamento:   { url: "https://pabloads2020-lang.github.io/Rebalanceamento-2/",         label: "Rebalanceamento" },
@@ -593,6 +610,18 @@
 
     // Tema escuro/claro (opcional – removi o botão, mas deixei o suporte via localStorage se quiser adicionar depois)
     // Se quiser reativar o tema, adicione um botão flutuante ou no footer.
+
+    // ── Listener para mensagens das ferramentas filhas ────────────────────────
+    // Ferramentas podem usar: window.parent.postMessage({ action: 'hubNavigate', target: 'home' }, '*')
+    window.addEventListener('message', (e) => {
+        if (!e.data || e.data.action !== 'hubNavigate') return;
+        const target = e.data.target;
+        if (target === 'home') {
+            showHome();
+        } else if (target && APPS[target]) {
+            loadApp(target);
+        }
+    });
 
     showHome();
 </script>
