@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
-    <title>HUB FINANCEIRO | Painel de ferramentas</title>
+    <title>HUB Financeiro | Painel de ferramentas</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet">
     <style>
@@ -38,150 +38,17 @@
             height: 100vh;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
             transition: background .2s, color .2s;
             font-size: 15px;
         }
 
-        /* ── Topbar unificada ── */
-        .topbar {
-            height: 52px; flex-shrink: 0;
-            background: var(--bg2); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center;
-            justify-content: space-between;
-            padding: 0 1rem;
-            gap: 12px;
-            z-index: 100;
-            position: relative;
-        }
-        .topbar-left {
+        /* LAYOUT PRINCIPAL */
+        .layout {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
+            flex: 1;
+            overflow: hidden;
+            height: 100vh;
         }
-        /* Botão hambúrguer (mobile/tablet) */
-        .menu-toggle {
-            display: none;
-            background: transparent;
-            border: none;
-            color: var(--text2);
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 8px;
-            transition: background .2s;
-        }
-        .menu-toggle:hover {
-            background: var(--bg3);
-            color: var(--gold);
-        }
-        .menu-toggle .material-symbols-outlined {
-            font-size: 22px;
-        }
-        .topbar-center {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            pointer-events: none;
-        }
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        .pbf-badge {
-            padding: 0 12px; height: 30px; background: var(--gold);
-            border-radius: 40px; display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 800; color: #000; letter-spacing: .5px;
-            flex-shrink: 0;
-        }
-        .topbar-title {
-            font-size: 14px; font-weight: 600; color: var(--text);
-            white-space: nowrap; 
-        }
-        .topbar-back-btn {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: transparent; border: 1px solid var(--border);
-            border-radius: 8px; color: var(--text2);
-            font-family: inherit; font-size: 12px; font-weight: 500;
-            padding: 5px 10px; cursor: pointer; transition: .2s;
-            white-space: nowrap;
-        }
-        .topbar-back-btn:hover {
-            border-color: var(--amber); color: var(--gold);
-            background: var(--bg3);
-        }
-        .topbar-back-btn .material-symbols-outlined { font-size: 16px; }
-        .active-tool-name {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--gold);
-            letter-spacing: 0.2px;
-            white-space: nowrap;
-            background: transparent;
-            padding: 0;
-            border: none;
-            box-shadow: none;
-        }
-        .topbar-new-btn {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: transparent; border: 1px solid var(--border);
-            border-radius: 8px; color: var(--text3);
-            font-family: inherit; font-size: 11px; font-weight: 500;
-            padding: 5px 9px; cursor: pointer; transition: .15s;
-            white-space: nowrap;
-        }
-        .topbar-new-btn:hover {
-            border-color: var(--amber); color: var(--gold);
-            background: var(--bg3);
-        }
-        .topbar-new-btn .material-symbols-outlined { font-size: 14px; }
-        .topbar-clock { 
-            font-size: 11px; color: var(--text3); white-space: nowrap; 
-            font-variant-numeric: tabular-nums;
-            background: var(--bg3); padding: 4px 10px; border-radius: 30px;
-        }
-        .theme-btn {
-            background: var(--bg3); border: 1px solid var(--border);
-            border-radius: 30px; width: 34px; height: 34px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 16px; transition: border-color .2s;
-            flex-shrink: 0;
-        }
-        .theme-btn:hover { border-color: var(--gold); }
-
-        @media (max-width: 680px) {
-            .topbar-back-btn span:not(.material-symbols-outlined) { display: none; }
-            .topbar-new-btn span:not(.material-symbols-outlined) { display: none; }
-            .topbar-back-btn, .topbar-new-btn { padding: 5px 8px; }
-            .active-tool-name { font-size: 13px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
-            .topbar-clock { font-size: 10px; padding: 4px 6px; }
-            .topbar-title { font-size: 12px; }
-        }
-        @media (max-width: 520px) {
-            .topbar-title { display: none; }
-            .active-tool-name { max-width: 110px; }
-        }
-        @media (max-width: 480px) {
-            .topbar-center { position: static; transform: none; left: auto; margin: 0 auto; }
-            .topbar { flex-wrap: wrap; justify-content: center; height: auto; padding: 8px; gap: 8px; }
-            .topbar-left, .topbar-right { flex: 1; }
-            .topbar-center { order: 2; width: 100%; text-align: center; margin-top: 4px; }
-        }
-
-        /* Mostrar botão hambúrguer em tablets e celulares */
-        @media (max-width: 768px) {
-            .menu-toggle {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-        }
-
-        /* ── LAYOUT PRINCIPAL ── */
-        .layout { display: flex; flex: 1; overflow: hidden; }
 
         /* ===== SIDEBAR ===== */
         .sidebar {
@@ -325,11 +192,11 @@
             white-space: nowrap;
         }
 
-        /* Sidebar mobile/tablet com overlay e botão hambúrguer */
+        /* Sidebar mobile/tablet */
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                top: 52px;
+                top: 0;
                 left: 0;
                 bottom: 0;
                 transform: translateX(-100%);
@@ -376,24 +243,28 @@
                 visibility: visible;
                 opacity: 1;
             }
-            .topbar-clock {
-                display: none;
-            }
         }
 
-        /* ── MAIN / WELCOME - CORRIGIDO PARA ROLAR NO CELULAR ── */
-        .main-content { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
         
         #welcome-screen {
-            position: absolute; inset: 0;
-            overflow-y: auto;           /* rolagem vertical normal */
+            position: absolute;
+            inset: 0;
+            overflow-y: auto;
             background: var(--bg);
-            display: block;             /* sem flex centralizador */
+            display: block;
             padding: 20px 16px 40px;
         }
         .welcome-inner { 
             max-width: 1050px; 
-            margin: 0 auto;            /* centraliza horizontalmente */
+            margin: 0 auto;
             width: 100%;
         }
         .welcome-hero { text-align: center; margin-bottom: 24px; }
@@ -433,42 +304,83 @@
         @media (max-width: 540px) { .tools-grid { grid-template-columns: 1fr; } .tool-card { min-height: auto; } }
 
         /* Iframe area */
-        #iframe-wrap { position: absolute; inset: 0; display: none; flex-direction: column; z-index: 5; }
-        iframe { flex: 1; border: none; background: var(--bg); width: 100%; display: block; }
-        #iframe-loader { position: absolute; inset: 0; background: rgba(13,15,23,.9); display: flex; align-items: center; justify-content: center; z-index: 20; transition: opacity .2s; opacity: 0; pointer-events: none; }
-        .spinner { width: 36px; height: 36px; border-radius: 50%; border: 3px solid var(--border); border-top-color: var(--amber); animation: spin .7s linear infinite; }
+        #iframe-wrap {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            z-index: 5;
+        }
+        iframe {
+            flex: 1;
+            border: none;
+            background: var(--bg);
+            width: 100%;
+            display: block;
+        }
+        #iframe-loader {
+            position: absolute;
+            inset: 0;
+            background: rgba(13,15,23,.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            transition: opacity .2s;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            border-top-color: var(--amber);
+            animation: spin .7s linear infinite;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .loader-label { font-size: 12px; color: var(--text3); margin-top: 10px; }
+        .loader-label {
+            font-size: 12px;
+            color: var(--text3);
+            margin-top: 10px;
+        }
 
-        .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-style: normal; font-weight: 400; font-size: 20px; line-height: 1; }
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        /* Botão menu hambúrguer flutuante (já que não há topbar) */
+        .floating-menu-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            width: 48px;
+            height: 48px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 60;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        @media (max-width: 768px) {
+            .floating-menu-btn {
+                display: flex;
+            }
+            .sidebar {
+                top: 0;
+            }
+        }
     </style>
 </head>
 <body>
-
-<header class="topbar">
-    <div class="topbar-left">
-        <button class="menu-toggle" id="menuToggle">
-            <span class="material-symbols-outlined">menu</span>
-        </button>
-        <div class="pbf-badge">PBF</div>
-        <span class="topbar-title">Hub Financeiro</span>
-        <button class="topbar-back-btn" id="backBtnIntegrated" style="display: none;">
-            <span class="material-symbols-outlined">arrow_back</span>
-            <span>Voltar ao início</span>
-        </button>
-    </div>
-    <div class="topbar-center">
-        <span id="activeToolNameDisplay" class="active-tool-name" style="display: none;"></span>
-    </div>
-    <div class="topbar-right">
-        <button class="topbar-new-btn" id="newTabBtnIntegrated" style="display: none;">
-            <span class="material-symbols-outlined">open_in_new</span>
-            <span>Nova aba</span>
-        </button>
-        <span class="topbar-clock" id="topClock"></span>
-        <button class="theme-btn" id="themeBtn">🌙</button>
-    </div>
-</header>
 
 <div class="layout">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -570,6 +482,11 @@
     </main>
 </div>
 
+<!-- Botão flutuante para abrir menu em mobile -->
+<button class="floating-menu-btn" id="floatingMenuBtn">
+    <span class="material-symbols-outlined">menu</span>
+</button>
+
 <script>
     const APPS = {
         carteiras:         { url: "https://pabloads2020-lang.github.io/Carteiras-recomendadas/",    label: "Carteira Recomendada" },
@@ -590,13 +507,10 @@
     const loader = document.getElementById('iframe-loader');
     const iframeWrap = document.getElementById('iframe-wrap');
     const welcome = document.getElementById('welcome-screen');
-    const backBtn = document.getElementById('backBtnIntegrated');
-    const toolNameSpan = document.getElementById('activeToolNameDisplay');
-    const newTabBtn = document.getElementById('newTabBtnIntegrated');
     const navItems = document.querySelectorAll('.nav-item');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    const menuToggle = document.getElementById('menuToggle');
+    const floatingBtn = document.getElementById('floatingMenuBtn');
 
     function openMobileSidebar() {
         sidebar.classList.add('mobile-open');
@@ -608,7 +522,8 @@
         overlay.classList.remove('active');
     }
 
-    menuToggle.addEventListener('click', (e) => {
+    // Botão flutuante (mobile)
+    floatingBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (sidebar.classList.contains('mobile-open')) {
             closeMobileSidebar();
@@ -631,9 +546,6 @@
         welcome.style.display = 'block';
         loader.style.opacity = '0';
         loader.style.pointerEvents = 'none';
-        backBtn.style.display = 'none';
-        toolNameSpan.style.display = 'none';
-        newTabBtn.style.display = 'none';
         setActive('home');
         localStorage.removeItem('lastApp');
         closeMobileSidebar();
@@ -649,12 +561,6 @@
         loader.style.opacity = '1';
         loader.style.pointerEvents = 'auto';
         iframe.style.opacity = '0.4';
-        toolNameSpan.textContent = app.label;
-        toolNameSpan.style.display = 'inline-block';
-        backBtn.style.display = 'inline-flex';
-        newTabBtn.style.display = 'inline-flex';
-        newTabBtn.onclick = () => window.open(app.url, '_blank');
-        backBtn.onclick = () => showHome();
         if (loadTimeout) clearTimeout(loadTimeout);
         loadTimeout = setTimeout(() => {
             loader.style.opacity = '0';
@@ -685,21 +591,9 @@
         card.addEventListener('click', () => loadApp(card.dataset.target));
     });
 
-    function updateClock() {
-        const el = document.getElementById('topClock');
-        if (el) {
-            const now = new Date();
-            el.textContent = now.toLocaleDateString('pt-BR', {weekday:'short', day:'2-digit', month:'short', year:'numeric'}) + ' · ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-        }
-    }
-    updateClock(); setInterval(updateClock, 1000);
+    // Tema escuro/claro (opcional – removi o botão, mas deixei o suporte via localStorage se quiser adicionar depois)
+    // Se quiser reativar o tema, adicione um botão flutuante ou no footer.
 
-    let isDark = true;
-    document.getElementById('themeBtn').addEventListener('click', () => {
-        isDark = !isDark;
-        document.body.classList.toggle('light', !isDark);
-        document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
-    });
     showHome();
 </script>
 </body>
