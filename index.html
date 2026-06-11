@@ -259,13 +259,16 @@
             inset: 0;
             overflow-y: auto;
             background: var(--bg);
-            display: block;
-            padding: 20px 16px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
         }
-        .welcome-inner { 
-            max-width: 1050px; 
-            margin: 0 auto;
+        .welcome-inner {
+            max-width: 1100px;
             width: 100%;
+            margin: auto;
         }
         .welcome-hero { text-align: center; margin-bottom: 24px; }
         .hub-icon { width: 48px; height: 48px; border-radius: 18px; background: var(--amber); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 6px 14px rgba(224,172,44,.3); }
@@ -274,33 +277,161 @@
         .welcome-sub { font-size: 0.9rem; color: var(--text3); max-width: 520px; margin: 0 auto; line-height: 1.45; }
         
         .tools-section-label { display: none; }
-        .tool-badge { display: inline-flex; align-items: center; gap: 3px; padding: 1px 6px; border-radius: 20px; font-size: 0.55rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 5px; align-self: flex-start; }
+        .tool-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 7px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            line-height: 1;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
         .tool-badge.ferramenta { background: rgba(197,160,89,.15); color: #C5A059; border: 1px solid rgba(197,160,89,.3); }
         .tool-badge.consulta   { background: rgba(41,128,185,.15); color: #5DADE2; border: 1px solid rgba(41,128,185,.3); }
         .tools-group { margin-bottom: 0; }
-        .tools-grid { display: grid; gap: 10px; grid-template-columns: repeat(5, 1fr); }
-        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 18px;
+        }
         .tool-card {
-            background: var(--bg2); 
+            box-sizing: border-box;
+            background: var(--bg2);
             border: 1px solid var(--border);
-            border-radius: 12px; 
-            padding: 10px 10px; 
+            border-radius: 12px;
+            padding: 16px 14px;
             cursor: pointer;
-            text-align: left; 
-            font-family: inherit; 
-            width: 100%;
-            transition: border-color .15s, background .15s, transform .15s;
+            font-family: inherit;
             display: flex;
             flex-direction: column;
-            min-height: 108px;
-            justify-content: flex-start;
+            width: 100%;
+            height: 160px;
+            overflow: hidden;
+            transition: border-color .15s, background .15s, transform .15s;
+        }
+        .tool-card:hover { border-color: var(--gold); background: var(--bg3); transform: translateY(-2px); }
+        .tool-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            flex-shrink: 0;
+            margin-bottom: 8px;
+        }
+        .tool-card-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: rgba(197,160,89,.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .tool-card-icon .material-symbols-outlined {
+            font-size: 17px;
+            color: var(--gold);
+        }
+        .tool-card-name {
+            text-align: left;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #e8eaf0;
+            line-height: 1.2;
+            max-height: 2.4em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .tool-card-desc {
+            text-align: left;
+            font-size: 0.78rem;
+            color: var(--text3);
+            line-height: 1.3;
+            flex: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .tool-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            margin-top: 8px;
+            gap: 6px;
+        }
+        .tool-platform {
+            font-size: 0.68rem;
+            color: var(--text3);
+            font-weight: 500;
+            white-space: nowrap;
+            line-height: 1;
+        }
+        .tool-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 7px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            line-height: 1;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         .tool-card:hover { border-color: var(--amber); background: var(--bg3); transform: translateY(-2px); }
-        .tool-card-icon { width: 28px; height: 28px; border-radius: 8px; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
-        .tool-card-icon .material-symbols-outlined { font-size: 16px; color: var(--amber); }
-        .tool-card-name { font-size: 0.8rem; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
-        .tool-card-desc { font-size: 0.65rem; color: var(--text3); line-height: 1.3; }
-        .welcome-hint { font-size: 0.75rem; color: var(--text3); text-align: center; margin-top: 24px; }
+        .tool-card-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: rgba(197,160,89,.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .tool-card-icon .material-symbols-outlined {
+            font-size: 17px;
+            color: var(--gold);
+        }
+        .tool-card-name {
+            text-align: left;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #e8eaf0;
+            line-height: 1.2;
+            max-height: 2.4em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .tool-card-desc {
+            text-align: left;
+            font-size: 0.78rem;
+            color: var(--text3);
+            line-height: 1.3;
+            flex: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .tool-platform {
+            font-size: 0.68rem;
+            color: var(--text3);
+            font-weight: 500;
+            white-space: nowrap;
+            line-height: 1;
+        }
 
         @media (max-width: 1024px) { .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
         @media (max-width: 780px) { .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
@@ -394,10 +525,6 @@
             <span class="nav-item-label">Início</span>
         </button>
         <div class="nav-section-label">FERRAMENTAS</div>
-        <button class="nav-item" data-name="carteiras" data-label="Carteira Recomendada" data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/">
-            <span class="material-symbols-outlined">account_balance_wallet</span>
-            <span class="nav-item-label">Carteira Recomendada</span>
-        </button>
         <button class="nav-item" data-name="rebalanceamento" data-label="Rebalanceamento" data-url="https://pabloads2020-lang.github.io/Rebalanceamento-2/">
             <span class="material-symbols-outlined">balance</span>
             <span class="nav-item-label">Rebalanceamento</span>
@@ -419,6 +546,10 @@
             <span class="nav-item-label">Gerador IPS</span>
         </button>
         <div class="nav-section-label">CONSULTAS</div>
+        <button class="nav-item" data-name="carteiras" data-label="Carteira Recomendada" data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+            <span class="nav-item-label">Carteira Recomendada</span>
+        </button>
         <button class="nav-item" data-name="calendario" data-label="Calendário de Vencimentos" data-url="https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/">
             <span class="material-symbols-outlined">calendar_month</span>
             <span class="nav-item-label">Calendário de Vencimentos</span>
@@ -451,25 +582,17 @@
     <main class="main-content">
         <div id="welcome-screen">
             <div class="welcome-inner">
-                <div class="welcome-hero">
-                    <div class="hub-icon"><span class="material-symbols-outlined">hub</span></div>
-                    <h2 class="welcome-title">Hub Financeiro</h2>
-                    <p class="welcome-sub">Painel centralizado de ferramentas para análise, rebalanceamento e planejamento de investimentos.</p>
+                <div class="tools-group">
+                    <div class="tools-section-label" style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:12px;">Ferramentas</div>
+                    <div class="tools-grid" style="margin-bottom:24px;">
+                        <button class="tool-card" data-target="rebalanceamento"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">balance</span></div><div class="tool-card-header-info"><div class="tool-card-name">Rebalanceamento</div></div></div><div class="tool-card-desc">Use o XPerformance para verificar a aderência da carteira por classe de ativo.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></button><button class="tool-card" data-target="extrato"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">receipt_long</span></div><div class="tool-card-header-info"><div class="tool-card-name">Extrato Analítico</div></div></div><div class="tool-card-desc">Compare os ativos do cliente com os ativos recomendados.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></button><button class="tool-card" data-target="extrato-conta"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">receipt_long</span></div><div class="tool-card-header-info"><div class="tool-card-name">Extrato Mensal Conta</div></div></div><div class="tool-card-desc">Gere um extrato do fluxo de saídas e entradas no mês.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></button><button class="tool-card" data-target="relatorio"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">description</span></div><div class="tool-card-header-info"><div class="tool-card-name">Relatório Mensal</div></div></div><div class="tool-card-desc">Texto de acompanhamento mensal para clientes.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></button><button class="tool-card" data-target="ips"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">assignment_turned_in</span></div><div class="tool-card-header-info"><div class="tool-card-name">Gerador IPS</div></div></div><div class="tool-card-desc">Política de Investimentos automática.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></button>
+                    </div>
+                    <div class="tools-section-label" style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:12px;">Consultas</div>
+                    <div class="tools-grid">
+                        <button class="tool-card" data-target="carteiras"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance_wallet</span></div><div class="tool-card-header-info"><div class="tool-card-name">Carteira Recomendada</div></div></div><div class="tool-card-desc">Visualize as carteiras recomendadas pelo comitê de alocação.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></button><button class="tool-card" data-target="calendario"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">calendar_month</span></div><div class="tool-card-header-info"><div class="tool-card-name">Calendário de Vencimentos</div></div></div><div class="tool-card-desc">Acompanhe os vencimentos de renda fixa e fundos.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></button><button class="tool-card" data-target="emissores"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance</span></div><div class="tool-card-header-info"><div class="tool-card-name">Emissores Bancários</div></div></div><div class="tool-card-desc">Consulte ratings, scores, indicadores e emissores aprovados.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></button><button class="tool-card" data-target="credito-privado"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">credit_card</span></div><div class="tool-card-header-info"><div class="tool-card-name">Crédito Privado</div></div></div><div class="tool-card-desc">Consulte emissores aprovados pelo research.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></button><button class="tool-card" data-target="fundos-aprovados"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">show_chart</span></div><div class="tool-card-header-info"><div class="tool-card-name">Fundos Aprovados</div></div></div><div class="tool-card-desc">Consulte fundos aprovados pelo research.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></button><button class="tool-card" data-target="conglomerado-fgc"><div class="tool-card-header"><div class="tool-card-icon"><span class="material-symbols-outlined">analytics</span></div><div class="tool-card-header-info"><div class="tool-card-name">Análise de Renda Fixa</div></div></div><div class="tool-card-desc">Consulte emissores aprovados/reprovados e limites do FGC.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge consulta">Consulta</div></div></button>
+                    </div>
                 </div>
-                <div class="tools-grid">
-                        <button class="tool-card" data-target="carteiras"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance_wallet</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Carteira Recomendada</div><div class="tool-card-desc">Visualize a alocação ideal por perfil.</div></button>
-                        <button class="tool-card" data-target="rebalanceamento"><div class="tool-card-icon"><span class="material-symbols-outlined">balance</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Rebalanceamento</div><div class="tool-card-desc">Calcule os ajustes para reequilibrar.</div></button>
-                        <button class="tool-card" data-target="extrato"><div class="tool-card-icon"><span class="material-symbols-outlined">receipt_long</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Extrato Analítico</div><div class="tool-card-desc">Analise extratos e movimentações.</div></button>
-                        <button class="tool-card" data-target="extrato-conta"><div class="tool-card-icon"><span class="material-symbols-outlined">receipt_long</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Extrato Mensal Conta</div><div class="tool-card-desc">Visualize e exporte extratos financeiros.</div></button>
-                        <button class="tool-card" data-target="relatorio"><div class="tool-card-icon"><span class="material-symbols-outlined">description</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Relatório Mensal</div><div class="tool-card-desc">Consolidado de desempenho mensal.</div></button>
-                        <button class="tool-card" data-target="ips"><div class="tool-card-icon"><span class="material-symbols-outlined">assignment_turned_in</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Gerador IPS</div><div class="tool-card-desc">Política de Investimentos automática.</div></button>
-                        <button class="tool-card" data-target="calendario"><div class="tool-card-icon"><span class="material-symbols-outlined">calendar_month</span></div><div class="tool-badge consulta">Consulta</div><div class="tool-card-name">Calendário de Vencimentos</div><div class="tool-card-desc">Acompanhe vencimentos via WhatsApp.</div></button>
-                        <button class="tool-card" data-target="emissores"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance</span></div><div class="tool-badge consulta">Consulta</div><div class="tool-card-name">Emissores Bancários</div><div class="tool-card-desc">Ratings, scores e indicadores.</div></button>
-                        <button class="tool-card" data-target="credito-privado"><div class="tool-card-icon"><span class="material-symbols-outlined">credit_card</span></div><div class="tool-badge consulta">Consulta</div><div class="tool-card-name">Crédito Privado</div><div class="tool-card-desc">Debêntures, CRI/CRA e ativos.</div></button>
-                        <button class="tool-card" data-target="fundos-aprovados"><div class="tool-card-icon"><span class="material-symbols-outlined">show_chart</span></div><div class="tool-badge consulta">Consulta</div><div class="tool-card-name">Fundos Aprovados</div><div class="tool-card-desc">Fundos aprovados pelo comitê.</div></button>
-                        <button class="tool-card" data-target="conglomerado-fgc"><div class="tool-card-icon"><span class="material-symbols-outlined">analytics</span></div><div class="tool-badge consulta">Consulta</div><div class="tool-card-name">Análise de Renda Fixa</div><div class="tool-card-desc">Conglomerados, FGC e renda fixa.</div></button>
-                </div>
-                <p class="welcome-hint">Selecione uma ferramenta acima ou pelo menu lateral</p>
+                
             </div>
         </div>
 
