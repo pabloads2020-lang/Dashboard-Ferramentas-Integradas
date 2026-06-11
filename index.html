@@ -273,15 +273,18 @@
         .welcome-title { font-size: 1.7rem; font-weight: 800; color: var(--gold); letter-spacing: -.02em; margin-bottom: 8px; }
         .welcome-sub { font-size: 0.9rem; color: var(--text3); max-width: 520px; margin: 0 auto; line-height: 1.45; }
         
-        .tools-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text3); margin: 24px 0 12px 0; padding-left: 2px; }
-        .tools-group { margin-bottom: 20px; }
-        .tools-grid { display: grid; gap: 14px; grid-template-columns: repeat(5, 1fr); }
+        .tools-section-label { display: none; }
+        .tool-badge { display: inline-flex; align-items: center; gap: 3px; padding: 1px 6px; border-radius: 20px; font-size: 0.55rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 5px; align-self: flex-start; }
+        .tool-badge.ferramenta { background: rgba(197,160,89,.15); color: #C5A059; border: 1px solid rgba(197,160,89,.3); }
+        .tool-badge.consulta   { background: rgba(41,128,185,.15); color: #5DADE2; border: 1px solid rgba(41,128,185,.3); }
+        .tools-group { margin-bottom: 0; }
+        .tools-grid { display: grid; gap: 10px; grid-template-columns: repeat(5, 1fr); }
         
         .tool-card {
             background: var(--bg2); 
             border: 1px solid var(--border);
-            border-radius: 16px; 
-            padding: 14px 12px; 
+            border-radius: 12px; 
+            padding: 10px 10px; 
             cursor: pointer;
             text-align: left; 
             font-family: inherit; 
@@ -289,14 +292,14 @@
             transition: border-color .15s, background .15s, transform .15s;
             display: flex;
             flex-direction: column;
-            min-height: 130px;
-            justify-content: space-between;
+            min-height: 108px;
+            justify-content: flex-start;
         }
         .tool-card:hover { border-color: var(--amber); background: var(--bg3); transform: translateY(-2px); }
-        .tool-card-icon { width: 36px; height: 36px; border-radius: 12px; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-        .tool-card-icon .material-symbols-outlined { font-size: 20px; color: var(--amber); }
-        .tool-card-name { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
-        .tool-card-desc { font-size: 0.7rem; color: var(--text3); line-height: 1.35; }
+        .tool-card-icon { width: 28px; height: 28px; border-radius: 8px; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+        .tool-card-icon .material-symbols-outlined { font-size: 16px; color: var(--amber); }
+        .tool-card-name { font-size: 0.8rem; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+        .tool-card-desc { font-size: 0.65rem; color: var(--text3); line-height: 1.3; }
         .welcome-hint { font-size: 0.75rem; color: var(--text3); text-align: center; margin-top: 24px; }
 
         @media (max-width: 1024px) { .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
@@ -432,6 +435,10 @@
             <span class="material-symbols-outlined">show_chart</span>
             <span class="nav-item-label">Fundos Aprovados</span>
         </button>
+        <button class="nav-item" data-name="conglomerado-fgc" data-label="Análise de Renda Fixa" data-url="https://pabloads2020-lang.github.io/Conglomerado-FGC/">
+            <span class="material-symbols-outlined">analytics</span>
+            <span class="nav-item-label">Análise de Renda Fixa</span>
+        </button>
         <div class="sidebar-footer">
             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yh2vkLWrOQ89P0Z9tbaVWCYK-fpN09-euyU64ttgORw8cMgmmSgaDwbyS9UvG8ngrUVJgIntrMtOxnBYCBr1hAPkYQm2xUNrLsdI0hJb0I7Vjz1kgelN8b-IjTJHeuX8xLitouyZumU1cDb_5qciKeK8RKA0Cx3xVCCjv8C-iufLhbYahgAcI3Dkg2cXaQYUYbnnzeEsCQNUhqqYkTG3vsN9QMIX7ji7QQb4eTairjx02qTNg6dHVCLQO6PX3JONpAieSsBYMxulGQ" alt="Pablo B. Freire">
             <div class="user-info">
@@ -449,25 +456,18 @@
                     <h2 class="welcome-title">Hub Financeiro</h2>
                     <p class="welcome-sub">Painel centralizado de ferramentas para análise, rebalanceamento e planejamento de investimentos.</p>
                 </div>
-                <div class="tools-group">
-                    <div class="tools-section-label">Ferramentas</div>
-                    <div class="tools-grid">
-                        <button class="tool-card" data-target="carteiras"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance_wallet</span></div><div class="tool-card-name">Carteira Recomendada</div><div class="tool-card-desc">Visualize a alocação ideal por perfil.</div></button>
-                        <button class="tool-card" data-target="rebalanceamento"><div class="tool-card-icon"><span class="material-symbols-outlined">balance</span></div><div class="tool-card-name">Rebalanceamento</div><div class="tool-card-desc">Calcule os ajustes para reequilibrar.</div></button>
-                        <button class="tool-card" data-target="extrato"><div class="tool-card-icon"><span class="material-symbols-outlined">receipt_long</span></div><div class="tool-card-name">Extrato Analítico</div><div class="tool-card-desc">Analise extratos e movimentações.</div></button>
-                        <button class="tool-card" data-target="extrato-conta"><div class="tool-card-icon"><span class="material-symbols-outlined">receipt_long</span></div><div class="tool-card-name">Extrato Mensal Conta</div><div class="tool-card-desc">Visualize e exporte extratos financeiros.</div></button>
-                        <button class="tool-card" data-target="relatorio"><div class="tool-card-icon"><span class="material-symbols-outlined">description</span></div><div class="tool-card-name">Relatório Mensal</div><div class="tool-card-desc">Consolidado de desempenho mensal.</div></button>
-                        <button class="tool-card" data-target="ips"><div class="tool-card-icon"><span class="material-symbols-outlined">assignment_turned_in</span></div><div class="tool-card-name">Gerador IPS</div><div class="tool-card-desc">Política de Investimentos automática.</div></button>
-                    </div>
-                </div>
-                <div class="tools-group">
-                    <div class="tools-section-label">Consultas</div>
-                    <div class="tools-grid">
-                        <button class="tool-card" data-target="calendario"><div class="tool-card-icon"><span class="material-symbols-outlined">calendar_month</span></div><div class="tool-card-name">Calendário de Vencimentos</div><div class="tool-card-desc">Acompanhe vencimentos via WhatsApp.</div></button>
-                        <button class="tool-card" data-target="emissores"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance</span></div><div class="tool-card-name">Emissores Bancários</div><div class="tool-card-desc">Ratings, scores e indicadores.</div></button>
-                        <button class="tool-card" data-target="credito-privado"><div class="tool-card-icon"><span class="material-symbols-outlined">credit_card</span></div><div class="tool-card-name">Crédito Privado</div><div class="tool-card-desc">Debêntures, CRI/CRA e ativos.</div></button>
-                        <button class="tool-card" data-target="fundos-aprovados"><div class="tool-card-icon"><span class="material-symbols-outlined">show_chart</span></div><div class="tool-card-name">Fundos Aprovados</div><div class="tool-card-desc">Fundos aprovados pelo comitê.</div></button>
-                    </div>
+                <div class="tools-grid">
+                        <button class="tool-card" data-target="carteiras"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance_wallet</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Carteira Recomendada</div><div class="tool-card-desc">Visualize a alocação ideal por perfil.</div></button>
+                        <button class="tool-card" data-target="rebalanceamento"><div class="tool-card-icon"><span class="material-symbols-outlined">balance</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Rebalanceamento</div><div class="tool-card-desc">Calcule os ajustes para reequilibrar.</div></button>
+                        <button class="tool-card" data-target="extrato"><div class="tool-card-icon"><span class="material-symbols-outlined">receipt_long</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Extrato Analítico</div><div class="tool-card-desc">Analise extratos e movimentações.</div></button>
+                        <button class="tool-card" data-target="extrato-conta"><div class="tool-card-icon"><span class="material-symbols-outlined">receipt_long</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Extrato Mensal Conta</div><div class="tool-card-desc">Visualize e exporte extratos financeiros.</div></button>
+                        <button class="tool-card" data-target="relatorio"><div class="tool-card-icon"><span class="material-symbols-outlined">description</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Relatório Mensal</div><div class="tool-card-desc">Consolidado de desempenho mensal.</div></button>
+                        <button class="tool-card" data-target="ips"><div class="tool-card-icon"><span class="material-symbols-outlined">assignment_turned_in</span></div><div class="tool-badge ferramenta">Ferramenta</div><div class="tool-card-name">Gerador IPS</div><div class="tool-card-desc">Política de Investimentos automática.</div></button>
+                        <button class="tool-card" data-target="calendario"><div class="tool-card-icon"><span class="material-symbols-outlined">calendar_month</span></div><div class="tool-badge consulta">Consulta</div><div class="tool-card-name">Calendário de Vencimentos</div><div class="tool-card-desc">Acompanhe vencimentos via WhatsApp.</div></button>
+                        <button class="tool-card" data-target="emissores"><div class="tool-card-icon"><span class="material-symbols-outlined">account_balance</span></div><div class="tool-badge consulta">Consulta</div><div class="tool-card-name">Emissores Bancários</div><div class="tool-card-desc">Ratings, scores e indicadores.</div></button>
+                        <button class="tool-card" data-target="credito-privado"><div class="tool-card-icon"><span class="material-symbols-outlined">credit_card</span></div><div class="tool-badge consulta">Consulta</div><div class="tool-card-name">Crédito Privado</div><div class="tool-card-desc">Debêntures, CRI/CRA e ativos.</div></button>
+                        <button class="tool-card" data-target="fundos-aprovados"><div class="tool-card-icon"><span class="material-symbols-outlined">show_chart</span></div><div class="tool-badge consulta">Consulta</div><div class="tool-card-name">Fundos Aprovados</div><div class="tool-card-desc">Fundos aprovados pelo comitê.</div></button>
+                        <button class="tool-card" data-target="conglomerado-fgc"><div class="tool-card-icon"><span class="material-symbols-outlined">analytics</span></div><div class="tool-badge consulta">Consulta</div><div class="tool-card-name">Análise de Renda Fixa</div><div class="tool-card-desc">Conglomerados, FGC e renda fixa.</div></button>
                 </div>
                 <p class="welcome-hint">Selecione uma ferramenta acima ou pelo menu lateral</p>
             </div>
@@ -516,6 +516,7 @@
         emissores:         { url: "https://pabloads2020-lang.github.io/Emissores-Bancarios/",       label: "Emissores Bancários" },
         "credito-privado": { url: "https://pabloads2020-lang.github.io/Credito-Privado/",           label: "Crédito Privado" },
         "fundos-aprovados":{ url: "https://pabloads2020-lang.github.io/Fundos-Aprovados/",          label: "Fundos Aprovados" },
+        "conglomerado-fgc":{ url: "https://pabloads2020-lang.github.io/Conglomerado-FGC/",             label: "Análise de Renda Fixa" },
     };
 
     let currentApp = null;
