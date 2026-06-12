@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+    <title>HUB Financeiro | Pleno</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:     #0d0f17;
+            --bg2:    #141720;
+            --border: #2a2e3f;
+            --text:   #e1e3ef;
+            --text2:  #9a9eb8;
+            --text3:  #5c6080;
+            --gold:   #f5c842;
+            --amber:  #e0ac2c;
+        }
+
+        html, body {
+            height: 100%;
+            min-height: 100vh;
+            background: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        /* ── CANVAS ── */
+        canvas#bg {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* ── PAGE ── */
+        .page {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        /* ── BADGE ── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            border: 1px solid rgba(245,200,66,.22);
+            border-radius: 100px;
+            padding: 5px 14px 5px 10px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(224,172,44,.85);
+            margin-bottom: 40px;
+            background: rgba(245,200,66,.05);
+            backdrop-filter: blur(4px);
+        }
+        .badge-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--amber);
+            animation: blink 2.6s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+        /* ── WORDMARK ── */
+        .wordmark {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .wm-hub {
+            font-size: clamp(3.4rem, 10vw, 6.2rem);
+            font-weight: 800;
+            letter-spacing: -.05em;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .wm-bar {
+            width: 3px;
+            height: clamp(2.4rem, 7vw, 4.4rem);
+            background: linear-gradient(to bottom, var(--amber) 40%, transparent);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        .wm-fin {
+            font-size: clamp(3.4rem, 10vw, 6.2rem);
+            font-weight: 800;
+            letter-spacing: -.05em;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        /* ── TAGLINE ── */
+        .tagline {
+            font-size: clamp(0.85rem, 2vw, 0.98rem);
+            color: var(--text2);
+            line-height: 1.65;
+            max-width: 440px;
+            margin: 0 auto 44px;
+            font-weight: 400;
+        }
+
+        /* ── CTA ── */
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--amber);
+            color: #1c1100;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 13px 26px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background .15s, transform .15s;
+            letter-spacing: .01em;
+        }
+        .cta:hover { background: var(--gold); transform: translateY(-2px); }
+        .cta svg { transition: transform .2s; }
+        .cta:hover svg { transform: translateX(3px); }
+
+        /* ── FOOTER ── */
+        .footer {
+            position: absolute;
+            bottom: 32px;
+            left: 0; right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .footer-avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,.12);
+            opacity: .7;
+        }
+        .footer-text {
+            font-size: 0.72rem;
+            color: var(--text3);
+            font-weight: 500;
+            letter-spacing: .01em;
+        }
+        .footer-text strong { color: var(--text2); font-weight: 600; }
+
+        @media (max-width: 480px) {
+            .wordmark { gap: 10px; }
+            .footer { bottom: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="page">
+
+    <div class="badge">
+        <span class="badge-dot"></span>
+        Pleno Gestão · Uso Interno
+    </div>
+
+    <div class="wordmark">
+        <span class="wm-hub">HUB</span>
+        <span class="wm-bar"></span>
+        <span class="wm-fin">Financeiro</span>
+    </div>
+
+    <p class="tagline">Painel centralizado de ferramentas para análise, rebalanceamento e planejamento de investimentos.</p>
+
+    <a href="dashboard.html" class="cta">
+        Acessar o painel
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+
+    <footer class="footer">
+        <img class="footer-avatar"
+             src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yh2vkLWrOQ89P0Z9tbaVWCYK-fpN09-euyU64ttgORw8cMgmmSgaDwbyS9UvG8ngrUVJgIntrMtOxnBYCBr1hAPkYQm2xUNrLsdI0hJb0I7Vjz1kgelN8b-IjTJHeuX8xLitouyZumU1cDb_5qciKeK8RKA0Cx3xVCCjv8C-iufLhbYahgAcI3Dkg2cXaQYUYbnnzeEsCQNUhqqYkTG3vsN9QMIX7ji7QQb4eTairjx02qTNg6dHVCLQO6PX3JONpAieSsBYMxulGQ"
+             alt="Pablo B. Freire">
+        <div class="footer-text">Desenvolvido por <strong>Pablo B. Freire</strong> · Pleno Gestão</div>
+    </footer>
+
+</div>
+
+<script>
+// ── Particle field ───────────────────────────────────────────────────────────
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+
+const GOLD  = [245, 200, 66];
+const DIM   = [42,  46,  63];
+const BG    = [13,  15,  23];
+
+let W, H, particles, lines;
+
+function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+}
+
+class Particle {
+    constructor() { this.reset(true); }
+    reset(init) {
+        this.x  = Math.random() * W;
+        this.y  = init ? Math.random() * H : (Math.random() < .5 ? -4 : H + 4);
+        this.vx = (Math.random() - .5) * .28;
+        this.vy = (Math.random() - .5) * .28;
+        this.r  = Math.random() * 1.4 + .4;
+        this.gold = Math.random() < .12;
+        this.alpha = Math.random() * .5 + .2;
+    }
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < -10 || this.x > W + 10 || this.y < -10 || this.y > H + 10) {
+            this.reset(false);
+        }
+    }
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        if (this.gold) {
+            ctx.fillStyle = `rgba(${GOLD[0]},${GOLD[1]},${GOLD[2]},${this.alpha})`;
+        } else {
+            ctx.fillStyle = `rgba(${DIM[0]},${DIM[1]},${DIM[2]},${this.alpha + .3})`;
+        }
+        ctx.fill();
+    }
+}
+
+const DIST = 130;
+
+function init() {
+    const count = Math.min(Math.floor((W * H) / 9000), 120);
+    particles = Array.from({ length: count }, () => new Particle());
+}
+
+function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const a = particles[i], b = particles[j];
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < DIST) {
+                const opacity = (1 - d / DIST) * .12;
+                const isGold = a.gold || b.gold;
+                if (isGold) {
+                    ctx.strokeStyle = `rgba(${GOLD[0]},${GOLD[1]},${GOLD[2]},${opacity * 1.6})`;
+                } else {
+                    ctx.strokeStyle = `rgba(${DIM[0]},${DIM[1]},${DIM[2]},${opacity * 3})`;
+                }
+                ctx.lineWidth = .5;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+// Radial vignette gold glow at top-center
+function drawGlow() {
+    const grd = ctx.createRadialGradient(W / 2, 0, 0, W / 2, 0, H * .65);
+    grd.addColorStop(0,   `rgba(${GOLD[0]},${GOLD[1]},${GOLD[2]},.055)`);
+    grd.addColorStop(.5,  `rgba(${GOLD[0]},${GOLD[1]},${GOLD[2]},.018)`);
+    grd.addColorStop(1,   'rgba(0,0,0,0)');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, W, H);
+}
+
+function frame() {
+    ctx.fillStyle = `rgb(${BG[0]},${BG[1]},${BG[2]})`;
+    ctx.fillRect(0, 0, W, H);
+    drawGlow();
+    drawLines();
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(frame);
+}
+
+window.addEventListener('resize', () => { resize(); init(); });
+resize();
+init();
+frame();
+</script>
+</body>
+</html>
