@@ -74,6 +74,17 @@
             background: var(--amber);
             animation: blink 2.6s ease-in-out infinite;
         }
+        .tagline-dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--amber);
+            vertical-align: middle;
+            margin: 0 6px;
+            position: relative;
+            top: -1px;
+        }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
 
         /* ── WORDMARK ── */
@@ -177,7 +188,8 @@
 
     <div class="badge">
         <span class="badge-dot"></span>
-        Pleno Gestão · Uso Interno
+        Seja bem-vindo ao novo
+        <span class="badge-dot"></span>
     </div>
 
     <div class="wordmark">
@@ -185,9 +197,11 @@
         <span class="wm-bar"></span>
         <span class="wm-fin">Financeiro</span>
     </div>
-
-    <p class="tagline">Painel centralizado de ferramentas para análise, rebalanceamento e planejamento de investimentos.</p>
-
+       
+       <p class="tagline" style="white-space:nowrap;">
+    Painel Centralizado <span class="tagline-dot"></span> Ferramentas Estratégicas <span class="tagline-dot"></span> Mais Eficiência
+</p>
+      
     <a href="dashboard.html" class="cta">
         Acessar o painel
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
