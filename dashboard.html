@@ -26,7 +26,7 @@
             --sidebar-collapsed: 56px;
         }
         body.light {
-            --bg:    #f4f5f7; --bg2: #ffffff; --bg3: #eef0f4;
+            --bg:    #f4f5f7; --bg2: #ffff; --bg3: #eef0f4;
             --border:#d4d8e2; --text: #1a1d2e; --text2: #4a4f6a;
             --text3: #8a90a8; --gold: #b8860b; --amber: #c47d00;
         }
@@ -50,7 +50,7 @@
             height: 100vh;
         }
 
-        /* ===== SIDEBAR ===== */
+        /* ==== SIDEBAR ==== */
         .sidebar {
             width: var(--sidebar-w);
             flex-shrink: 0;
@@ -313,14 +313,35 @@
             transition: opacity .18s;
             pointer-events: none;
         }
+        /* Ferramenta hover — âmbar (padrão) */
         .tool-card:hover {
             border-color: rgba(245,200,66,.3);
             border-top-color: var(--amber);
             background: var(--bg3);
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0,0,0,.3);
+            box-shadow: 0 8px 28px rgba(0,0,0,.3), 0 0 20px rgba(224,172,44,.09);
         }
         .tool-card:hover::after { opacity: 1; }
+
+        /* Consulta hover — azul */
+        .tool-card[data-badge="consulta"]:hover {
+            border-color: rgba(41,128,185,.38);
+            border-top-color: #2980B9;
+            box-shadow: 0 8px 28px rgba(0,0,0,.3), 0 0 20px rgba(41,128,185,.12);
+        }
+        .tool-card[data-badge="consulta"]:hover::after {
+            background: linear-gradient(135deg, rgba(41,128,185,.07) 0%, transparent 60%);
+        }
+
+        /* Botão i — cor herdada do tipo */
+        .tool-card[data-badge="consulta"]:hover .tool-info-btn {
+            border-color: rgba(41,128,185,.4);
+        }
+        .tool-card[data-badge="consulta"] .tool-info-btn:hover {
+            background: rgba(41,128,185,.12);
+            border-color: rgba(41,128,185,.55);
+            color: #5DADE2;
+        }
         .tool-card-header {
             display: flex;
             align-items: flex-start;
@@ -470,6 +491,158 @@
                 top: 0;
             }
         }
+
+        /* -------------------------------------------------------------------
+           Botão "i" + modal centralizado
+           ------------------------------------------------------------------- */
+
+        .tool-card { position: relative; }
+
+        .tool-info-btn {
+            position: absolute;
+            top: 11px; right: 11px;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text3);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity .15s, background .15s, border-color .15s, color .15s;
+            z-index: 4;
+            padding: 0;
+            font-size: 11px;
+            font-style: italic;
+            font-weight: 700;
+            font-family: 'DM Sans', sans-serif;
+            line-height: 1;
+        }
+        .tool-card:hover .tool-info-btn { opacity: 1; }
+        .tool-info-btn:hover {
+            background: rgba(245,200,66,.12);
+            border-color: rgba(245,200,66,.45);
+            color: var(--gold);
+        }
+
+        /* Modal overlay */
+        .tool-modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(6,8,14,.7);
+            backdrop-filter: blur(7px);
+            -webkit-backdrop-filter: blur(7px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            z-index: 120;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .2s ease;
+        }
+        .tool-modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-glow { display: none; }
+
+        .tool-modal {
+            width: min(440px, 100%);
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-top: 2px solid var(--amber);
+            border-radius: 16px;
+            padding: 26px 26px 22px;
+            box-shadow: 0 30px 80px rgba(0,0,0,.6);
+            transform: translateY(10px) scale(.97);
+            opacity: 0;
+            transition: transform .22s cubic-bezier(.2,.9,.3,1), opacity .22s;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .tool-modal-overlay.open .tool-modal {
+            transform: none;
+            opacity: 1;
+        }
+        .tool-modal::after { display: none; }
+        .tool-modal::before { display: none; }
+
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-right: 4px;
+        }
+        .modal-icon {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            background: rgba(197,160,89,.1);
+            border: 1px solid rgba(197,160,89,.2);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .modal-icon i { font-size: 18px; color: var(--amber); }
+        .modal-title {
+            font-size: .93rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.2;
+        }
+        .modal-sub {
+            font-size: .67rem;
+            color: var(--text3);
+            margin-top: 3px;
+            font-weight: 500;
+        }
+        .modal-divider { height: 1px; background: var(--border); margin-bottom: 14px; }
+        .modal-body {
+            color: var(--text2);
+            line-height: 1.68;
+            font-size: .82rem;
+            white-space: pre-wrap;
+        }
+        .modal-footer {
+            margin-top: 20px;
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .close-modal-btn {
+            height: 34px; padding: 0 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text2);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .75rem; font-weight: 600;
+            cursor: pointer;
+            transition: background .12s, border-color .12s;
+        }
+        .close-modal-btn:hover { background: var(--bg3); border-color: rgba(255,255,255,.1); }
+        .open-tool-btn {
+            height: 34px; padding: 0 16px;
+            border-radius: 8px;
+            border: 1px solid var(--amber);
+            background: rgba(224,172,44,.1);
+            color: var(--gold);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .75rem; font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+            transition: background .15s, box-shadow .15s;
+        }
+        .open-tool-btn:hover { background: rgba(224,172,44,.2); box-shadow: 0 0 14px rgba(224,172,44,.2); }
+
+        @media (max-width: 540px) {
+            .tool-info-btn { opacity: 1; }
+            .tool-modal { border-radius: 12px; padding: 20px; }
+        }
+
     </style>
 </head>
 <body>
@@ -548,9 +721,9 @@
                 <!-- Hero -->
                 <div class="welcome-hero">
                     <div class="welcome-wordmark">
-                        <span class="ww-hub">HUB</span>
-                        <span class="ww-bar"></span>
-                        <span class="ww-fin">Financeiro</span>
+                    <span class="ww-hub">HUB</span>
+                    <span class="ww-bar"></span>
+                    <span class="ww-fin">Financeiro</span>
                     </div>
                     <p class="welcome-sub">Selecione uma ferramenta ou consulta para começar.</p>
                 </div>
@@ -558,31 +731,43 @@
                 <!-- Consultas -->
                 <div class="tools-group">
                     <div class="section-divider">
-                        <span class="section-divider-label">Consultas</span>
-                        <span class="section-divider-line"></span>
+                    <span class="section-divider-label">Consultas</span>
+                    <span class="section-divider-line"></span>
                     </div>
                     <div class="tools-grid">
-                        <button class="tool-card" data-target="carteiras"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-wallet"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Carteira Recomendada</div></div></div><div class="tool-card-desc">Visualize as carteiras recomendadas pelo comitê de alocação.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></button>
-                        <button class="tool-card" data-target="fundos-aprovados"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-trend-up"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Fundos Aprovados</div></div></div><div class="tool-card-desc">Consulte fundos aprovados pelo research.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></button>
-                        <button class="tool-card" data-target="emissores"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-bank"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Emissores Bancários</div></div></div><div class="tool-card-desc">Consulte ratings, scores, indicadores e emissores aprovados.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></button>
-                        <button class="tool-card" data-target="credito-privado"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-credit-card"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Crédito Privado</div></div></div><div class="tool-card-desc">Consulte emissores aprovados pelo research.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></button>
+                    <div class="tool-card" data-target="carteiras" data-full-desc="Visualize as carteiras recomendadas pelo comitê de alocação, organizadas por perfil de risco — Conservador, Moderado e Arrojado." data-badge="consulta" data-badge-label="Consulta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-wallet"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Carteira Recomendada</div></div></div><div class="tool-card-desc">Visualize as carteiras recomendadas pelo comitê de alocação.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></div>
+                    <div class="tool-card" data-target="fundos-aprovados" data-full-desc="Acesse a lista atualizada de fundos de investimento aprovados pelo research ou consulte individualmente pelo nome do fundo." data-badge="consulta" data-badge-label="Consulta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-trend-up"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Fundos Aprovados</div></div></div><div class="tool-card-desc">Consulte fundos aprovados pelo research.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></div>
+                    <div class="tool-card" data-target="emissores" data-full-desc="Consulte os emissores bancários aprovados e reprovados pelo research, com ratings das agências, scores internos e principais indicadores financeiros. Auxilia na seleção de emissores aprovados." data-badge="consulta" data-badge-label="Consulta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-bank"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Emissores Bancários</div></div></div><div class="tool-card-desc">Consulte ratings, scores, indicadores e emissores aprovados.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></div>
+                    <div class="tool-card" data-target="credito-privado" data-full-desc="Consulte os emissores de crédito privado (debêntures, CRIs, CRAs) aprovados pelo research. Facilita a indicação de ativos de crédito privado para os clientes." data-badge="consulta" data-badge-label="Consulta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-credit-card"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Crédito Privado</div></div></div><div class="tool-card-desc">Consulte emissores aprovados pelo research.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></div>
                     </div>
                 </div>
 
                 <!-- Ferramentas -->
                 <div class="tools-group">
                     <div class="section-divider">
-                        <span class="section-divider-label">Ferramentas</span>
-                        <span class="section-divider-line"></span>
+                    <span class="section-divider-label">Ferramentas</span>
+                    <span class="section-divider-line"></span>
                     </div>
                     <div class="tools-grid">
-                        <button class="tool-card" data-target="extrato-conta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-receipt"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Extrato Mensal Conta</div></div></div><div class="tool-card-desc">Gere um extrato do fluxo de saídas e entradas no mês.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></button>
-                        <button class="tool-card" data-target="rebalanceamento"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-scales"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Rebalanceamento</div></div></div><div class="tool-card-desc">Use o XPerformance para verificar a aderência da carteira por classe de ativo.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></button>
-                        <button class="tool-card" data-target="extrato"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-magnifying-glass-plus"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Extrato Analítico</div></div></div><div class="tool-card-desc">Compare os ativos do cliente com os ativos recomendados.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></button>
-                        <button class="tool-card" data-target="relatorio"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-file-text"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Relatório Mensal</div></div></div><div class="tool-card-desc">Texto de acompanhamento mensal para clientes.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></button>
-                        <button class="tool-card" data-target="ips"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-clipboard-text"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Gerador IPS</div></div></div><div class="tool-card-desc">Política de Investimentos automática.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></button>
-                        <button class="tool-card" data-target="calendario"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-calendar-blank"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Calendário de Vencimentos</div></div></div><div class="tool-card-desc">Acompanhe os vencimentos de renda fixa e fundos.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></button>
-                        <button class="tool-card" data-target="conglomerado-fgc"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-chart-bar"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Análise de Renda Fixa</div></div></div><div class="tool-card-desc">Consulte emissores aprovados/reprovados e limites do FGC.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></button>
+                    <div class="tool-card" data-target="extrato-conta" data-full-desc="Gera um extrato consolidado do fluxo financeiro mensal da conta do cliente — entradas e saídas. O resultado é um acompanhamento profissional da movimentação mensal da conta para ser enviado ao cliente." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-receipt"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Extrato Mensal Conta</div></div></div><div class="tool-card-desc">Gere um extrato do fluxo de saídas e entradas no mês.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
+                    <div class="tool-card" data-target="rebalanceamento" data-full-desc="Input: PDF do XPerformance. 
+
+Carregue o PDF do XPerformance para avaliar a carteira e ver as sugestões de rebalanceamento de acordo com o perfil do cliente" data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-scales"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Rebalanceamento</div></div></div><div class="tool-card-desc">Use o XPerformance para verificar a aderência da carteira por classe de ativo.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
+                    <div class="tool-card" data-target="extrato" data-full-desc="Insira os ativos e o caixa/aporte do cliente para avaliar a aderência à carteira recomendada e ver as sugestões de rebalanceamento por classe e por ativo individual." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-magnifying-glass-plus"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Extrato Analítico</div></div></div><div class="tool-card-desc">Compare os ativos do cliente com os ativos recomendados.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
+                    <div class="tool-card" data-target="relatorio" data-full-desc="Inputs: Resumo mensal do mercado e PDF XPerformance.
+ 
+Gere o acompanhamento mensal com o panorama de mercado (local e global) e o resultado detalhado da carteira do cliente por classe de ativo." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-file-text"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Relatório Mensal</div></div></div><div class="tool-card-desc">Texto de acompanhamento mensal para clientes.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
+                    <div class="tool-card" data-target="ips" data-full-desc="Input: Texto resumo da Anamnese.
+
+Gera o texto personalizado sobre o cliente a ser preenchido no documento de Política de Investimentos (IPS) considerando o perfil de risco, objetivos e horizonte de investimento." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-clipboard-text"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Gerador IPS</div></div></div><div class="tool-card-desc">Política de Investimentos automática.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
+                    <div class="tool-card" data-target="calendario" data-full-desc="Inputs aba Vencimentos Renda Fixa: Relatório Posições (Excel da XP) e planilha com nomes e códigos dos clientes. 
+
+Inputs Aba Vencimentos Fundos de Investimento: Relatório Movimentações Fundos (Excel da XP) e planilha com nomes e códigos dos clientes.
+
+Monitore os vencimentos (Renda Fixa, Tesouro e COE) e o fluxo de aplicações e resgates dos fundos de investimento." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-calendar-blank"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Calendário de Vencimentos</div></div></div><div class="tool-card-desc">Acompanhe os vencimentos de renda fixa e fundos.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
+                    <div class="tool-card" data-target="conglomerado-fgc" data-full-desc="Input: Relatório Posições (Excel da XP) e a planilha com nomes e códigos dos clientes.
+
+Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores aprovados." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-chart-bar"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Análise de Renda Fixa</div></div></div><div class="tool-card-desc">Consulte emissores aprovados/reprovados e limites do FGC.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
                     </div>
                 </div>
 
@@ -604,19 +789,13 @@
 </button>
 
 <script>
-    // ── Proteção contra sidebar duplicada ─────────────────────────────────────
-    // Se esta página for carregada DENTRO de um iframe (ex.: botão "Voltar ao
-    // início" de uma ferramenta filha), escapa para o contexto pai em vez de
-    // renderizar o hub dentro do frame.
+    // ── Proteção contra sidebar duplicada ────
     if (window.self !== window.top) {
         try {
-            // Tenta navegar o frame pai de volta ao hub
             window.top.location.href = window.location.href;
         } catch(e) {
-            // Cross-origin: pede via postMessage
             window.parent.postMessage({ action: 'hubNavigate', target: 'home' }, '*');
         }
-        // Para tudo – não renderiza nada neste frame
         document.documentElement.innerHTML = '';
         throw new Error('Hub carregado em iframe – redirecionando para o pai.');
     }
@@ -627,7 +806,7 @@
         extrato:           { url: "https://pabloads2020-lang.github.io/Extrato-Analitico/",         label: "Extrato Analítico" },
         "extrato-conta":   { url: "https://pabloads2020-lang.github.io/Extrato-Mensal-Conta/",     label: "Extrato Mensal Conta" },
         relatorio:         { url: "https://pabloads2020-lang.github.io/Relatorio-mensal/",          label: "Relatório Mensal" },
-        ips:               { url: "https://pabloads2020-lang.github.io/IPS/",                       label: "Gerador IPS" },
+        ips:               { url: "https://pabloads2020-lang.github.io/IPS/",                    label: "Gerador IPS" },
         calendario:        { url: "https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/", label: "Calendário de Vencimentos" },
         emissores:         { url: "https://pabloads2020-lang.github.io/Emissores-Bancarios/",       label: "Emissores Bancários" },
         "credito-privado": { url: "https://pabloads2020-lang.github.io/Credito-Privado/",           label: "Crédito Privado" },
@@ -721,15 +900,7 @@
             else loadApp(name);
         });
     });
-    document.querySelectorAll('.tool-card').forEach(card => {
-        card.addEventListener('click', () => loadApp(card.dataset.target));
-    });
-
-    // Tema escuro/claro (opcional – removi o botão, mas deixei o suporte via localStorage se quiser adicionar depois)
-    // Se quiser reativar o tema, adicione um botão flutuante ou no footer.
-
-    // ── Listener para mensagens das ferramentas filhas ────────────────────────
-    // Ferramentas podem usar: window.parent.postMessage({ action: 'hubNavigate', target: 'home' }, '*')
+    // listener from tools
     window.addEventListener('message', (e) => {
         if (!e.data || e.data.action !== 'hubNavigate') return;
         const target = e.data.target;
@@ -738,6 +909,101 @@
         } else if (target && APPS[target]) {
             loadApp(target);
         }
+    });
+
+    document.querySelectorAll('.tool-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.tool-info-btn')) return;
+            loadApp(card.dataset.target);
+        });
+    });
+
+    // ── Modal de detalhes ────────────────────────────────────────────────────
+    // Cria overlay + modal no DOM
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'tool-modal-overlay';
+    modalOverlay.innerHTML = `
+        <div class="tool-modal" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <div class="modal-icon" id="mIcon"></div>
+                <div>
+                    <div class="modal-title" id="mTitle"></div>
+                    <div class="modal-sub" id="mSub"></div>
+                </div>
+            </div>
+            <div class="modal-divider"></div>
+            <div class="modal-body" id="mBody"></div>
+            <div class="modal-footer">
+                <div id="mBadge"></div>
+                <div style="display:flex;gap:8px;">
+                    <button class="close-modal-btn" id="mClose">Fechar</button>
+                    <button class="open-tool-btn" id="mOpen">
+                        <i class="ph-light ph-arrow-square-out" style="font-size:14px;pointer-events:none;"></i>
+                        Abrir ferramenta
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modalOverlay);
+
+    let modalTarget = null;
+
+    function openModal(card) {
+        modalTarget = card.dataset.target;
+        const tipo = card.dataset.badge || 'ferramenta'; // 'consulta' | 'ferramenta'
+        const isConsulta = tipo === 'consulta';
+        const accentColor  = isConsulta ? '#2980B9' : 'var(--amber)';
+        const accentColorI = isConsulta ? '#5DADE2' : 'var(--amber)';
+
+        const iconEl = card.querySelector('.tool-card-icon i');
+        const iconClass = iconEl ? iconEl.className : 'ph-light ph-circle';
+        document.getElementById('mIcon').innerHTML = `<i class="${iconClass}" style="font-size:18px;color:${accentColorI};"></i>`;
+        document.getElementById('mTitle').textContent = card.querySelector('.tool-card-name')?.textContent || '';
+        document.getElementById('mSub').textContent   = card.querySelector('.tool-platform')?.textContent || '';
+        document.getElementById('mBody').textContent  = card.getAttribute('data-full-desc') || card.querySelector('.tool-card-desc')?.textContent || '';
+        const badgeEl = card.querySelector('.tool-badge');
+        document.getElementById('mBadge').innerHTML = badgeEl ? badgeEl.outerHTML : '';
+
+        // Ajusta cor do topo do modal e botão de abrir conforme tipo
+        const modal = modalOverlay.querySelector('.tool-modal');
+        modal.style.borderTopColor = accentColor;
+        const openBtn = document.getElementById('mOpen');
+        if (isConsulta) {
+            openBtn.style.borderColor = '#2980B9';
+            openBtn.style.background  = 'rgba(41,128,185,.12)';
+            openBtn.style.color       = '#5DADE2';
+        } else {
+            openBtn.style.borderColor = 'var(--amber)';
+            openBtn.style.background  = 'rgba(224,172,44,.1)';
+            openBtn.style.color       = 'var(--gold)';
+        }
+
+        modalOverlay.classList.add('open');
+    }
+
+    function closeModal() {
+        modalOverlay.classList.remove('open');
+        modalTarget = null;
+    }
+
+    document.getElementById('mClose').addEventListener('click', closeModal);
+    document.getElementById('mOpen').addEventListener('click', () => {
+        const t = modalTarget;
+        closeModal();
+        if (t) loadApp(t);
+    });
+    modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Injeta botão "i" em cada card
+    document.querySelectorAll('.tool-card').forEach(card => {
+        const btn = document.createElement('button');
+        btn.className = 'tool-info-btn';
+        btn.setAttribute('aria-label', 'Informações');
+        btn.textContent = 'i';
+        btn.addEventListener('click', e => { e.stopPropagation(); openModal(card); });
+        card.appendChild(btn);
     });
 
     showHome();
