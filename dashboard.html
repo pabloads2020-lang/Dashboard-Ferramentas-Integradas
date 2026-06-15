@@ -61,6 +61,15 @@
             overflow: hidden;
             z-index: 50;
             position: relative;
+            transition: width .3s cubic-bezier(.4,0,.2,1),
+                        opacity .3s ease,
+                        transform .3s cubic-bezier(.4,0,.2,1);
+        }
+        /* Desktop collapsed — sidebar oculta */
+        .sidebar.collapsed {
+            width: 0 !important;
+            opacity: 0;
+            pointer-events: none;
         }
         .nav-section-label {
             font-size: 8px;
@@ -247,12 +256,152 @@
             margin: 0 auto;
             line-height: 1.55;
         }
-        .section-divider {
+        /* ── Hero topbar ── */
+        .hero-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+            gap: 16px;
+        }
+        .hero-identity {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+        .hero-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid rgba(197,160,89,.35);
+            flex-shrink: 0;
+        }
+        .hero-greeting {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            text-align: left;
+        }
+        .hero-greeting-name {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1;
+        }
+        .hero-greeting-role {
+            font-size: .67rem;
+            color: var(--text3);
+            font-weight: 500;
+        }
+
+        /* ── Sidebar toggle button ── */
+        .sidebar-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 6px 12px 6px 8px;
+            cursor: pointer;
+            transition: border-color .18s, background .18s;
+        }
+        .sidebar-toggle-btn:hover {
+            border-color: rgba(197,160,89,.35);
+            background: rgba(197,160,89,.05);
+        }
+        /* Track (pill) */
+        .stb-track {
+            width: 28px;
+            height: 16px;
+            border-radius: 8px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            position: relative;
+            flex-shrink: 0;
+            transition: background .2s, border-color .2s;
+        }
+        /* Thumb */
+        .stb-thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text3);
+            transition: transform .2s cubic-bezier(.4,0,.2,1), background .2s;
+        }
+        /* Estado ATIVO (sidebar visível) */
+        .sidebar-toggle-btn.active .stb-track {
+            background: rgba(224,172,44,.18);
+            border-color: rgba(224,172,44,.4);
+        }
+        .sidebar-toggle-btn.active .stb-thumb {
+            transform: translateX(12px);
+            background: var(--amber);
+        }
+        .stb-label {
+            font-size: .72rem;
+            font-weight: 600;
+            color: var(--text3);
+            font-family: 'DM Sans', sans-serif;
+            transition: color .18s;
+            white-space: nowrap;
+        }
+        .sidebar-toggle-btn.active .stb-label { color: var(--gold); }
+
+        @media (max-width: 768px) {
+            .sidebar-toggle-btn { display: none; }
+        }
             display: flex;
             align-items: center;
             gap: 14px;
             margin-bottom: 20px;
         }
+        /* ── Rodapé de assinatura (centralizado) ── */
+        .creator-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 56px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            width: 100%;
+        }
+        .creator-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(197,160,89,.3);
+            cursor: pointer;
+            transition: border-color .18s, box-shadow .18s;
+            display: block;
+            margin: 0 auto;
+        }
+        .creator-avatar:hover {
+            border-color: rgba(197,160,89,.7);
+            box-shadow: 0 0 16px rgba(224,172,44,.15);
+        }
+        .creator-name {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--text2);
+            letter-spacing: .01em;
+            text-align: center;
+        }
+        .creator-role {
+            font-size: .67rem;
+            color: var(--text3);
+            font-weight: 500;
+            text-align: center;
+        }
+
         .section-divider-line { flex: 1; height: 1px; background: var(--border); }
         .section-divider-label {
             font-size: 0.65rem;
@@ -313,29 +462,23 @@
             transition: opacity .18s;
             pointer-events: none;
         }
-        /* Ferramenta hover — âmbar (padrão) */
         .tool-card:hover {
             border-color: rgba(245,200,66,.3);
             border-top-color: var(--amber);
             background: var(--bg3);
             transform: translateY(-3px);
-            box-shadow: 0 8px 28px rgba(0,0,0,.3), 0 0 20px rgba(224,172,44,.09);
+            box-shadow: 0 8px 24px rgba(0,0,0,.3), 0 0 20px rgba(224,172,44,.09);
         }
         .tool-card:hover::after { opacity: 1; }
 
-        /* Consulta hover — azul */
+        /* Consulta cards — hover azul */
         .tool-card[data-badge="consulta"]:hover {
             border-color: rgba(41,128,185,.38);
             border-top-color: #2980B9;
-            box-shadow: 0 8px 28px rgba(0,0,0,.3), 0 0 20px rgba(41,128,185,.12);
+            box-shadow: 0 8px 24px rgba(0,0,0,.3), 0 0 20px rgba(41,128,185,.12);
         }
         .tool-card[data-badge="consulta"]:hover::after {
             background: linear-gradient(135deg, rgba(41,128,185,.07) 0%, transparent 60%);
-        }
-
-        /* Botão i — cor herdada do tipo */
-        .tool-card[data-badge="consulta"]:hover .tool-info-btn {
-            border-color: rgba(41,128,185,.4);
         }
         .tool-card[data-badge="consulta"] .tool-info-btn:hover {
             background: rgba(41,128,185,.12);
@@ -720,6 +863,16 @@
 
                 <!-- Hero -->
                 <div class="welcome-hero">
+                    <!-- Topbar: saudação + avatar + toggle sidebar -->
+                    <div class="hero-topbar">
+                        <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Mostrar/ocultar menu lateral">
+                            <span class="stb-track">
+                                <span class="stb-thumb"></span>
+                            </span>
+                            <span class="stb-label" id="sidebarToggleLabel">Menu</span>
+                        </button>
+                    </div>
+
                     <div class="welcome-wordmark">
                     <span class="ww-hub">HUB</span>
                     <span class="ww-bar"></span>
@@ -755,7 +908,7 @@
 Carregue o PDF do XPerformance para avaliar a carteira e ver as sugestões de rebalanceamento de acordo com o perfil do cliente" data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-scales"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Rebalanceamento</div></div></div><div class="tool-card-desc">Use o XPerformance para verificar a aderência da carteira por classe de ativo.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
                     <div class="tool-card" data-target="extrato" data-full-desc="Insira os ativos e o caixa/aporte do cliente para avaliar a aderência à carteira recomendada e ver as sugestões de rebalanceamento por classe e por ativo individual." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-magnifying-glass-plus"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Extrato Analítico</div></div></div><div class="tool-card-desc">Compare os ativos do cliente com os ativos recomendados.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
                     <div class="tool-card" data-target="relatorio" data-full-desc="Inputs: Resumo mensal do mercado e PDF XPerformance.
- 
+
 Gere o acompanhamento mensal com o panorama de mercado (local e global) e o resultado detalhado da carteira do cliente por classe de ativo." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-file-text"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Relatório Mensal</div></div></div><div class="tool-card-desc">Texto de acompanhamento mensal para clientes.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
                     <div class="tool-card" data-target="ips" data-full-desc="Input: Texto resumo da Anamnese.
 
@@ -769,6 +922,13 @@ Monitore os vencimentos (Renda Fixa, Tesouro e COE) e o fluxo de aplicações e 
 
 Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores aprovados." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-chart-bar"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Análise de Renda Fixa</div></div></div><div class="tool-card-desc">Consulte emissores aprovados/reprovados e limites do FGC.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
                     </div>
+                </div>
+
+                <!-- Assinatura do criador (centralizada) -->
+                <div class="creator-footer">
+                    <img class="creator-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yh2vkLWrOQ89P0Z9tbaVWCYK-fpN09-euyU64ttgORw8cMgmmSgaDwbyS9UvG8ngrUVJgIntrMtOxnBYCBr1hAPkYQm2xUNrLsdI0hJb0I7Vjz1kgelN8b-IjTJHeuX8xLitouyZumU1cDb_5qciKeK8RKA0Cx3xVCCjv8C-iufLhbYahgAcI3Dkg2cXaQYUYbnnzeEsCQNUhqqYkTG3vsN9QMIX7ji7QQb4eTairjx02qTNg6dHVCLQO6PX3JONpAieSsBYMxulGQ" alt="Pablo B. Freire" onclick="window.location.href='index.html'" title="Voltar à página inicial">
+                    <div class="creator-name">Pablo B. Freire</div>
+                    <div class="creator-role">Criador · Consultor de Investimentos</div>
                 </div>
 
             </div>
@@ -951,12 +1111,11 @@ Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores
 
     function openModal(card) {
         modalTarget = card.dataset.target;
-        const tipo = card.dataset.badge || 'ferramenta'; // 'consulta' | 'ferramenta'
-        const isConsulta = tipo === 'consulta';
+        const isConsulta   = card.dataset.badge === 'consulta';
         const accentColor  = isConsulta ? '#2980B9' : 'var(--amber)';
         const accentColorI = isConsulta ? '#5DADE2' : 'var(--amber)';
 
-        const iconEl = card.querySelector('.tool-card-icon i');
+        const iconEl    = card.querySelector('.tool-card-icon i');
         const iconClass = iconEl ? iconEl.className : 'ph-light ph-circle';
         document.getElementById('mIcon').innerHTML = `<i class="${iconClass}" style="font-size:18px;color:${accentColorI};"></i>`;
         document.getElementById('mTitle').textContent = card.querySelector('.tool-card-name')?.textContent || '';
@@ -965,19 +1124,13 @@ Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores
         const badgeEl = card.querySelector('.tool-badge');
         document.getElementById('mBadge').innerHTML = badgeEl ? badgeEl.outerHTML : '';
 
-        // Ajusta cor do topo do modal e botão de abrir conforme tipo
-        const modal = modalOverlay.querySelector('.tool-modal');
+        // Borda superior e botão "Abrir" no tom do tipo
+        const modal   = modalOverlay.querySelector('.tool-modal');
         modal.style.borderTopColor = accentColor;
         const openBtn = document.getElementById('mOpen');
-        if (isConsulta) {
-            openBtn.style.borderColor = '#2980B9';
-            openBtn.style.background  = 'rgba(41,128,185,.12)';
-            openBtn.style.color       = '#5DADE2';
-        } else {
-            openBtn.style.borderColor = 'var(--amber)';
-            openBtn.style.background  = 'rgba(224,172,44,.1)';
-            openBtn.style.color       = 'var(--gold)';
-        }
+        openBtn.style.borderColor = accentColor;
+        openBtn.style.background  = isConsulta ? 'rgba(41,128,185,.12)' : 'rgba(224,172,44,.1)';
+        openBtn.style.color       = accentColorI;
 
         modalOverlay.classList.add('open');
     }
@@ -1007,6 +1160,28 @@ Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores
     });
 
     showHome();
+
+    // ── Sidebar toggle ────────────────────────────────────────────────────────
+    const sidebarEl   = document.getElementById('sidebar');
+    const toggleBtn   = document.getElementById('sidebarToggleBtn');
+    // Lê preferência salva; padrão = OCULTO (abertura mais clean)
+    const initVisible = localStorage.getItem('hubSidebarOpen') === 'true';
+
+    function setSidebar(visible, save) {
+        if (visible) {
+            sidebarEl.classList.remove('collapsed');
+            toggleBtn.classList.add('active');
+        } else {
+            sidebarEl.classList.add('collapsed');
+            toggleBtn.classList.remove('active');
+        }
+        if (save !== false) localStorage.setItem('hubSidebarOpen', visible);
+    }
+
+    setSidebar(initVisible, false);
+    toggleBtn.addEventListener('click', () => {
+        setSidebar(sidebarEl.classList.contains('collapsed'));
+    });
 </script>
 </body>
 </html>
