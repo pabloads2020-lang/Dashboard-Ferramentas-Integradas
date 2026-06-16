@@ -127,6 +127,14 @@
             font-weight: 400;
         }
 
+        /* ── CONTENT WRAPPER ── */
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 80px; /* compensa altura do footer para centralização visual real */
+        }
+
         /* ── CTA ── */
         .cta {
             display: inline-flex;
@@ -186,6 +194,7 @@
 
 <div class="page">
 
+    <div class="content">
     <div class="badge">
         <span class="badge-dot"></span>
         Seja bem-vindo ao novo
@@ -208,6 +217,7 @@
             <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     </a>
+    </div>
 
     <footer class="footer">
         <img class="footer-avatar"
