@@ -792,7 +792,7 @@
 
 <div class="layout">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar collapsed" id="sidebar">
         <div class="nav-section-label" style="margin-top: 6px;">MENU</div>
         <button class="nav-item active" data-name="home" data-label="Início" data-url="">
             <i class="ph-light ph-house" style="min-width:56px;font-size:18px;text-align:center;"></i>
@@ -1184,7 +1184,12 @@ Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores
         if (save !== false) localStorage.setItem('hubSidebarOpen', visible);
     }
 
+    // Aplica o estado inicial sem animação para evitar flash/slide na carga
+    sidebarEl.style.transition = 'none';
     setSidebar(initVisible, false);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        sidebarEl.style.transition = '';
+    }));
     toggleBtn.addEventListener('click', () => {
         setSidebar(sidebarEl.classList.contains('collapsed'));
     });
