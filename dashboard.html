@@ -71,6 +71,17 @@
             opacity: 0;
             pointer-events: none;
         }
+        .sidebar-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-thumb:hover { background: var(--text3); }
         .nav-section-label {
             font-size: 8px;
             font-weight: 700;
@@ -793,6 +804,7 @@
 <div class="layout">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <aside class="sidebar collapsed" id="sidebar">
+        <div class="sidebar-scroll">
         <div class="nav-section-label" style="margin-top: 6px;">MENU</div>
         <button class="nav-item active" data-name="home" data-label="Início" data-url="">
             <i class="ph-light ph-house" style="min-width:56px;font-size:18px;text-align:center;"></i>
@@ -820,6 +832,10 @@
             <span class="nav-item-label">Consulta Conglomerados</span>
         </button>
         <div class="nav-section-label">FERRAMENTAS</div>
+        <button class="nav-item" data-name="monitor-saida-fundos" data-label="Monitor de Saída — Fundos" data-url="https://pabloads2020-lang.github.io/Monitor-de-Saida-Fundos/">
+            <i class="ph-light ph-trend-down" style="min-width:56px;font-size:18px;text-align:center;"></i>
+            <span class="nav-item-label">Monitor de Saída — Fundos</span>
+        </button>
         <button class="nav-item" data-name="extrato-conta" data-label="Extrato Mensal Conta" data-url="https://pabloads2020-lang.github.io/Extrato-Mensal-Conta/">
             <i class="ph-light ph-receipt" style="min-width:56px;font-size:18px;text-align:center;"></i>
             <span class="nav-item-label">Extrato Mensal Conta</span>
@@ -848,6 +864,7 @@
             <i class="ph-light ph-chart-bar" style="min-width:56px;font-size:18px;text-align:center;"></i>
             <span class="nav-item-label">Análise de Renda Fixa</span>
         </button>
+        </div><!-- /sidebar-scroll -->
         <div class="sidebar-footer">
     <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yh2vkLWrOQ89P0Z9tbaVWCYK-fpN09-euyU64ttgORw8cMgmmSgaDwbyS9UvG8ngrUVJgIntrMtOxnBYCBr1hAPkYQm2xUNrLsdI0hJb0I7Vjz1kgelN8b-IjTJHeuX8xLitouyZumU1cDb_5qciKeK8RKA0Cx3xVCCjv8C-iufLhbYahgAcI3Dkg2cXaQYUYbnnzeEsCQNUhqqYkTG3vsN9QMIX7ji7QQb4eTairjx02qTNg6dHVCLQO6PX3JONpAieSsBYMxulGQ"
          alt="Voltar à página inicial"
@@ -907,6 +924,7 @@
                     <span class="section-divider-line"></span>
                     </div>
                     <div class="tools-grid">
+                    <div class="tool-card" data-target="monitor-saida-fundos" data-full-desc="Rastreie quais clientes possuem fundos com recomendação de saída pelo comitê de alocações. Carregue o excel Relatório Posições da XP e a base de clientes com nome e código — o sistema identifica e exporta a lista de clientes expostos ao fundo selecionado." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-trend-down"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Monitor de Saída — Fundos</div></div></div><div class="tool-card-desc">Rastreie clientes com fundos recomendados para saída pelo comitê de alocações.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
                     <div class="tool-card" data-target="extrato-conta" data-full-desc="Gera um extrato consolidado do fluxo financeiro mensal da conta do cliente — entradas e saídas. O resultado é um acompanhamento profissional da movimentação mensal da conta para ser enviado ao cliente." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-receipt"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Extrato Mensal Conta</div></div></div><div class="tool-card-desc">Gere um extrato do fluxo de saídas e entradas no mês.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
                     <div class="tool-card" data-target="rebalanceamento" data-full-desc="Input: PDF do XPerformance. 
 
@@ -977,6 +995,7 @@ Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores
         "credito-privado": { url: "https://pabloads2020-lang.github.io/Credito-Privado/",           label: "Crédito Privado" },
         "fundos-aprovados":{ url: "https://pabloads2020-lang.github.io/Fundos-Aprovados/",          label: "Fundos Aprovados" },
         "conglomerado-consulta": { url: "https://pabloads2020-lang.github.io/Consulta-Conglomerado/", label: "Consulta Conglomerados" },
+        "monitor-saida-fundos": { url: "https://pabloads2020-lang.github.io/Monitor-de-Saida-Fundos/", label: "Monitor de Saída — Fundos" },
         "conglomerado-fgc":{ url: "https://pabloads2020-lang.github.io/Conglomerado-FGC/",             label: "Análise de Renda Fixa" },
     };
 
@@ -1184,12 +1203,13 @@ Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores
         if (save !== false) localStorage.setItem('hubSidebarOpen', visible);
     }
 
-    // Aplica o estado inicial sem animação para evitar flash/slide na carga
+    // Aplica estado inicial sem animação (evita flash e slide desnecessário)
     sidebarEl.style.transition = 'none';
     setSidebar(initVisible, false);
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-        sidebarEl.style.transition = '';
-    }));
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => { sidebarEl.style.transition = ''; });
+    });
+
     toggleBtn.addEventListener('click', () => {
         setSidebar(sidebarEl.classList.contains('collapsed'));
     });
