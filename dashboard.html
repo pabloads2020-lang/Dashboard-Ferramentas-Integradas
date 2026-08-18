@@ -13,14 +13,16 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 /* ============================================================
-   DESIGN TOKENS
-   Os 5 accents (violet/indigo/teal/pink/amber) permanecem com
-   os MESMOS valores hex do arquivo original: dezenas de estilos
-   inline (--accent, --accent-bg) e o objeto ACCENT_BG no JS
-   dependem exatamente desses tons. Tudo o mais foi refinado.
+   TOKENS
+   Os 5 accents de ferramenta (violet/indigo/teal/pink/amber) têm hex
+   fixo: dezenas de estilos inline (--accent/--accent-bg nos cards) e o
+   mapa ACCENT_BG no JS dependem exatamente desses valores — não mudar.
+   --gold/--wordmark-amber são exclusivos da marca "HUB Financeiro".
+   --tool-gold/--consulta-blue* são exclusivos do modal de detalhes
+   (sistema de 2 cores por TIPO — ferramenta x consulta — deliberadamente
+   fora do sistema de 5 accents, senão o modal vira carnaval de cores).
 ============================================================ */
 :root{
-  /* superfície / profundidade */
   --bg:#07080B;
   --bg2:#0D0F14;
   --surface:rgba(255,255,255,.04);
@@ -30,41 +32,26 @@
   --border-hi:rgba(255,255,255,.18);
   --border-soft:rgba(255,255,255,.05);
 
-  /* texto — text3 recalibrado para ~4.7:1 de contraste sobre --bg (WCAG AA em corpo de texto) */
   --text:#F5F6F8;
   --text2:#9CA1AC;
   --text3:#767C8A;
 
-  /* accents — NÃO alterar hex (usados em rgba() inline no HTML e no JS) */
   --violet:#8C7CF6;
   --indigo:#6C93FF;
   --teal:#33D6B0;
   --pink:#F178B0;
   --amber:#F7B955;
 
-  /* cores exclusivas da marca "HUB Financeiro" — extraídas do arquivo real
-     (dashboard.html: --gold:#f5c842 / --amber:#e0ac2c). Propositalmente
-     separadas do --amber de accent acima, que já é usado em vários cards
-     de ferramenta (Gerador IPS, Conglomerados, Patrimônio) — reaproveitar
-     o mesmo nome mudaria a cor desses cards sem querer. */
   --gold:#f5c842;
   --wordmark-amber:#e0ac2c;
 
-  /* sistema de 2 cores fixas do modal "i" — Ferramenta x Consulta.
-     Propositalmente FORA do sistema de 5 accents dos cards (violet/
-     indigo/teal/pink/amber): usar o accent de cada card no modal deixava
-     "carnaval" de cores. Aqui só existem 2 identidades, como no script antigo. */
   --tool-gold:#C5A059;
   --consulta-blue:#2980B9;
   --consulta-blue-light:#5DADE2;
 
-  /* raio */
-  --r-sm:10px;
-  --r-md:14px;
   --r-lg:20px;
   --r-xl:28px;
 
-  /* sombra */
   --shadow-card:0 1px 0 rgba(255,255,255,.05) inset, 0 24px 48px -28px rgba(0,0,0,.7);
   --shadow-card-hover:0 1px 0 rgba(255,255,255,.07) inset, 0 30px 60px -20px rgba(0,0,0,.75);
   --shadow-dock:0 -1px 0 rgba(255,255,255,.06) inset, 0 30px 70px -16px rgba(0,0,0,.8);
@@ -73,18 +60,6 @@
   --ease:cubic-bezier(.16,1,.3,1);
   --ease-press:cubic-bezier(.4,0,.2,1);
 }
-
-/* feedback tátil consistente em todo elemento clicável —
-   toque/clique precisa de confirmação visual imediata, não só hover */
-.gcard, .pin-btn, .mchip, .dock-item, .p-row, .search-pill{
-  -webkit-tap-highlight-color:transparent;
-}
-.gcard:active{transform:translateY(0) scale(.985)}
-.pin-btn:active{transform:scale(.9)}
-.mchip:active{transform:scale(.97)}
-.dock-item:active{transform:scale(.92) !important}
-.p-row:active{transform:scale(.99)}
-.search-pill:active{transform:scale(.995)}
 
 html{background:var(--bg)}
 body{
@@ -97,7 +72,7 @@ body{
   -webkit-font-smoothing:antialiased;
   min-height:100vh;
   overflow-x:hidden;
-  padding-bottom:120px;
+  padding-bottom:150px;
   position:relative;
 }
 svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
@@ -105,24 +80,26 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 ::selection{background:rgba(140,124,246,.35);color:#fff}
 :focus-visible{outline:2px solid var(--indigo);outline-offset:3px;border-radius:6px}
 
-/* barra de assinatura no topo — sutil, institucional (Linear/Vercel) */
-.top-accent{position:fixed;top:0;left:0;right:0;height:2px;z-index:60;
-  background:linear-gradient(90deg,var(--violet),var(--indigo) 35%,var(--teal) 70%,var(--amber));
-  opacity:.55}
+/* feedback tátil em todo elemento clicável — confirmação visual imediata no toque, não só no hover */
+.gcard, .mchip, .pin-btn, .info-btn, .dock-item, .p-row, .search-pill{-webkit-tap-highlight-color:transparent}
+.gcard:active, .mchip:active{transform:translateY(0) scale(.985)}
+.pin-btn:active, .info-btn:active{transform:scale(.9)}
+.dock-item:active{transform:scale(.92) !important}
+.p-row:active{transform:scale(.99)}
+.search-pill:active{transform:scale(.995)}
 
-/* textura de grão muito sutil sobre o fundo, camada decorativa fixa */
+.top-accent{position:fixed;top:0;left:0;right:0;height:2px;z-index:60;
+  background:linear-gradient(90deg,var(--violet),var(--indigo) 35%,var(--teal) 70%,var(--amber));opacity:.55}
+
 .bg-decor{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
-  background-size:34px 34px;
+  background-image:radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);background-size:34px 34px;
   -webkit-mask-image:radial-gradient(1200px 700px at 50% -10%, #000 0%, transparent 70%);
-          mask-image:radial-gradient(1200px 700px at 50% -10%, #000 0%, transparent 70%);
-  opacity:.5}
+          mask-image:radial-gradient(1200px 700px at 50% -10%, #000 0%, transparent 70%);opacity:.5}
 
 /* ============================================================
-   LAYOUT
+   TOPBAR
 ============================================================ */
 .wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:32px 40px 0}
-
 .topline{display:flex;align-items:center;justify-content:space-between;
   padding-bottom:20px;margin-bottom:48px;border-bottom:1px solid var(--border-soft)}
 .brandmark{display:flex;align-items:center;gap:11px}
@@ -133,24 +110,20 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 .brandmark .word{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.1rem;letter-spacing:-.01em}
 .brandmark .word span{color:var(--text2);font-weight:400}
 
+/* badge de perfil — colapsa pra só a foto, expande no hover/foco mostrando nome e cargo */
 .profile{
-  display:flex;align-items:center;justify-content:flex-end;gap:0;
-  padding:3px;border-radius:99px;
-  border:1px solid var(--border-soft);background:var(--surface);
-  max-width:40px;overflow:hidden;
+  display:flex;align-items:center;justify-content:flex-end;gap:0;padding:3px;border-radius:99px;
+  border:1px solid var(--border-soft);background:var(--surface);max-width:40px;overflow:hidden;
   transition:max-width .32s var(--ease), padding .32s var(--ease), gap .32s var(--ease), background .28s var(--ease);
 }
-.profile:hover, .profile:focus-within{
-  max-width:280px;padding:6px 8px 6px 14px;gap:12px;background:var(--surface-hi);
-}
+.profile:hover, .profile:focus-within{max-width:280px;padding:6px 8px 6px 14px;gap:12px;background:var(--surface-hi)}
 .profile .av-link{display:block;width:32px;height:32px;border-radius:50%;flex-shrink:0;
   border:2px solid rgba(197,160,89,.3);transition:border-color .18s var(--ease), box-shadow .18s var(--ease)}
 .profile .av-link:hover{border-color:rgba(197,160,89,.7);box-shadow:0 0 16px rgba(224,172,44,.25)}
 .profile .av-link img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
 .profile .txt{
   font-size:.76rem;color:var(--text2);text-align:right;line-height:1.35;white-space:nowrap;
-  max-width:0;opacity:0;overflow:hidden;
-  transition:max-width .3s var(--ease), opacity .2s var(--ease);
+  max-width:0;opacity:0;overflow:hidden;transition:max-width .3s var(--ease), opacity .2s var(--ease);
 }
 .profile:hover .txt, .profile:focus-within .txt{max-width:220px;opacity:1;transition:max-width .3s var(--ease), opacity .22s var(--ease) .08s}
 .profile .txt b{color:var(--text);font-weight:600;display:block;font-size:.82rem}
@@ -172,10 +145,8 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 .hero-sub{margin-top:14px;font-size:.85rem;color:var(--text3);line-height:1.55;max-width:460px}
 
 .search-pill{
-  display:flex;align-items:center;gap:12px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r-lg);padding:16px 18px;margin-top:32px;max-width:540px;
-  cursor:pointer;
+  display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:16px 18px;margin-top:32px;max-width:540px;cursor:pointer;
   transition:border-color .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
 }
 .search-pill:hover{border-color:var(--border-hi);background:var(--surface-hi);box-shadow:var(--shadow-card)}
@@ -196,88 +167,62 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 .section-head span{font-size:.76rem;color:var(--text3);white-space:nowrap}
 
 /* ============================================================
-   TOOL GRID / CARDS
+   CARDS — ferramentas (.gcard) e consultas (.mchip) compartilham
+   a mesma base visual (mesmo peso na tela); a única diferença
+   estrutural é que .mchip não tem badge de plataforma no rodapé.
 ============================================================ */
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.gcard{
+.grid, .chiprow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+.gcard, .mchip{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;
-  cursor:pointer;position:relative;overflow:hidden;
-  box-shadow:var(--shadow-card);
+  cursor:pointer;position:relative;overflow:hidden;box-shadow:var(--shadow-card);
   display:flex;flex-direction:column;min-height:168px;
   transition:border-color .18s var(--ease), background .18s var(--ease), transform .16s var(--ease-press), box-shadow .18s var(--ease);
 }
-.gcard::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+.gcard::before, .mchip::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
   background:linear-gradient(160deg, rgba(255,255,255,.10), transparent 40%);
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;mask-composite:exclude;opacity:.7}
-.gcard:hover{transform:translateY(-1px);border-color:var(--border-hi);background:var(--surface-hi);box-shadow:var(--shadow-card-hover)}
-.gcard .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-shrink:0}
-.gcard .icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-  background:var(--accent-bg);color:var(--accent);
-  border:1px solid color-mix(in srgb, var(--accent) 32%, transparent);
-  box-shadow:0 0 0 1px rgba(255,255,255,.05) inset}
-.gcard .chip{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
-.pin-btn{
+.gcard:hover, .mchip:hover{transform:translateY(-1px);border-color:var(--border-hi);background:var(--surface-hi);box-shadow:var(--shadow-card-hover)}
+.gcard .top, .mchip .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-shrink:0}
+.gcard .icon, .mchip .icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--accent-bg);color:var(--accent);border:1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  box-shadow:0 0 0 1px rgba(255,255,255,.05) inset;flex-shrink:0}
+.gcard .name, .mchip .name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.02rem;
+  letter-spacing:-.005em;margin-bottom:7px;display:block;flex-shrink:0}
+.gcard .desc, .mchip .desc{font-size:.79rem;color:var(--text2);line-height:1.55}
+.mchip .desc{margin-top:auto;padding-top:2px}
+.gcard .plat{
+  /* margin-top:auto ancora o badge no rodapé independente do tamanho da descrição —
+     evita cards com badge "flutuando" em alturas diferentes numa mesma fileira */
+  margin-top:auto;padding-top:18px;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;
+  font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.03em;color:var(--text3);
+  background:rgba(255,255,255,.035);border:1px solid var(--border-soft);padding:5px 9px;border-radius:99px;
+}
+.gcard .plat::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.85}
+
+/* pin (fixar no dock) + info ("i") — grupo lado a lado, sem sobrepor */
+.card-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.pin-btn, .info-btn{
   width:27px;height:27px;border-radius:8px;border:1px solid var(--border);
   background:rgba(255,255,255,.04);color:var(--text3);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  opacity:0;transition:opacity .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease), background .15s var(--ease);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;padding:0;
+  transition:opacity .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease), background .15s var(--ease);
 }
-.gcard:hover .pin-btn{opacity:1}
-.mchip:hover .pin-btn{opacity:1}
+.gcard:hover .pin-btn, .mchip:hover .pin-btn,
+.gcard:hover .info-btn, .mchip:hover .info-btn{opacity:1}
 .pin-btn:hover{color:var(--text);border-color:var(--border-hi)}
 .pin-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8}
 .pin-btn.pinned{opacity:1;color:var(--amber);border-color:rgba(247,185,85,.35);background:rgba(247,185,85,.12)}
 .pin-btn.pinned svg{fill:currentColor}
-.pin-hint{font-size:.66rem;color:var(--text3);margin-top:-8px;margin-bottom:24px}
-/* hover não existe em touch — sem isso, fixar um card no dock é
-   impossível em tablet/celular. O botão fica sempre visível nesses casos. */
-@media (hover:none), (pointer:coarse){
-  .pin-btn{opacity:1}
-}
+.info-btn{font-size:12px;font-style:italic;font-weight:700;font-family:'Inter',sans-serif;line-height:1}
+.info-btn:hover{background:rgba(247,185,85,.12);border-color:rgba(247,185,85,.45);color:var(--amber)}
+/* hover não existe em touch — sem isso, fixar/abrir detalhe seria impossível em tablet/celular */
+@media (hover:none), (pointer:coarse){ .pin-btn, .info-btn{opacity:1} }
+
 .dock-shake{animation:shake .3s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .dock-empty-hint{font-size:.62rem;color:var(--text3);padding:0 6px;align-self:center;white-space:nowrap;letter-spacing:.01em}
-.gcard .name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.02rem;margin-bottom:7px;letter-spacing:-.005em;flex-shrink:0}
-.gcard .desc{font-size:.79rem;color:var(--text2);line-height:1.55}
-.gcard .plat{
-  /* margin-top:auto ancora o badge no rodapé do card, independente do
-     tamanho da descrição — evita cards com badges "flutuando" em alturas diferentes */
-  margin-top:auto;padding-top:18px;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;
-  font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.03em;color:var(--text3);
-  background:rgba(255,255,255,.035);border:1px solid var(--border-soft);
-  padding:5px 9px;border-radius:99px;
-}
-.gcard .plat::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.85}
-
-/* ============================================================
-   CONSULTAS — mesmo formato de card das ferramentas.
-   Ambas competem pela mesma atenção visual na tela, então fazem
-   sentido ter o mesmo peso. A distinção semântica (consulta é mais
-   leve que ferramenta) fica só na ausência do botão de pin, não
-   mais numa diferença de tamanho — que era arbitrária.
-============================================================ */
-.chiprow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.mchip{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;
-  cursor:pointer;position:relative;overflow:hidden;
-  box-shadow:var(--shadow-card);
-  display:flex;flex-direction:column;min-height:168px;
-  transition:border-color .18s var(--ease), background .18s var(--ease), transform .16s var(--ease-press), box-shadow .18s var(--ease);
-}
-.mchip::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
-  background:linear-gradient(160deg, rgba(255,255,255,.10), transparent 40%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;opacity:.7}
-.mchip:hover{transform:translateY(-1px);border-color:var(--border-hi);background:var(--surface-hi);box-shadow:var(--shadow-card-hover)}
-.mchip .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-shrink:0}
-.mchip .icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-  background:var(--accent-bg);color:var(--accent);
-  border:1px solid color-mix(in srgb, var(--accent) 32%, transparent);
-  box-shadow:0 0 0 1px rgba(255,255,255,.05) inset;flex-shrink:0}
-.mchip span.name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.02rem;letter-spacing:-.005em;
-  margin-bottom:7px;white-space:normal;display:block}
-.mchip .desc{font-size:.79rem;color:var(--text2);line-height:1.55;margin-top:auto;padding-top:2px}
 
 /* ============================================================
    DOCK
@@ -285,23 +230,21 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 .dock-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:30;
   display:flex;align-items:center;gap:12px;max-width:calc(100vw - 32px)}
 .dock{
-  display:flex;align-items:flex-end;gap:10px;
+  display:flex;align-items:center;gap:10px;
   background:rgba(22,23,29,.05);backdrop-filter:blur(4px) saturate(220%);-webkit-backdrop-filter:blur(4px) saturate(220%);
-  border:1px solid rgba(255,255,255,.15);border-radius:24px;
-  padding:12px 14px 10px;
+  border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:12px 14px 10px;
   box-shadow:var(--shadow-dock), inset 0 1px 0 rgba(255,255,255,.26), inset 0 0 0 1px rgba(255,255,255,.04);
   max-width:100%;overflow-x:auto;scrollbar-width:none;
 }
 .dock::-webkit-scrollbar{display:none}
 .dock-item{
-  height:46px;border-radius:13px;
-  display:flex;align-items:center;flex-shrink:0;overflow:hidden;
-  background:var(--accent-bg);color:var(--accent);
-  cursor:pointer;position:relative;padding:0 13px;
+  height:46px;border-radius:13px;display:flex;align-items:center;flex-shrink:0;overflow:hidden;
+  background:var(--accent-bg);color:var(--accent);cursor:pointer;position:relative;padding:0 13px;
   transition:background .18s var(--ease), padding-right .22s var(--ease);
   box-shadow:0 0 0 1px rgba(255,255,255,.05) inset;
 }
 .dock-item svg{width:20px;height:20px;flex-shrink:0}
+/* nome do item — some por padrão, revela como pill ao passar o mouse (em vez de tooltip flutuante) */
 .dock-item .tip{
   font-size:.72rem;font-weight:600;color:var(--text);white-space:nowrap;
   max-width:0;opacity:0;overflow:hidden;margin-left:0;
@@ -313,35 +256,17 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 .dock-item.search{background:rgba(247,185,85,.16);color:var(--amber)}
 
 /* ============================================================
-   BOTÃO "i" + MODAL DE DETALHES
-   Réplica do .tool-info-btn / .tool-modal-overlay do arquivo original —
-   mesma geometria, mesmas transições, cores adaptadas à paleta do hub.
+   MODAL DE DETALHES (botão "i")
 ============================================================ */
-.gcard, .mchip{position:relative}
-.card-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.info-btn{
-  width:27px;height:27px;border-radius:8px;
-  background:rgba(255,255,255,.04);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text3);cursor:pointer;opacity:0;padding:0;
-  font-size:12px;font-style:italic;font-weight:700;font-family:'Inter',sans-serif;line-height:1;
-  transition:opacity .15s var(--ease), background .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease);
-}
-.gcard:hover .info-btn, .mchip:hover .info-btn{opacity:1}
-.info-btn:hover{background:rgba(247,185,85,.12);border-color:rgba(247,185,85,.45);color:var(--amber)}
-@media (hover:none), (pointer:coarse){ .info-btn{opacity:1} }
-
 .tool-modal-overlay{
-  position:fixed;inset:0;background:rgba(4,5,7,.72);
-  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+  position:fixed;inset:0;background:rgba(4,5,7,.72);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
   display:flex;align-items:center;justify-content:center;padding:24px;z-index:120;
   opacity:0;pointer-events:none;transition:opacity .2s var(--ease);
 }
 .tool-modal-overlay.open{opacity:1;pointer-events:auto}
 .tool-modal{
   width:min(440px,100%);background:#0F1116;border:1px solid var(--border-hi);
-  border-top:2px solid var(--tool-gold);border-radius:var(--r-lg);
-  padding:26px 26px 22px;box-shadow:var(--shadow-palette);
+  border-top:2px solid var(--tool-gold);border-radius:var(--r-lg);padding:26px 26px 22px;box-shadow:var(--shadow-palette);
   transform:translateY(10px) scale(.97);opacity:0;
   transition:transform .22s var(--ease), opacity .22s var(--ease), border-top-color .18s var(--ease);
   position:relative;max-height:90vh;overflow-y:auto;
@@ -349,8 +274,7 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 .tool-modal.type-consulta{border-top-color:var(--consulta-blue)}
 .tool-modal-overlay.open .tool-modal{transform:none;opacity:1}
 .modal-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding-right:4px}
-.modal-icon{width:38px;height:38px;border-radius:10px;
-  background:rgba(197,160,89,.15);border:1px solid rgba(197,160,89,.3);
+.modal-icon{width:38px;height:38px;border-radius:10px;background:rgba(197,160,89,.15);border:1px solid rgba(197,160,89,.3);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--tool-gold);
   transition:background .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease)}
 .tool-modal.type-consulta .modal-icon{background:rgba(41,128,185,.15);border-color:rgba(41,128,185,.3);color:var(--consulta-blue-light)}
@@ -360,11 +284,9 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 .modal-divider{height:1px;background:var(--border);margin-bottom:14px}
 .modal-body{color:var(--text2);line-height:1.68;font-size:.83rem;white-space:pre-wrap}
 .modal-footer{margin-top:20px;display:flex;gap:8px;justify-content:space-between;align-items:center}
-/* badge Ferramenta/Consulta — pill de verdade, igual ao .tool-badge do script antigo */
 .modal-badge{
-  display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;
-  font-family:'Inter',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.05em;
-  text-transform:uppercase;line-height:1.6;white-space:nowrap;
+  display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-family:'Inter',sans-serif;
+  font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;line-height:1.6;white-space:nowrap;
 }
 .modal-badge.ferramenta{background:rgba(197,160,89,.15);color:var(--tool-gold);border:1px solid rgba(197,160,89,.3)}
 .modal-badge.consulta{background:rgba(41,128,185,.15);color:var(--consulta-blue-light);border:1px solid rgba(41,128,185,.3)}
@@ -376,36 +298,26 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 .close-modal-btn:hover{background:var(--surface-hi);border-color:var(--border-hi)}
 .open-tool-btn{
   height:34px;padding:0 16px;border-radius:8px;border:1px solid var(--tool-gold);
-  background:rgba(224,172,44,.1);color:var(--tool-gold);
-  font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;
-  display:flex;align-items:center;gap:6px;
+  background:rgba(224,172,44,.1);color:var(--tool-gold);font-family:'Inter',sans-serif;
+  font-size:.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;
   transition:background .15s var(--ease), box-shadow .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease);
 }
 .tool-modal.type-consulta .open-tool-btn{border-color:var(--consulta-blue);background:rgba(41,128,185,.12);color:var(--consulta-blue-light)}
 .open-tool-btn:hover{background:var(--surface-hi);box-shadow:0 0 14px rgba(197,160,89,.2)}
 .tool-modal.type-consulta .open-tool-btn:hover{box-shadow:0 0 14px rgba(41,128,185,.2)}
-@media (max-width:540px){
-  .info-btn{opacity:1}
-  .tool-modal{border-radius:var(--r-md);padding:20px}
-}
 
 /* ============================================================
-   COMMAND PALETTE
+   COMMAND PALETTE (⌘K)
 ============================================================ */
 .overlay{
-  position:fixed;inset:0;z-index:50;
-  background:rgba(4,5,7,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  display:flex;align-items:flex-start;justify-content:center;
-  padding-top:11vh;
-  opacity:0;pointer-events:none;
-  transition:opacity .18s var(--ease);
+  position:fixed;inset:0;z-index:50;background:rgba(4,5,7,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:flex;align-items:flex-start;justify-content:center;padding-top:11vh;
+  opacity:0;pointer-events:none;transition:opacity .18s var(--ease);
 }
 .overlay.open{opacity:1;pointer-events:auto}
 .palette{
-  width:100%;max-width:580px;
-  background:#0F1116;border:1px solid var(--border-hi);border-radius:var(--r-xl);
-  box-shadow:var(--shadow-palette);
-  max-height:70vh;display:flex;flex-direction:column;overflow:hidden;
+  width:100%;max-width:580px;background:#0F1116;border:1px solid var(--border-hi);border-radius:var(--r-xl);
+  box-shadow:var(--shadow-palette);max-height:70vh;display:flex;flex-direction:column;overflow:hidden;
 }
 .palette-input-row{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--border)}
 .palette-input-row svg{color:var(--text3);flex-shrink:0}
@@ -419,8 +331,7 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 .p-group{font-size:.64rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);padding:14px 12px 7px}
 .p-row{
   display:flex;align-items:center;gap:13px;padding:10px 12px;border-radius:12px;cursor:pointer;
-  border:1px solid transparent;
-  transition:background .12s var(--ease), border-color .12s var(--ease);
+  border:1px solid transparent;transition:background .12s var(--ease), border-color .12s var(--ease);
 }
 .p-row:hover, .p-row.sel{background:var(--surface-hi);border-color:var(--border)}
 .p-row .icon{width:29px;height:29px;border-radius:9px;display:flex;align-items:center;justify-content:center;
@@ -436,7 +347,7 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 ============================================================ */
 @media(max-width:900px){
   .grid, .chiprow{grid-template-columns:repeat(2,1fr)}
-  .pin-btn{width:32px;height:32px} /* alvo de toque maior — 44px é o ideal, 32px é o teto viável dentro do card sem brigar com o ícone */
+  .pin-btn, .info-btn{width:32px;height:32px} /* alvo de toque maior — 44px seria o ideal, 32px é o teto viável sem brigar com o ícone do card */
 }
 @media(max-width:640px){
   .wrap{padding:22px 16px 0}
@@ -446,11 +357,10 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
   .search-pill{margin-top:24px;padding:14px 16px}
   .search-pill kbd{display:none}
   .section-head{margin:36px 0 16px;flex-wrap:wrap;gap:6px}
-  .grid{grid-template-columns:1fr;gap:12px}
-  .gcard{min-height:0;padding:20px}
-  .chiprow{grid-template-columns:1fr;gap:12px}
-  .mchip{min-height:0;padding:20px}
+  .grid, .chiprow{grid-template-columns:1fr;gap:12px}
+  .gcard, .mchip{min-height:0;padding:20px}
   .dock-item{height:42px;padding:0 11px}
+  .tool-modal{border-radius:14px;padding:20px}
   .palette{margin:0 16px;max-width:none}
   .profile .txt{display:none}
 }
@@ -484,18 +394,18 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
     <span>Fixe até 5 no dock para acesso rápido</span>
   </div>
   <div class="grid" id="toolGrid">
-    <div class="gcard" data-id="rebalanceamento" data-full-desc="Input: PDF do XPerformance. Carregue o PDF do XPerformance para avaliar a carteira e ver as sugestões de rebalanceamento de acordo com o perfil do cliente" data-url="https://pabloads2020-lang.github.io/Rebalanceamento-2/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v18M5 8l-3 6a4 4 0 0 0 8 0l-3-6zM19 8l-3 6a4 4 0 0 0 8 0l-3-6zM5 8h14M8 3h8"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="rebalanceamento"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Rebalanceamento</div><div class="desc">Aderência da carteira por classe de ativo, via XPerformance.</div><div class="plat">Pleno · Bequest</div></div>
-    <div class="gcard" data-id="aderencia" data-full-desc="Analise o nível de aderência da carteira dos clientes de acordo com o perfil de risco, a carteira recomendada e o retorno em % do CDI." data-url="https://pabloads2020-lang.github.io/Aderencia-de-carteira/" data-accent="pink" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="aderencia"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Aderência de Carteira</div><div class="desc">Perfil, carteira recomendada e retorno % do CDI.</div><div class="plat">Pleno · Bequest</div></div>
-    <div class="gcard" data-id="ips" data-full-desc="Input: Texto resumo da Anamnese. Gera o texto personalizado sobre o cliente a ser preenchido no documento de Política de Investimentos (IPS) considerando o perfil de risco, objetivos e horizonte de investimento." data-url="https://pabloads2020-lang.github.io/IPS/" data-accent="amber" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M7 3h10v4H7z"/><path d="M6 7h12v14H6z"/><path d="M9 12h6M9 15h6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="ips"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Gerador IPS</div><div class="desc">Política de Investimentos automática.</div><div class="plat">Pleno</div></div>
-    <div class="gcard" data-id="comparador" data-full-desc="Compare o retorno dos ativos de renda fixa com indexadores diferentes e descubra se o investimento no período alocado valeu a pena. A ferramenta considera o IR regressivo e taxas apuradas no Banco Central." data-url="https://pabloads2020-lang.github.io/Comparador-de-taxas/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M6 18L18 6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="comparador"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Comparador de Taxas</div><div class="desc">Retorno da renda fixa entre indexadores diferentes.</div><div class="plat">Pleno</div></div>
-    <div class="gcard" data-id="rendafixa" data-full-desc="Input: Relatório Posições (Excel da XP) e a planilha com nomes e códigos dos clientes. Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores aprovados." data-url="https://pabloads2020-lang.github.io/Conglomerado-FGC/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V9l5-5 5 5v10"/><circle cx="17" cy="16" r="3"/><path d="M17 13v6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="rendafixa"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Análise de Renda Fixa</div><div class="desc">Emissores aprovados/reprovados e limites do FGC.</div><div class="plat">Pleno</div></div>
-    <div class="gcard" data-id="excel" data-full-desc="Input: Carregue o excel de movimentações de renda fixa. A ferramenta ajuda a acompanhar ativos de renda fixa reprovados e sem cobertura dos clientes." data-url="https://pabloads2020-lang.github.io/Excel-de-renda-fixa/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9h16M4 14h16M9 4v16"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="excel"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Excel Renda Fixa GMT</div><div class="desc">Ativos reprovados e sem cobertura dos clientes.</div><div class="plat">Pleno</div></div>
-    <div class="gcard" data-id="relatorio" data-full-desc="Inputs: Resumo mensal do mercado e PDF XPerformance. Gere o acompanhamento mensal com o panorama de mercado (local e global) e o resultado detalhado da carteira do cliente por classe de ativo." data-url="https://pabloads2020-lang.github.io/Relatorio-mensal/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6M9 8h3"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="relatorio"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Relatório Mensal</div><div class="desc">Texto de acompanhamento mensal para clientes.</div><div class="plat">Pleno</div></div>
-    <div class="gcard" data-id="rentabilidade" data-full-desc="Carregue a base de rentabilidade mensal dos clientes e acompanhe o desempenho no mês, no ano e acumulado, comparado a CDI, IPCA e outros benchmarks, com gráfico interativo e exportação para Excel." data-url="https://pabloads2020-lang.github.io/Rentabilidade-mensal-acumulada/" data-accent="pink" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M7 15l4-5 3 3 5-7"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="rentabilidade"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Rentabilidade</div><div class="desc">Mensal e acumulada frente a CDI, IPCA e outros.</div><div class="plat">Pleno</div></div>
-    <div class="gcard" data-id="extratomensal" data-full-desc="Gera um extrato consolidado do fluxo financeiro mensal da conta do cliente — entradas e saídas. O resultado é um acompanhamento profissional da movimentação mensal da conta para ser enviado ao cliente." data-url="https://pabloads2020-lang.github.io/Extrato-Mensal-Conta/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="extratomensal"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Extrato Mensal Conta</div><div class="desc">Fluxo de entradas e saídas do mês.</div><div class="plat">Pleno</div></div>
-    <div class="gcard" data-id="calendario" data-full-desc="Inputs aba Vencimentos Renda Fixa: Relatório Posições (Excel da XP) e planilha com nomes e códigos dos clientes. Inputs Aba Vencimentos Fundos de Investimento: Relatório Movimentações Fundos (Excel da XP) e planilha com nomes e códigos dos clientes. Monitore os vencimentos (Renda Fixa, Tesouro e COE) e o fluxo de aplicações e resgates dos fundos de investimento." data-url="https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="1"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="calendario"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Calendário de Vencimentos</div><div class="desc">Vencimentos de renda fixa e fundos.</div><div class="plat">Pleno · Bequest</div></div>
-    <div class="gcard" data-id="extratoanalitico" data-full-desc="Insira os ativos e o caixa/aporte do cliente para avaliar a aderência à carteira recomendada e ver as sugestões de rebalanceamento por classe e por ativo individual." data-url="https://pabloads2020-lang.github.io/Extrato-Analitico/" data-accent="amber" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="M20 20l-5-5"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="extratoanalitico"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Extrato Analítico</div><div class="desc">Ativos do cliente comparados aos recomendados.</div><div class="plat">Pleno · Bequest</div></div>
-    <div class="gcard" data-id="monitor" data-full-desc="Rastreie quais clientes possuem fundos com recomendação de saída pelo comitê de alocações. Carregue o excel Relatório Posições da XP e a base de clientes com nome e código — o sistema identifica e exporta a lista de clientes expostos ao fundo selecionado." data-url="https://pabloads2020-lang.github.io/Monitor-de-Saida-Fundos/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9l8 6 8-6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="monitor"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Monitor de Saída — Fundos</div><div class="desc">Clientes com fundos recomendados para saída.</div><div class="plat">Pleno · Bequest</div></div>
+<div class="gcard" data-id="rebalanceamento" data-full-desc="Input: PDF do XPerformance. Carregue o PDF do XPerformance para avaliar a carteira e ver as sugestões de rebalanceamento de acordo com o perfil do cliente" data-url="https://pabloads2020-lang.github.io/Rebalanceamento-2/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v18M5 8l-3 6a4 4 0 0 0 8 0l-3-6zM19 8l-3 6a4 4 0 0 0 8 0l-3-6zM5 8h14M8 3h8"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="rebalanceamento"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Rebalanceamento</div><div class="desc">Aderência da carteira por classe de ativo, via XPerformance.</div><div class="plat">Pleno · Bequest</div></div>
+<div class="gcard" data-id="aderencia" data-full-desc="Analise o nível de aderência da carteira dos clientes de acordo com o perfil de risco, a carteira recomendada e o retorno em % do CDI." data-url="https://pabloads2020-lang.github.io/Aderencia-de-carteira/" data-accent="pink" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="aderencia"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Aderência de Carteira</div><div class="desc">Perfil, carteira recomendada e retorno % do CDI.</div><div class="plat">Pleno · Bequest</div></div>
+<div class="gcard" data-id="ips" data-full-desc="Input: Texto resumo da Anamnese. Gera o texto personalizado sobre o cliente a ser preenchido no documento de Política de Investimentos (IPS) considerando o perfil de risco, objetivos e horizonte de investimento." data-url="https://pabloads2020-lang.github.io/IPS/" data-accent="amber" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M7 3h10v4H7z"/><path d="M6 7h12v14H6z"/><path d="M9 12h6M9 15h6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="ips"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Gerador IPS</div><div class="desc">Política de Investimentos automática.</div><div class="plat">Pleno</div></div>
+<div class="gcard" data-id="comparador" data-full-desc="Compare o retorno dos ativos de renda fixa com indexadores diferentes e descubra se o investimento no período alocado valeu a pena. A ferramenta considera o IR regressivo e taxas apuradas no Banco Central." data-url="https://pabloads2020-lang.github.io/Comparador-de-taxas/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M6 18L18 6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="comparador"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Comparador de Taxas</div><div class="desc">Retorno da renda fixa entre indexadores diferentes.</div><div class="plat">Pleno</div></div>
+<div class="gcard" data-id="rendafixa" data-full-desc="Input: Relatório Posições (Excel da XP) e a planilha com nomes e códigos dos clientes. Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores aprovados." data-url="https://pabloads2020-lang.github.io/Conglomerado-FGC/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V9l5-5 5 5v10"/><circle cx="17" cy="16" r="3"/><path d="M17 13v6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="rendafixa"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Análise de Renda Fixa</div><div class="desc">Emissores aprovados/reprovados e limites do FGC.</div><div class="plat">Pleno</div></div>
+<div class="gcard" data-id="excel" data-full-desc="Input: Carregue o excel de movimentações de renda fixa. A ferramenta ajuda a acompanhar ativos de renda fixa reprovados e sem cobertura dos clientes." data-url="https://pabloads2020-lang.github.io/Excel-de-renda-fixa/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9h16M4 14h16M9 4v16"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="excel"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Excel Renda Fixa GMT</div><div class="desc">Ativos reprovados e sem cobertura dos clientes.</div><div class="plat">Pleno</div></div>
+<div class="gcard" data-id="relatorio" data-full-desc="Inputs: Resumo mensal do mercado e PDF XPerformance. Gere o acompanhamento mensal com o panorama de mercado (local e global) e o resultado detalhado da carteira do cliente por classe de ativo." data-url="https://pabloads2020-lang.github.io/Relatorio-mensal/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6M9 8h3"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="relatorio"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Relatório Mensal</div><div class="desc">Texto de acompanhamento mensal para clientes.</div><div class="plat">Pleno</div></div>
+<div class="gcard" data-id="rentabilidade" data-full-desc="Carregue a base de rentabilidade mensal dos clientes e acompanhe o desempenho no mês, no ano e acumulado, comparado a CDI, IPCA e outros benchmarks, com gráfico interativo e exportação para Excel." data-url="https://pabloads2020-lang.github.io/Rentabilidade-mensal-acumulada/" data-accent="pink" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M7 15l4-5 3 3 5-7"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="rentabilidade"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Rentabilidade</div><div class="desc">Mensal e acumulada frente a CDI, IPCA e outros.</div><div class="plat">Pleno</div></div>
+<div class="gcard" data-id="extratomensal" data-full-desc="Gera um extrato consolidado do fluxo financeiro mensal da conta do cliente — entradas e saídas. O resultado é um acompanhamento profissional da movimentação mensal da conta para ser enviado ao cliente." data-url="https://pabloads2020-lang.github.io/Extrato-Mensal-Conta/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="extratomensal"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Extrato Mensal Conta</div><div class="desc">Fluxo de entradas e saídas do mês.</div><div class="plat">Pleno</div></div>
+<div class="gcard" data-id="calendario" data-full-desc="Inputs aba Vencimentos Renda Fixa: Relatório Posições (Excel da XP) e planilha com nomes e códigos dos clientes. Inputs Aba Vencimentos Fundos de Investimento: Relatório Movimentações Fundos (Excel da XP) e planilha com nomes e códigos dos clientes. Monitore os vencimentos (Renda Fixa, Tesouro e COE) e o fluxo de aplicações e resgates dos fundos de investimento." data-url="https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="1"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="calendario"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Calendário de Vencimentos</div><div class="desc">Vencimentos de renda fixa e fundos.</div><div class="plat">Pleno · Bequest</div></div>
+<div class="gcard" data-id="extratoanalitico" data-full-desc="Insira os ativos e o caixa/aporte do cliente para avaliar a aderência à carteira recomendada e ver as sugestões de rebalanceamento por classe e por ativo individual." data-url="https://pabloads2020-lang.github.io/Extrato-Analitico/" data-accent="amber" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="M20 20l-5-5"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="extratoanalitico"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Extrato Analítico</div><div class="desc">Ativos do cliente comparados aos recomendados.</div><div class="plat">Pleno · Bequest</div></div>
+<div class="gcard" data-id="monitor" data-full-desc="Rastreie quais clientes possuem fundos com recomendação de saída pelo comitê de alocações. Carregue o excel Relatório Posições da XP e a base de clientes com nome e código — o sistema identifica e exporta a lista de clientes expostos ao fundo selecionado." data-url="https://pabloads2020-lang.github.io/Monitor-de-Saida-Fundos/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9l8 6 8-6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="monitor"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Monitor de Saída — Fundos</div><div class="desc">Clientes com fundos recomendados para saída.</div><div class="plat">Pleno · Bequest</div></div>
   </div>
 
   <div class="section-head">
@@ -503,12 +413,12 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
     <span>Consultas rápidas, sem abrir uma ferramenta completa</span>
   </div>
   <div class="chiprow">
-    <div class="mchip" data-id="carteirarecomendada" data-full-desc="Visualize as carteiras recomendadas pelo comitê de alocação, organizadas por perfil de risco — Conservador, Moderado e Arrojado." data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="carteirarecomendada"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Carteira Recomendada</span><div class="desc">Carteiras por perfil de risco.</div></div>
-    <div class="mchip" data-id="fundosaprovados" data-full-desc="Acesse a lista atualizada de fundos de investimento aprovados pelo research ou consulte individualmente pelo nome do fundo." data-url="https://pabloads2020-lang.github.io/Fundos-Aprovados/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V9l5-5 5 5v10"/><path d="M15 19v-6l5-4v10z"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="fundosaprovados"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Fundos Aprovados</span><div class="desc">Fundos aprovados pelo research.</div></div>
-    <div class="mchip" data-id="emissoresbancarios" data-full-desc="Consulte os emissores bancários aprovados e reprovados pelo research, com ratings das agências, scores internos e principais indicadores financeiros. Auxilia na seleção de emissores aprovados." data-url="https://pabloads2020-lang.github.io/Emissores-Bancarios/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-8h6v8"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="emissoresbancarios"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Emissores Bancários</span><div class="desc">Ratings, scores e indicadores.</div></div>
-    <div class="mchip" data-id="creditoprivado" data-full-desc="Consulte os emissores de crédito privado (debêntures, CRIs, CRAs) aprovados pelo research. Facilita a indicação de ativos de crédito privado para os clientes." data-url="https://pabloads2020-lang.github.io/Credito-Privado/" data-accent="pink" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="creditoprivado"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Crédito Privado</span><div class="desc">Emissores aprovados pelo research.</div></div>
-    <div class="mchip" data-id="conglomerados" data-full-desc="Identifique a qual conglomerado prudencial pertence qualquer participante do sistema financeiro. Base oficial do Banco Central do Brasil, com 1.059 participantes em mais de 200 conglomerados." data-url="https://pabloads2020-lang.github.io/Consulta-Conglomerado/" data-accent="amber" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 21V10l4-3 4 3v11"/><path d="M12 21V6l4-3 4 3v15"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="conglomerados"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Consulta Conglomerados</span><div class="desc">Conglomerado prudencial do BC.</div></div>
-    <div class="mchip" data-id="patrimonioclientes" data-full-desc="Input: Relatório Posições (Excel, aba posicao_total) e a planilha com código, nome e perfil dos clientes. Consulte o patrimônio (PL) consolidado de toda a carteira de clientes, filtre por faixa de valor — inclusive combinando várias faixas ao mesmo tempo — e por perfil de risco." data-url="https://pabloads2020-lang.github.io/Patrimonio-dos-clientes/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="patrimonioclientes"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Patrimônio de Clientes</span><div class="desc">PL consolidado por faixa e perfil.</div></div>
+<div class="mchip" data-id="carteirarecomendada" data-full-desc="Visualize as carteiras recomendadas pelo comitê de alocação, organizadas por perfil de risco — Conservador, Moderado e Arrojado." data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="carteirarecomendada"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Carteira Recomendada</span><div class="desc">Carteiras por perfil de risco.</div></div>
+<div class="mchip" data-id="fundosaprovados" data-full-desc="Acesse a lista atualizada de fundos de investimento aprovados pelo research ou consulte individualmente pelo nome do fundo." data-url="https://pabloads2020-lang.github.io/Fundos-Aprovados/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V9l5-5 5 5v10"/><path d="M15 19v-6l5-4v10z"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="fundosaprovados"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Fundos Aprovados</span><div class="desc">Fundos aprovados pelo research.</div></div>
+<div class="mchip" data-id="emissoresbancarios" data-full-desc="Consulte os emissores bancários aprovados e reprovados pelo research, com ratings das agências, scores internos e principais indicadores financeiros. Auxilia na seleção de emissores aprovados." data-url="https://pabloads2020-lang.github.io/Emissores-Bancarios/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-8h6v8"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="emissoresbancarios"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Emissores Bancários</span><div class="desc">Ratings, scores e indicadores.</div></div>
+<div class="mchip" data-id="creditoprivado" data-full-desc="Consulte os emissores de crédito privado (debêntures, CRIs, CRAs) aprovados pelo research. Facilita a indicação de ativos de crédito privado para os clientes." data-url="https://pabloads2020-lang.github.io/Credito-Privado/" data-accent="pink" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="creditoprivado"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Crédito Privado</span><div class="desc">Emissores aprovados pelo research.</div></div>
+<div class="mchip" data-id="conglomerados" data-full-desc="Identifique a qual conglomerado prudencial pertence qualquer participante do sistema financeiro. Base oficial do Banco Central do Brasil, com 1.059 participantes em mais de 200 conglomerados." data-url="https://pabloads2020-lang.github.io/Consulta-Conglomerado/" data-accent="amber" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 21V10l4-3 4 3v11"/><path d="M12 21V6l4-3 4 3v15"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="conglomerados"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Consulta Conglomerados</span><div class="desc">Conglomerado prudencial do BC.</div></div>
+<div class="mchip" data-id="patrimonioclientes" data-full-desc="Input: Relatório Posições (Excel, aba posicao_total) e a planilha com código, nome e perfil dos clientes. Consulte o patrimônio (PL) consolidado de toda a carteira de clientes, filtre por faixa de valor — inclusive combinando várias faixas ao mesmo tempo — e por perfil de risco." data-url="https://pabloads2020-lang.github.io/Patrimonio-dos-clientes/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="patrimonioclientes"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Patrimônio de Clientes</span><div class="desc">PL consolidado por faixa e perfil.</div></div>
   </div>
 
 </div>
@@ -521,7 +431,7 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
   </div>
 </div>
 
-<!-- command palette: full catalog -->
+<!-- command palette: catálogo completo -->
 <div class="overlay" id="overlay" onclick="if(event.target===this)closePalette()">
   <div class="palette">
     <div class="palette-input-row">
@@ -530,6 +440,7 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
       <span class="palette-esc">esc</span>
     </div>
     <div class="palette-list" id="paletteList">
+<div class="palette-list" id="paletteList">
       <div class="p-group" data-g="f">Ferramentas</div>
       <div class="p-row" data-id="rebalanceamento" data-url="https://pabloads2020-lang.github.io/Rebalanceamento-2/" data-name="rebalanceamento xperformance aderencia classe ativo"><div class="icon" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v18M5 8l-3 6a4 4 0 0 0 8 0l-3-6zM19 8l-3 6a4 4 0 0 0 8 0l-3-6zM5 8h14M8 3h8"/></svg></div><div class="t"><div class="name">Rebalanceamento</div><div class="desc">Aderência por classe de ativo via XPerformance</div></div></div>
       <div class="p-row" data-id="comparador" data-url="https://pabloads2020-lang.github.io/Comparador-de-taxas/" data-name="comparador de taxas renda fixa indexadores"><div class="icon" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><svg class="ic" viewBox="0 0 24 24"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M6 18L18 6"/></svg></div><div class="t"><div class="name">Comparador de Taxas</div><div class="desc">Retorno da renda fixa entre indexadores</div></div></div>
@@ -557,12 +468,10 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 </div>
 
 <script>
-const dock = document.getElementById('dock');
-const dockHint = document.getElementById('dockHint');
-const dockSep = dock.querySelector('.dock-sep');
-const MAX_PINS = 5;
-let pinned = []; // array of {id, accent, svg, name}
-
+/* ============================================================
+   DADOS — ícones e cores de fundo por accent, usados pelo dock
+   e pelo modal de detalhes.
+============================================================ */
 const ICONS = {
   rebalanceamento:{name:'Rebalanceamento', svg:'<path d="M12 3v18M5 8l-3 6a4 4 0 0 0 8 0l-3-6zM19 8l-3 6a4 4 0 0 0 8 0l-3-6zM5 8h14M8 3h8"/>'},
   comparador:{name:'Comparador de Taxas', svg:'<circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M6 18L18 6"/>'},
@@ -585,15 +494,48 @@ const ICONS = {
 };
 const ACCENT_BG = {violet:'rgba(140,124,246,.16)', indigo:'rgba(108,147,255,.16)', teal:'rgba(51,214,176,.16)', pink:'rgba(241,120,176,.16)', amber:'rgba(247,185,85,.16)'};
 
+/* ============================================================
+   DOCK + PIN
+   Persistência: o que fica fixado é salvo no localStorage e
+   restaurado no próximo carregamento. Se não houver nada salvo
+   (primeira visita), cai nos 4 padrão de sempre.
+============================================================ */
+const dock = document.getElementById('dock');
+const dockHint = document.getElementById('dockHint');
+const dockSep = dock.querySelector('.dock-sep');
+const MAX_PINS = 5;
+const PIN_STORAGE_KEY = 'hubFinanceiro.pinnedTools';
+const DEFAULT_PIN_IDS = ['rebalanceamento','comparador','relatorio','calendario'];
+
+let pinned = []; // array de {id, accent, url, svg, name}
+
+function savePinnedToStorage(){
+  try{
+    localStorage.setItem(PIN_STORAGE_KEY, JSON.stringify(pinned.map(p => p.id)));
+  }catch(e){
+    // localStorage indisponível (aba anônima, política do navegador etc.) — sem persistência nessa sessão, mas não quebra o app
+  }
+}
+
+function loadPinnedIdsFromStorage(){
+  try{
+    const raw = localStorage.getItem(PIN_STORAGE_KEY);
+    if(!raw) return null;
+    const ids = JSON.parse(raw);
+    return Array.isArray(ids) ? ids : null;
+  }catch(e){
+    return null;
+  }
+}
+
 function renderDock(){
-  dock.querySelectorAll('.dock-item:not(.search)').forEach(el=>el.remove());
-  pinned.forEach(p=>{
+  dock.querySelectorAll('.dock-item:not(.search)').forEach(el => el.remove());
+  pinned.forEach(p => {
     const el = document.createElement('div');
     el.className = 'dock-item';
     el.style.setProperty('--accent', `var(--${p.accent})`);
     el.style.setProperty('--accent-bg', ACCENT_BG[p.accent]);
     el.innerHTML = `<svg class="ic" viewBox="0 0 24 24">${p.svg}</svg><span class="tip">${p.name}</span>`;
-    // clicar no ícone do dock entra direto na ferramenta fixada
     if(p.url){
       el.style.cursor = 'pointer';
       el.addEventListener('click', () => { window.location.href = p.url; });
@@ -604,107 +546,123 @@ function renderDock(){
 }
 
 function togglePin(id, accent, url, btn){
-  const idx = pinned.findIndex(p=>p.id===id);
-  if(idx>-1){
-    pinned.splice(idx,1);
+  const idx = pinned.findIndex(p => p.id === id);
+  if(idx > -1){
+    pinned.splice(idx, 1);
     btn.classList.remove('pinned');
   } else {
     if(pinned.length >= MAX_PINS){
       dock.classList.add('dock-shake');
-      setTimeout(()=>dock.classList.remove('dock-shake'), 300);
+      setTimeout(() => dock.classList.remove('dock-shake'), 300);
       return;
     }
-    pinned.push({id, accent, url, svg:ICONS[id].svg, name:ICONS[id].name});
+    pinned.push({id, accent, url, svg: ICONS[id].svg, name: ICONS[id].name});
     btn.classList.add('pinned');
   }
+  savePinnedToStorage();
   renderDock();
 }
 
-document.querySelectorAll('.pin-btn').forEach(btn=>{
-  btn.addEventListener('click', e=>{
+document.querySelectorAll('.pin-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
     e.stopPropagation();
     const card = btn.closest('.gcard, .mchip');
     togglePin(card.dataset.id, card.dataset.accent, card.dataset.url, btn);
   });
 });
 
-// pin the first four by default so the dock isn't empty on load
-['rebalanceamento','comparador','relatorio','calendario'].forEach(id=>{
-  const btn = document.querySelector(`.pin-btn[data-icon="${id}"]`);
-  const card = btn.closest('.gcard');
-  pinned.push({id, accent:card.dataset.accent, url:card.dataset.url, svg:ICONS[id].svg, name:ICONS[id].name});
-  btn.classList.add('pinned');
-});
-renderDock();
+// restaura os pins salvos da última vez; se não houver nada salvo, usa os 4 padrão.
+// .closest('.gcard, .mchip') cobre tanto ferramenta quanto consulta — uma consulta
+// salva como fixada não pode quebrar esse loop.
+(function restorePins(){
+  const storedIds = loadPinnedIdsFromStorage();
+  const idsToRestore = (storedIds && storedIds.length) ? storedIds : DEFAULT_PIN_IDS;
+  idsToRestore.forEach(id => {
+    if(pinned.length >= MAX_PINS) return;
+    if(pinned.some(p => p.id === id)) return;
+    const btn = document.querySelector(`.pin-btn[data-icon="${id}"]`);
+    if(!btn || !ICONS[id]) return; // id salvo que não existe mais no hub — ignora silenciosamente
+    const card = btn.closest('.gcard, .mchip');
+    if(!card) return;
+    pinned.push({id, accent: card.dataset.accent, url: card.dataset.url, svg: ICONS[id].svg, name: ICONS[id].name});
+    btn.classList.add('pinned');
+  });
+  renderDock();
+})();
 
-document.body.style.paddingBottom = '150px';
-
+/* ============================================================
+   COMMAND PALETTE (⌘K)
+============================================================ */
 const overlay = document.getElementById('overlay');
 const pInput = document.getElementById('paletteInput');
 const pRows = [...document.querySelectorAll('.p-row')];
 const pGroups = [...document.querySelectorAll('.p-group')];
 const pEmpty = document.getElementById('pEmpty');
 
-function openPalette(){ overlay.classList.add('open'); pInput.value=''; filterPalette(); setTimeout(()=>pInput.focus(),50); }
+function openPalette(){
+  overlay.classList.add('open');
+  pInput.value = '';
+  filterPalette();
+  setTimeout(() => pInput.focus(), 50);
+}
 function closePalette(){ overlay.classList.remove('open'); }
 
-function visiblePRows(){ return pRows.filter(r=>!r.classList.contains('hidden')); }
+function visiblePRows(){ return pRows.filter(r => !r.classList.contains('hidden')); }
 
 function movePaletteSelection(delta){
   const vis = visiblePRows();
   if(!vis.length) return;
-  let idx = vis.findIndex(r=>r.classList.contains('sel'));
-  vis.forEach(r=>r.classList.remove('sel'));
+  let idx = vis.findIndex(r => r.classList.contains('sel'));
+  vis.forEach(r => r.classList.remove('sel'));
   idx = idx === -1 ? (delta > 0 ? 0 : vis.length - 1) : Math.max(0, Math.min(vis.length - 1, idx + delta));
   vis[idx].classList.add('sel');
-  vis[idx].scrollIntoView({block:'nearest'});
+  vis[idx].scrollIntoView({block: 'nearest'});
 }
 
 function goToPaletteRow(row){
   if(row && row.dataset.url) window.location.href = row.dataset.url;
 }
 
-pRows.forEach(r=>{
+pRows.forEach(r => {
   r.addEventListener('click', () => goToPaletteRow(r));
-  r.addEventListener('mouseenter', () => { pRows.forEach(x=>x.classList.remove('sel')); r.classList.add('sel'); });
+  r.addEventListener('mouseenter', () => { pRows.forEach(x => x.classList.remove('sel')); r.classList.add('sel'); });
 });
 
-document.addEventListener('keydown', e=>{
-  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openPalette(); }
+document.addEventListener('keydown', e => {
+  if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); openPalette(); }
   if(!overlay.classList.contains('open')) return;
-  if(e.key==='Escape'){ closePalette(); return; }
-  if(e.key==='ArrowDown'){ e.preventDefault(); movePaletteSelection(1); }
-  if(e.key==='ArrowUp'){ e.preventDefault(); movePaletteSelection(-1); }
-  if(e.key==='Enter'){ e.preventDefault(); goToPaletteRow(pRows.find(r=>r.classList.contains('sel'))); }
+  if(e.key === 'Escape'){ closePalette(); return; }
+  if(e.key === 'ArrowDown'){ e.preventDefault(); movePaletteSelection(1); }
+  if(e.key === 'ArrowUp'){ e.preventDefault(); movePaletteSelection(-1); }
+  if(e.key === 'Enter'){ e.preventDefault(); goToPaletteRow(pRows.find(r => r.classList.contains('sel'))); }
 });
 
 function filterPalette(){
   const q = pInput.value.trim().toLowerCase();
   let any = false;
-  pRows.forEach(r=>{ const m = r.dataset.name.includes(q); r.classList.toggle('hidden', !m); r.classList.remove('sel'); if(m) any=true; });
-  pGroups.forEach(g=>{
-    const groupRows = g.nextElementSibling ? [] : [];
+  pRows.forEach(r => {
+    const m = r.dataset.name.includes(q);
+    r.classList.toggle('hidden', !m);
+    r.classList.remove('sel');
+    if(m) any = true;
   });
-  // toggle group headers based on whether any following row (until next group) is visible
+  // esconde o cabeçalho de um grupo se nenhuma linha dele sobrou visível
   let cur = null;
-  document.querySelectorAll('#paletteList > *').forEach(el=>{
-    if(el.classList.contains('p-group')){ cur = el; cur._hasVisible=false; }
+  document.querySelectorAll('#paletteList > *').forEach(el => {
+    if(el.classList.contains('p-group')){ cur = el; cur._hasVisible = false; }
     else if(el.classList.contains('p-row') && !el.classList.contains('hidden')){ if(cur) cur._hasVisible = true; }
   });
-  pGroups.forEach(g=> g.classList.toggle('hidden', !g._hasVisible));
+  pGroups.forEach(g => g.classList.toggle('hidden', !g._hasVisible));
   pEmpty.style.display = any ? 'none' : 'block';
-  // seleciona a primeira linha visível — Enter já funciona sem precisar tocar em seta antes
+  // pré-seleciona a primeira linha visível — Enter já funciona sem precisar tocar em seta antes
   const firstVisible = visiblePRows()[0];
   if(firstVisible) firstVisible.classList.add('sel');
 }
 pInput.addEventListener('input', filterPalette);
-</script>
 
-<script>
-/* Botão "i" + modal de detalhes — réplica do comportamento do arquivo
-   original (tool-info-btn / tool-modal-overlay). Reaproveita ICONS e
-   ACCENT_BG já declarados no primeiro <script> (mesmo escopo global de
-   página — não precisa redeclarar). */
+/* ============================================================
+   MODAL DE DETALHES (botão "i")
+============================================================ */
 (function(){
   const modalOverlay = document.createElement('div');
   modalOverlay.className = 'tool-modal-overlay';
@@ -737,7 +695,7 @@ pInput.addEventListener('input', filterPalette);
     modal.classList.toggle('type-consulta', isConsulta);
     modal.classList.toggle('type-ferramenta', !isConsulta);
 
-    const iconData = (typeof ICONS !== 'undefined') ? ICONS[card.dataset.id] : null;
+    const iconData = ICONS[card.dataset.id];
     document.getElementById('miIcon').innerHTML = iconData
       ? `<svg class="ic" viewBox="0 0 24 24">${iconData.svg}</svg>` : '';
     document.getElementById('miTitle').textContent = card.querySelector('.name')?.textContent || '';
@@ -752,8 +710,7 @@ pInput.addEventListener('input', filterPalette);
     document.getElementById('miBody').textContent = card.dataset.fullDesc || card.querySelector('.desc')?.textContent || '';
 
     targetUrl = card.dataset.url || null;
-    const openBtn = document.getElementById('miOpen');
-    openBtn.style.display = targetUrl ? 'flex' : 'none';
+    document.getElementById('miOpen').style.display = targetUrl ? 'flex' : 'none';
 
     modalOverlay.classList.add('open');
   }
@@ -767,7 +724,6 @@ pInput.addEventListener('input', filterPalette);
   document.addEventListener('keydown', e => { if(e.key === 'Escape') closeInfoModal(); });
 
   document.querySelectorAll('.gcard, .mchip').forEach(card => {
-    // botão "i" — vai para dentro do mesmo grupo do pin, lado a lado
     const btn = document.createElement('button');
     btn.className = 'info-btn';
     btn.setAttribute('aria-label', 'Informações');
@@ -776,26 +732,24 @@ pInput.addEventListener('input', filterPalette);
     const actions = card.querySelector('.card-actions');
     if(actions) actions.appendChild(btn); else card.appendChild(btn);
 
-    // clique no card inteiro (fora do pin e do "i") entra na ferramenta de verdade
+    // clicar no card inteiro (fora do pin e do "i") entra direto na ferramenta/consulta real
     const url = card.dataset.url;
-    if(url){
-      card.addEventListener('click', () => { window.location.href = url; });
-    }
+    if(url) card.addEventListener('click', () => { window.location.href = url; });
   });
 })();
-</script>
 
-<script>
-/* Ajuste cosmético e aditivo — não interfere na lógica acima.
-   ⌘ é specific de macOS; a maior parte dos assessores usa Windows,
-   então o atalho deve refletir a tecla real do teclado deles. */
+/* ============================================================
+   ATALHO DE TECLADO POR PLATAFORMA
+   ⌘ é específico de macOS; a maior parte dos assessores usa
+   Windows, então o atalho mostrado deve refletir a tecla real.
+============================================================ */
 (function(){
   const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   if(isMac) return;
-  document.querySelectorAll('kbd').forEach(function(k){
+  document.querySelectorAll('kbd').forEach(k => {
     if(k.textContent.trim() === '⌘K') k.textContent = 'Ctrl K';
   });
-  document.querySelectorAll('.dock-item .tip').forEach(function(t){
+  document.querySelectorAll('.dock-item .tip').forEach(t => {
     if(t.textContent.includes('⌘K')) t.textContent = t.textContent.replace('⌘K', 'Ctrl K');
   });
 })();
