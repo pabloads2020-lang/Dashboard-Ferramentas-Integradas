@@ -1,1250 +1,804 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
-    <title>HUB Financeiro | Painel de ferramentas</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hub Financeiro — Pablo B. Freire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RESET
+============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-        :root {
-            --bg:      #0d0f17;
-            --bg2:     #141720;
-            --bg3:     #1a1e2b;
-            --border:  #2a2e3f;
-            --text:    #e1e3ef;
-            --text2:   #9a9eb8;
-            --text3:   #5c6080;
-            --gold:    #f5c842;
-            --amber:   #e0ac2c;
-            --green:   #2ecc71;
-            --red:     #e74c3c;
-            --blue:    #4a9eff;
-            --sidebar-w: 260px;
-            --sidebar-collapsed: 56px;
-        }
-        body.light {
-            --bg:    #f4f5f7; --bg2: #ffff; --bg3: #eef0f4;
-            --border:#d4d8e2; --text: #1a1d2e; --text2: #4a4f6a;
-            --text3: #8a90a8; --gold: #b8860b; --amber: #c47d00;
-        }
+/* ============================================================
+   DESIGN TOKENS
+   Os 5 accents (violet/indigo/teal/pink/amber) permanecem com
+   os MESMOS valores hex do arquivo original: dezenas de estilos
+   inline (--accent, --accent-bg) e o objeto ACCENT_BG no JS
+   dependem exatamente desses tons. Tudo o mais foi refinado.
+============================================================ */
+:root{
+  /* superfície / profundidade */
+  --bg:#07080B;
+  --bg2:#0D0F14;
+  --surface:rgba(255,255,255,.04);
+  --surface-hi:rgba(255,255,255,.075);
+  --surface-active:rgba(255,255,255,.1);
+  --border:rgba(255,255,255,.08);
+  --border-hi:rgba(255,255,255,.18);
+  --border-soft:rgba(255,255,255,.05);
 
-        body {
-            background: var(--bg);
-            font-family: 'DM Sans', sans-serif;
-            color: var(--text);
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            transition: background .2s, color .2s;
-            font-size: 15px;
-        }
+  /* texto — text3 recalibrado para ~4.7:1 de contraste sobre --bg (WCAG AA em corpo de texto) */
+  --text:#F5F6F8;
+  --text2:#9CA1AC;
+  --text3:#767C8A;
 
-        /* LAYOUT PRINCIPAL */
-        .layout {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-            height: 100vh;
-        }
+  /* accents — NÃO alterar hex (usados em rgba() inline no HTML e no JS) */
+  --violet:#8C7CF6;
+  --indigo:#6C93FF;
+  --teal:#33D6B0;
+  --pink:#F178B0;
+  --amber:#F7B955;
 
-        /* ==== SIDEBAR ==== */
-        .sidebar {
-            width: var(--sidebar-w);
-            flex-shrink: 0;
-            background: var(--bg2);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 50;
-            position: relative;
-            transition: width .3s cubic-bezier(.4,0,.2,1),
-                        opacity .3s ease,
-                        transform .3s cubic-bezier(.4,0,.2,1);
-        }
-        /* Desktop collapsed — sidebar oculta */
-        .sidebar.collapsed {
-            width: 0 !important;
-            opacity: 0;
-            pointer-events: none;
-        }
-        .sidebar-scroll {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scrollbar-width: thin;
-            scrollbar-color: var(--border) transparent;
-        }
-        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
-        .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
-        .sidebar-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-        .sidebar-scroll::-webkit-scrollbar-thumb:hover { background: var(--text3); }
-        .nav-section-label {
-            font-size: 8px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text3);
-            padding: 12px 16px 6px;
-            white-space: nowrap;
-            margin-top: 6px;
-        }
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            padding: 10px 0;
-            justify-content: flex-start;
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            color: var(--text2);
-            width: 100%;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            border-left: 3px solid transparent;
-            transition: background .15s, color .15s, border-color .15s;
-            text-align: left;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-        .nav-item:hover {
-            background: var(--bg3);
-            color: var(--text);
-        }
-        .nav-item.active {
-            border-left-color: var(--amber);
-            background: var(--bg3);
-            color: var(--gold);
-            font-weight: 600;
-        }
-        .nav-item i {
-            font-size: 18px;
-            flex-shrink: 0;
-            min-width: 56px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .nav-item-label {
-            opacity: 1;
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            display: inline-block;
-        }
-        .sidebar-footer {
-            margin-top: auto;
-            border-top: 1px solid var(--border);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 12px;
-            overflow: hidden;
-        }
-        .sidebar-footer img {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            object-fit: cover;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
-        }
-        .sidebar-footer .user-info {
-            opacity: 1;
-        }
-        .sidebar-footer .user-name {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text);
-            white-space: nowrap;
-        }
-        .sidebar-footer .user-role {
-            font-size: 11px;
-            color: var(--text3);
-            white-space: nowrap;
-        }
+  /* cores exclusivas da marca "HUB Financeiro" — extraídas do arquivo real
+     (dashboard.html: --gold:#f5c842 / --amber:#e0ac2c). Propositalmente
+     separadas do --amber de accent acima, que já é usado em vários cards
+     de ferramenta (Gerador IPS, Conglomerados, Patrimônio) — reaproveitar
+     o mesmo nome mudaria a cor desses cards sem querer. */
+  --gold:#f5c842;
+  --wordmark-amber:#e0ac2c;
 
-        /* Sidebar mobile/tablet */
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                top: 0; left: 0; bottom: 0;
-                transform: translateX(-100%);
-                width: 260px !important;
-                box-shadow: 4px 0 20px rgba(0,0,0,.4);
-                transition: transform .25s ease !important;
-            }
-            .sidebar.mobile-open { transform: translateX(0); }
-            .sidebar-overlay {
-                display: block;
-                position: fixed;
-                inset: 0;
-                background: rgba(0,0,0,0.5);
-                z-index: 40;
-                visibility: hidden;
-                opacity: 0;
-                transition: opacity .2s, visibility .2s;
-            }
-            .sidebar-overlay.active { visibility: visible; opacity: 1; }
-        }
+  /* sistema de 2 cores fixas do modal "i" — Ferramenta x Consulta.
+     Propositalmente FORA do sistema de 5 accents dos cards (violet/
+     indigo/teal/pink/amber): usar o accent de cada card no modal deixava
+     "carnaval" de cores. Aqui só existem 2 identidades, como no script antigo. */
+  --tool-gold:#C5A059;
+  --consulta-blue:#2980B9;
+  --consulta-blue-light:#5DADE2;
 
-        /* MAIN CONTENT */
-        .main-content {
-            flex: 1;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* ── WELCOME SCREEN ── */
-        #welcome-screen {
-            position: absolute;
-            inset: 0;
-            overflow-y: auto;
-            background: var(--bg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 48px 40px 60px;
-        }
-        #welcome-screen::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 56px; right: 0;
-            height: 320px;
-            background: radial-gradient(ellipse 70% 100% at 50% -10%, rgba(245,200,66,.06) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .welcome-inner {
-            max-width: 1140px;
-            width: 100%;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        .welcome-hero { text-align: center; margin-bottom: 48px; }
-        .welcome-wordmark {
-            display: inline-flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 14px;
-        }
-        .ww-hub {
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 800;
-            letter-spacing: -.04em;
-            color: var(--gold);
-            line-height: 1;
-        }
-        .ww-bar {
-            width: 2px;
-            height: clamp(1.4rem, 3vw, 2.1rem);
-            background: linear-gradient(to bottom, var(--amber) 40%, transparent);
-            border-radius: 2px;
-            flex-shrink: 0;
-        }
-        .ww-fin {
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 800;
-            letter-spacing: -.04em;
-            color: var(--text);
-            line-height: 1;
-        }
-        .welcome-sub {
-            font-size: 0.85rem;
-            color: var(--text3);
-            max-width: 460px;
-            margin: 0 auto;
-            line-height: 1.55;
-        }
-        /* ── Hero topbar ── */
-        .hero-topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 36px;
-            gap: 16px;
-        }
-        .hero-identity {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-        }
-        .hero-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1.5px solid rgba(197,160,89,.35);
-            flex-shrink: 0;
-        }
-        .hero-greeting {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-            text-align: left;
-        }
-        .hero-greeting-name {
-            font-size: .82rem;
-            font-weight: 700;
-            color: var(--text);
-            line-height: 1;
-        }
-        .hero-greeting-role {
-            font-size: .67rem;
-            color: var(--text3);
-            font-weight: 500;
-        }
+  /* raio */
+  --r-sm:10px;
+  --r-md:14px;
+  --r-lg:20px;
+  --r-xl:28px;
 
-        /* ── Sidebar toggle button ── */
-        .sidebar-toggle-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 6px 12px 6px 8px;
-            cursor: pointer;
-            transition: border-color .18s, background .18s;
-        }
-        .sidebar-toggle-btn:hover {
-            border-color: rgba(197,160,89,.35);
-            background: rgba(197,160,89,.05);
-        }
-        /* Track (pill) */
-        .stb-track {
-            width: 28px;
-            height: 16px;
-            border-radius: 8px;
-            background: var(--bg3);
-            border: 1px solid var(--border);
-            position: relative;
-            flex-shrink: 0;
-            transition: background .2s, border-color .2s;
-        }
-        /* Thumb */
-        .stb-thumb {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--text3);
-            transition: transform .2s cubic-bezier(.4,0,.2,1), background .2s;
-        }
-        /* Estado ATIVO (sidebar visível) */
-        .sidebar-toggle-btn.active .stb-track {
-            background: rgba(224,172,44,.18);
-            border-color: rgba(224,172,44,.4);
-        }
-        .sidebar-toggle-btn.active .stb-thumb {
-            transform: translateX(12px);
-            background: var(--amber);
-        }
-        .stb-label {
-            font-size: .72rem;
-            font-weight: 600;
-            color: var(--text3);
-            font-family: 'DM Sans', sans-serif;
-            transition: color .18s;
-            white-space: nowrap;
-        }
-        .sidebar-toggle-btn.active .stb-label { color: var(--gold); }
+  /* sombra */
+  --shadow-card:0 1px 0 rgba(255,255,255,.05) inset, 0 24px 48px -28px rgba(0,0,0,.7);
+  --shadow-card-hover:0 1px 0 rgba(255,255,255,.07) inset, 0 30px 60px -20px rgba(0,0,0,.75);
+  --shadow-dock:0 -1px 0 rgba(255,255,255,.06) inset, 0 30px 70px -16px rgba(0,0,0,.8);
+  --shadow-palette:0 1px 0 rgba(255,255,255,.06) inset, 0 40px 90px -20px rgba(0,0,0,.85);
 
-        @media (max-width: 768px) {
-            .sidebar-toggle-btn { display: none; }
-        }
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-        /* ── Rodapé de assinatura (centralizado) ── */
-        .creator-footer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 56px;
-            padding-top: 32px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            width: 100%;
-        }
-        .creator-avatar {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(197,160,89,.3);
-            cursor: pointer;
-            transition: border-color .18s, box-shadow .18s;
-            display: block;
-            margin: 0 auto;
-        }
-        .creator-avatar:hover {
-            border-color: rgba(197,160,89,.7);
-            box-shadow: 0 0 16px rgba(224,172,44,.15);
-        }
-        .creator-name {
-            font-size: .82rem;
-            font-weight: 700;
-            color: var(--text2);
-            letter-spacing: .01em;
-            text-align: center;
-        }
-        .creator-role {
-            font-size: .67rem;
-            color: var(--text3);
-            font-weight: 500;
-            text-align: center;
-        }
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-press:cubic-bezier(.4,0,.2,1);
+}
 
-        .section-divider-line { flex: 1; height: 1px; background: var(--border); }
-        .section-divider-label {
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            color: var(--text3);
-            white-space: nowrap;
-        }
-        .tool-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            letter-spacing: .05em;
-            text-transform: uppercase;
-            line-height: 1;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .tool-badge.ferramenta { background: rgba(197,160,89,.15); color: #C5A059; border: 1px solid rgba(197,160,89,.3); }
-        .tool-badge.consulta   { background: rgba(41,128,185,.15); color: #5DADE2; border: 1px solid rgba(41,128,185,.3); }
-        .tools-group { margin-bottom: 36px; }
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-        .tools-grid.grid-7 {
-            grid-template-columns: repeat(4, 1fr);
-        }
-        .tool-card {
-            box-sizing: border-box;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-top: 2px solid transparent;
-            border-radius: 14px;
-            padding: 20px 18px 16px;
-            cursor: pointer;
-            font-family: inherit;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            min-height: 180px;
-            overflow: hidden;
-            transition: border-color .18s, border-top-color .18s, background .18s, transform .18s, box-shadow .18s;
-            position: relative;
-        }
-        .tool-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 13px;
-            background: linear-gradient(135deg, rgba(245,200,66,.04) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity .18s;
-            pointer-events: none;
-        }
-        .tool-card:hover {
-            border-color: rgba(245,200,66,.3);
-            border-top-color: var(--amber);
-            background: var(--bg3);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0,0,0,.3), 0 0 20px rgba(224,172,44,.09);
-        }
-        .tool-card:hover::after { opacity: 1; }
+/* feedback tátil consistente em todo elemento clicável —
+   toque/clique precisa de confirmação visual imediata, não só hover */
+.gcard, .pin-btn, .mchip, .dock-item, .p-row, .search-pill{
+  -webkit-tap-highlight-color:transparent;
+}
+.gcard:active{transform:translateY(0) scale(.985)}
+.pin-btn:active{transform:scale(.9)}
+.mchip:active{transform:scale(.97)}
+.dock-item:active{transform:scale(.92) !important}
+.p-row:active{transform:scale(.99)}
+.search-pill:active{transform:scale(.995)}
 
-        /* Consulta cards — hover azul */
-        .tool-card[data-badge="consulta"]:hover {
-            border-color: rgba(41,128,185,.38);
-            border-top-color: #2980B9;
-            box-shadow: 0 8px 24px rgba(0,0,0,.3), 0 0 20px rgba(41,128,185,.12);
-        }
-        .tool-card[data-badge="consulta"]:hover::after {
-            background: linear-gradient(135deg, rgba(41,128,185,.07) 0%, transparent 60%);
-        }
-        .tool-card[data-badge="consulta"] .tool-info-btn:hover {
-            background: rgba(41,128,185,.12);
-            border-color: rgba(41,128,185,.55);
-            color: #5DADE2;
-        }
-        .tool-card-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            flex-shrink: 0;
-            margin-bottom: 10px;
-        }
-        .tool-card-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 9px;
-            background: rgba(197,160,89,.1);
-            border: 1px solid rgba(197,160,89,.18);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .tool-card-icon .material-symbols-outlined {
-            font-size: 18px;
-            color: var(--amber);
-        }
-        .tool-card-name {
-            text-align: left;
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: #e8eaf0;
-            line-height: 1.2;
-            max-height: 2.4em;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-        .tool-card-desc {
-            text-align: left;
-            font-size: 0.78rem;
-            color: var(--text3);
-            line-height: 1.3;
-            flex: 1;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-        }
-        .tool-card-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-            margin-top: 8px;
-            gap: 6px;
-        }
-        .tool-platform {
-            font-size: 0.68rem;
-            color: var(--text3);
-            font-weight: 500;
-            white-space: nowrap;
-            line-height: 1;
-        }
-        .tool-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 2px 7px;
-            border-radius: 20px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            letter-spacing: .05em;
-            text-transform: uppercase;
-            line-height: 1;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        @media (max-width: 1024px) { .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
-        @media (max-width: 780px) { .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
-        @media (max-width: 540px) { .tools-grid { grid-template-columns: 1fr; } .tool-card { min-height: auto; } }
+html{background:var(--bg)}
+body{
+  background:
+    radial-gradient(1100px 620px at 14% -8%, rgba(140,124,246,.10), transparent 60%),
+    radial-gradient(900px 560px at 100% 0%, rgba(51,214,176,.07), transparent 55%),
+    linear-gradient(180deg,var(--bg2),var(--bg) 420px);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  overflow-x:hidden;
+  padding-bottom:120px;
+  position:relative;
+}
+svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.hidden{display:none !important}
+::selection{background:rgba(140,124,246,.35);color:#fff}
+:focus-visible{outline:2px solid var(--indigo);outline-offset:3px;border-radius:6px}
 
-        /* Iframe area */
-        #iframe-wrap {
-            position: absolute;
-            inset: 0;
-            display: none;
-            flex-direction: column;
-            z-index: 5;
-        }
-        iframe {
-            flex: 1;
-            border: none;
-            background: var(--bg);
-            width: 100%;
-            display: block;
-        }
-        #iframe-loader {
-            position: absolute;
-            inset: 0;
-            background: rgba(13,15,23,.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            transition: opacity .2s;
-            opacity: 0;
-            pointer-events: none;
-        }
-        .spinner {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 3px solid var(--border);
-            border-top-color: var(--amber);
-            animation: spin .7s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loader-label {
-            font-size: 12px;
-            color: var(--text3);
-            margin-top: 10px;
-        }
+/* barra de assinatura no topo — sutil, institucional (Linear/Vercel) */
+.top-accent{position:fixed;top:0;left:0;right:0;height:2px;z-index:60;
+  background:linear-gradient(90deg,var(--violet),var(--indigo) 35%,var(--teal) 70%,var(--amber));
+  opacity:.55}
 
-        .tool-card-icon i {
-            font-size: 18px;
-            color: var(--amber);
-        }
+/* textura de grão muito sutil sobre o fundo, camada decorativa fixa */
+.bg-decor{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:34px 34px;
+  -webkit-mask-image:radial-gradient(1200px 700px at 50% -10%, #000 0%, transparent 70%);
+          mask-image:radial-gradient(1200px 700px at 50% -10%, #000 0%, transparent 70%);
+  opacity:.5}
 
-        /* Botão menu hambúrguer flutuante (já que não há topbar) */
-        .floating-menu-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 40px;
-            width: 48px;
-            height: 48px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 60;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        @media (max-width: 768px) {
-            .floating-menu-btn {
-                display: flex;
-            }
-            .sidebar {
-                top: 0;
-            }
-        }
+/* ============================================================
+   LAYOUT
+============================================================ */
+.wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:32px 40px 0}
 
-        /* -------------------------------------------------------------------
-           Botão "i" + modal centralizado
-           ------------------------------------------------------------------- */
+.topline{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:20px;margin-bottom:48px;border-bottom:1px solid var(--border-soft)}
+.brandmark{display:flex;align-items:center;gap:11px}
+.mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--wordmark-amber));
+  display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:.72rem;color:#1a1206;letter-spacing:.01em;
+  box-shadow:0 0 0 1px rgba(255,255,255,.12) inset, 0 10px 22px -8px rgba(245,200,66,.5)}
+.brandmark .word{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.1rem;letter-spacing:-.01em}
+.brandmark .word span{color:var(--text2);font-weight:400}
 
-        .tool-card { position: relative; }
+.profile{
+  display:flex;align-items:center;justify-content:flex-end;gap:0;
+  padding:3px;border-radius:99px;
+  border:1px solid var(--border-soft);background:var(--surface);
+  max-width:40px;overflow:hidden;
+  transition:max-width .32s var(--ease), padding .32s var(--ease), gap .32s var(--ease), background .28s var(--ease);
+}
+.profile:hover, .profile:focus-within{
+  max-width:280px;padding:6px 8px 6px 14px;gap:12px;background:var(--surface-hi);
+}
+.profile .av-link{display:block;width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  border:2px solid rgba(197,160,89,.3);transition:border-color .18s var(--ease), box-shadow .18s var(--ease)}
+.profile .av-link:hover{border-color:rgba(197,160,89,.7);box-shadow:0 0 16px rgba(224,172,44,.25)}
+.profile .av-link img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.profile .txt{
+  font-size:.76rem;color:var(--text2);text-align:right;line-height:1.35;white-space:nowrap;
+  max-width:0;opacity:0;overflow:hidden;
+  transition:max-width .3s var(--ease), opacity .2s var(--ease);
+}
+.profile:hover .txt, .profile:focus-within .txt{max-width:220px;opacity:1;transition:max-width .3s var(--ease), opacity .22s var(--ease) .08s}
+.profile .txt b{color:var(--text);font-weight:600;display:block;font-size:.82rem}
 
-        .tool-info-btn {
-            position: absolute;
-            top: 11px; right: 11px;
-            width: 22px; height: 22px;
-            border-radius: 50%;
-            background: transparent;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text3);
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity .15s, background .15s, border-color .15s, color .15s;
-            z-index: 4;
-            padding: 0;
-            font-size: 11px;
-            font-style: italic;
-            font-weight: 700;
-            font-family: 'DM Sans', sans-serif;
-            line-height: 1;
-        }
-        .tool-card:hover .tool-info-btn { opacity: 1; }
-        .tool-info-btn:hover {
-            background: rgba(245,200,66,.12);
-            border-color: rgba(245,200,66,.45);
-            color: var(--gold);
-        }
+/* ============================================================
+   HERO
+============================================================ */
+.hero{margin-bottom:48px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:600;letter-spacing:.02em;
+  color:var(--text2);background:var(--surface);border:1px solid var(--border);padding:7px 13px 7px 11px;
+  border-radius:99px;margin-bottom:24px}
+.hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal)}
+.hero h1{display:flex;align-items:center;gap:14px;font-family:'Space Grotesk',sans-serif;font-weight:800;
+  font-size:clamp(2rem,4vw,3rem);line-height:1;letter-spacing:-.04em}
+.hero h1 .hub{color:var(--gold)}
+.hero h1 .divider{width:2px;height:clamp(1.4rem,3vw,2.1rem);
+  background:linear-gradient(to bottom, var(--wordmark-amber) 40%, transparent);border-radius:2px;flex-shrink:0}
+.hero h1 .fin{color:var(--text)}
+.hero-sub{margin-top:14px;font-size:.85rem;color:var(--text3);line-height:1.55;max-width:460px}
 
-        /* Modal overlay */
-        .tool-modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(6,8,14,.7);
-            backdrop-filter: blur(7px);
-            -webkit-backdrop-filter: blur(7px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            z-index: 120;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .2s ease;
-        }
-        .tool-modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .modal-glow { display: none; }
+.search-pill{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:16px 18px;margin-top:32px;max-width:540px;
+  cursor:pointer;
+  transition:border-color .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
+}
+.search-pill:hover{border-color:var(--border-hi);background:var(--surface-hi);box-shadow:var(--shadow-card)}
+.search-pill svg{color:var(--text3);flex-shrink:0}
+.search-pill .ph{flex:1;color:var(--text3);font-size:.9rem}
+.search-pill kbd{font-family:'IBM Plex Mono',monospace;font-size:.64rem;color:var(--text2);
+  background:rgba(255,255,255,.07);border:1px solid var(--border);padding:4px 8px;border-radius:6px}
 
-        .tool-modal {
-            width: min(440px, 100%);
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-top: 2px solid var(--amber);
-            border-radius: 16px;
-            padding: 26px 26px 22px;
-            box-shadow: 0 30px 80px rgba(0,0,0,.6);
-            transform: translateY(10px) scale(.97);
-            opacity: 0;
-            transition: transform .22s cubic-bezier(.2,.9,.3,1), opacity .22s;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .tool-modal-overlay.open .tool-modal {
-            transform: none;
-            opacity: 1;
-        }
-        .tool-modal::after { display: none; }
-        .tool-modal::before { display: none; }
+/* ============================================================
+   SECTION HEADERS
+============================================================ */
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin:48px 0 20px;gap:16px;
+  padding-bottom:14px;border-bottom:1px solid var(--border-soft)}
+.section-head .lbl{display:flex;align-items:center;gap:10px}
+.section-head .lbl .num{font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--text3);
+  border:1px solid var(--border);border-radius:5px;padding:2px 6px}
+.section-head h2{font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:600;letter-spacing:-.01em}
+.section-head span{font-size:.76rem;color:var(--text3);white-space:nowrap}
 
-        .modal-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 14px;
-            padding-right: 4px;
-        }
-        .modal-icon {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            background: rgba(197,160,89,.1);
-            border: 1px solid rgba(197,160,89,.2);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-        .modal-icon i { font-size: 18px; color: var(--amber); }
-        .modal-title {
-            font-size: .93rem;
-            font-weight: 700;
-            color: var(--text);
-            line-height: 1.2;
-        }
-        .modal-sub {
-            font-size: .67rem;
-            color: var(--text3);
-            margin-top: 3px;
-            font-weight: 500;
-        }
-        .modal-divider { height: 1px; background: var(--border); margin-bottom: 14px; }
-        .modal-body {
-            color: var(--text2);
-            line-height: 1.68;
-            font-size: .82rem;
-            white-space: pre-wrap;
-        }
-        .modal-footer {
-            margin-top: 20px;
-            display: flex;
-            gap: 8px;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .close-modal-btn {
-            height: 34px; padding: 0 14px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text2);
-            font-family: 'DM Sans', sans-serif;
-            font-size: .75rem; font-weight: 600;
-            cursor: pointer;
-            transition: background .12s, border-color .12s;
-        }
-        .close-modal-btn:hover { background: var(--bg3); border-color: rgba(255,255,255,.1); }
-        .open-tool-btn {
-            height: 34px; padding: 0 16px;
-            border-radius: 8px;
-            border: 1px solid var(--amber);
-            background: rgba(224,172,44,.1);
-            color: var(--gold);
-            font-family: 'DM Sans', sans-serif;
-            font-size: .75rem; font-weight: 700;
-            cursor: pointer;
-            display: flex; align-items: center; gap: 6px;
-            transition: background .15s, box-shadow .15s;
-        }
-        .open-tool-btn:hover { background: rgba(224,172,44,.2); box-shadow: 0 0 14px rgba(224,172,44,.2); }
+/* ============================================================
+   TOOL GRID / CARDS
+============================================================ */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.gcard{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;
+  cursor:pointer;position:relative;overflow:hidden;
+  box-shadow:var(--shadow-card);
+  display:flex;flex-direction:column;min-height:168px;
+  transition:border-color .18s var(--ease), background .18s var(--ease), transform .16s var(--ease-press), box-shadow .18s var(--ease);
+}
+.gcard::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(160deg, rgba(255,255,255,.10), transparent 40%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;opacity:.7}
+.gcard:hover{transform:translateY(-1px);border-color:var(--border-hi);background:var(--surface-hi);box-shadow:var(--shadow-card-hover)}
+.gcard .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-shrink:0}
+.gcard .icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--accent-bg);color:var(--accent);
+  border:1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  box-shadow:0 0 0 1px rgba(255,255,255,.05) inset}
+.gcard .chip{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.pin-btn{
+  width:27px;height:27px;border-radius:8px;border:1px solid var(--border);
+  background:rgba(255,255,255,.04);color:var(--text3);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  opacity:0;transition:opacity .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease), background .15s var(--ease);
+}
+.gcard:hover .pin-btn{opacity:1}
+.mchip:hover .pin-btn{opacity:1}
+.pin-btn:hover{color:var(--text);border-color:var(--border-hi)}
+.pin-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8}
+.pin-btn.pinned{opacity:1;color:var(--amber);border-color:rgba(247,185,85,.35);background:rgba(247,185,85,.12)}
+.pin-btn.pinned svg{fill:currentColor}
+.pin-hint{font-size:.66rem;color:var(--text3);margin-top:-8px;margin-bottom:24px}
+/* hover não existe em touch — sem isso, fixar um card no dock é
+   impossível em tablet/celular. O botão fica sempre visível nesses casos. */
+@media (hover:none), (pointer:coarse){
+  .pin-btn{opacity:1}
+}
+.dock-shake{animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.dock-empty-hint{font-size:.62rem;color:var(--text3);padding:0 6px;align-self:center;white-space:nowrap;letter-spacing:.01em}
+.gcard .name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.02rem;margin-bottom:7px;letter-spacing:-.005em;flex-shrink:0}
+.gcard .desc{font-size:.79rem;color:var(--text2);line-height:1.55}
+.gcard .plat{
+  /* margin-top:auto ancora o badge no rodapé do card, independente do
+     tamanho da descrição — evita cards com badges "flutuando" em alturas diferentes */
+  margin-top:auto;padding-top:18px;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;
+  font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.03em;color:var(--text3);
+  background:rgba(255,255,255,.035);border:1px solid var(--border-soft);
+  padding:5px 9px;border-radius:99px;
+}
+.gcard .plat::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.85}
 
-        @media (max-width: 540px) {
-            .tool-info-btn { opacity: 1; }
-            .tool-modal { border-radius: 12px; padding: 20px; }
-        }
+/* ============================================================
+   CONSULTAS — mesmo formato de card das ferramentas.
+   Ambas competem pela mesma atenção visual na tela, então fazem
+   sentido ter o mesmo peso. A distinção semântica (consulta é mais
+   leve que ferramenta) fica só na ausência do botão de pin, não
+   mais numa diferença de tamanho — que era arbitrária.
+============================================================ */
+.chiprow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mchip{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;
+  cursor:pointer;position:relative;overflow:hidden;
+  box-shadow:var(--shadow-card);
+  display:flex;flex-direction:column;min-height:168px;
+  transition:border-color .18s var(--ease), background .18s var(--ease), transform .16s var(--ease-press), box-shadow .18s var(--ease);
+}
+.mchip::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(160deg, rgba(255,255,255,.10), transparent 40%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;opacity:.7}
+.mchip:hover{transform:translateY(-1px);border-color:var(--border-hi);background:var(--surface-hi);box-shadow:var(--shadow-card-hover)}
+.mchip .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-shrink:0}
+.mchip .icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--accent-bg);color:var(--accent);
+  border:1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  box-shadow:0 0 0 1px rgba(255,255,255,.05) inset;flex-shrink:0}
+.mchip span.name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.02rem;letter-spacing:-.005em;
+  margin-bottom:7px;white-space:normal;display:block}
+.mchip .desc{font-size:.79rem;color:var(--text2);line-height:1.55;margin-top:auto;padding-top:2px}
 
-    </style>
+/* ============================================================
+   DOCK
+============================================================ */
+.dock-wrap{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:30;
+  display:flex;align-items:center;gap:12px;max-width:calc(100vw - 32px)}
+.dock{
+  display:flex;align-items:flex-end;gap:10px;
+  background:rgba(22,23,29,.05);backdrop-filter:blur(4px) saturate(220%);-webkit-backdrop-filter:blur(4px) saturate(220%);
+  border:1px solid rgba(255,255,255,.15);border-radius:24px;
+  padding:12px 14px 10px;
+  box-shadow:var(--shadow-dock), inset 0 1px 0 rgba(255,255,255,.26), inset 0 0 0 1px rgba(255,255,255,.04);
+  max-width:100%;overflow-x:auto;scrollbar-width:none;
+}
+.dock::-webkit-scrollbar{display:none}
+.dock-item{
+  height:46px;border-radius:13px;
+  display:flex;align-items:center;flex-shrink:0;overflow:hidden;
+  background:var(--accent-bg);color:var(--accent);
+  cursor:pointer;position:relative;padding:0 13px;
+  transition:background .18s var(--ease), padding-right .22s var(--ease);
+  box-shadow:0 0 0 1px rgba(255,255,255,.05) inset;
+}
+.dock-item svg{width:20px;height:20px;flex-shrink:0}
+.dock-item .tip{
+  font-size:.72rem;font-weight:600;color:var(--text);white-space:nowrap;
+  max-width:0;opacity:0;overflow:hidden;margin-left:0;
+  transition:max-width .22s var(--ease), opacity .16s var(--ease) .02s, margin-left .22s var(--ease);
+}
+.dock-item:hover .tip{max-width:200px;opacity:1;margin-left:10px}
+.dock-item:hover{padding-right:16px}
+.dock-sep{width:1px;align-self:stretch;background:var(--border-hi);margin:2px 4px}
+.dock-item.search{background:rgba(247,185,85,.16);color:var(--amber)}
+
+/* ============================================================
+   BOTÃO "i" + MODAL DE DETALHES
+   Réplica do .tool-info-btn / .tool-modal-overlay do arquivo original —
+   mesma geometria, mesmas transições, cores adaptadas à paleta do hub.
+============================================================ */
+.gcard, .mchip{position:relative}
+.card-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.info-btn{
+  width:27px;height:27px;border-radius:8px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text3);cursor:pointer;opacity:0;padding:0;
+  font-size:12px;font-style:italic;font-weight:700;font-family:'Inter',sans-serif;line-height:1;
+  transition:opacity .15s var(--ease), background .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease);
+}
+.gcard:hover .info-btn, .mchip:hover .info-btn{opacity:1}
+.info-btn:hover{background:rgba(247,185,85,.12);border-color:rgba(247,185,85,.45);color:var(--amber)}
+@media (hover:none), (pointer:coarse){ .info-btn{opacity:1} }
+
+.tool-modal-overlay{
+  position:fixed;inset:0;background:rgba(4,5,7,.72);
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+  display:flex;align-items:center;justify-content:center;padding:24px;z-index:120;
+  opacity:0;pointer-events:none;transition:opacity .2s var(--ease);
+}
+.tool-modal-overlay.open{opacity:1;pointer-events:auto}
+.tool-modal{
+  width:min(440px,100%);background:#0F1116;border:1px solid var(--border-hi);
+  border-top:2px solid var(--tool-gold);border-radius:var(--r-lg);
+  padding:26px 26px 22px;box-shadow:var(--shadow-palette);
+  transform:translateY(10px) scale(.97);opacity:0;
+  transition:transform .22s var(--ease), opacity .22s var(--ease), border-top-color .18s var(--ease);
+  position:relative;max-height:90vh;overflow-y:auto;
+}
+.tool-modal.type-consulta{border-top-color:var(--consulta-blue)}
+.tool-modal-overlay.open .tool-modal{transform:none;opacity:1}
+.modal-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding-right:4px}
+.modal-icon{width:38px;height:38px;border-radius:10px;
+  background:rgba(197,160,89,.15);border:1px solid rgba(197,160,89,.3);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--tool-gold);
+  transition:background .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease)}
+.tool-modal.type-consulta .modal-icon{background:rgba(41,128,185,.15);border-color:rgba(41,128,185,.3);color:var(--consulta-blue-light)}
+.modal-icon svg{width:18px;height:18px}
+.modal-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;color:var(--text);line-height:1.2}
+.modal-sub{font-size:.7rem;color:var(--text3);margin-top:3px;font-weight:500}
+.modal-divider{height:1px;background:var(--border);margin-bottom:14px}
+.modal-body{color:var(--text2);line-height:1.68;font-size:.83rem;white-space:pre-wrap}
+.modal-footer{margin-top:20px;display:flex;gap:8px;justify-content:space-between;align-items:center}
+/* badge Ferramenta/Consulta — pill de verdade, igual ao .tool-badge do script antigo */
+.modal-badge{
+  display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;
+  font-family:'Inter',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;line-height:1.6;white-space:nowrap;
+}
+.modal-badge.ferramenta{background:rgba(197,160,89,.15);color:var(--tool-gold);border:1px solid rgba(197,160,89,.3)}
+.modal-badge.consulta{background:rgba(41,128,185,.15);color:var(--consulta-blue-light);border:1px solid rgba(41,128,185,.3)}
+.close-modal-btn{
+  height:34px;padding:0 14px;border-radius:8px;border:1px solid var(--border);background:transparent;
+  color:var(--text2);font-family:'Inter',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;
+  transition:background .12s var(--ease), border-color .12s var(--ease);
+}
+.close-modal-btn:hover{background:var(--surface-hi);border-color:var(--border-hi)}
+.open-tool-btn{
+  height:34px;padding:0 16px;border-radius:8px;border:1px solid var(--tool-gold);
+  background:rgba(224,172,44,.1);color:var(--tool-gold);
+  font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+  transition:background .15s var(--ease), box-shadow .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease);
+}
+.tool-modal.type-consulta .open-tool-btn{border-color:var(--consulta-blue);background:rgba(41,128,185,.12);color:var(--consulta-blue-light)}
+.open-tool-btn:hover{background:var(--surface-hi);box-shadow:0 0 14px rgba(197,160,89,.2)}
+.tool-modal.type-consulta .open-tool-btn:hover{box-shadow:0 0 14px rgba(41,128,185,.2)}
+@media (max-width:540px){
+  .info-btn{opacity:1}
+  .tool-modal{border-radius:var(--r-md);padding:20px}
+}
+
+/* ============================================================
+   COMMAND PALETTE
+============================================================ */
+.overlay{
+  position:fixed;inset:0;z-index:50;
+  background:rgba(4,5,7,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:11vh;
+  opacity:0;pointer-events:none;
+  transition:opacity .18s var(--ease);
+}
+.overlay.open{opacity:1;pointer-events:auto}
+.palette{
+  width:100%;max-width:580px;
+  background:#0F1116;border:1px solid var(--border-hi);border-radius:var(--r-xl);
+  box-shadow:var(--shadow-palette);
+  max-height:70vh;display:flex;flex-direction:column;overflow:hidden;
+}
+.palette-input-row{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--border)}
+.palette-input-row svg{color:var(--text3);flex-shrink:0}
+#paletteInput{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:.96rem;font-family:'Inter',sans-serif}
+#paletteInput::placeholder{color:var(--text3)}
+.palette-esc{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--text2);border:1px solid var(--border);
+  padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.03)}
+.palette-list{overflow-y:auto;padding:10px}
+.palette-list::-webkit-scrollbar{width:8px}
+.palette-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:99px}
+.p-group{font-size:.64rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);padding:14px 12px 7px}
+.p-row{
+  display:flex;align-items:center;gap:13px;padding:10px 12px;border-radius:12px;cursor:pointer;
+  border:1px solid transparent;
+  transition:background .12s var(--ease), border-color .12s var(--ease);
+}
+.p-row:hover, .p-row.sel{background:var(--surface-hi);border-color:var(--border)}
+.p-row .icon{width:29px;height:29px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  background:var(--accent-bg);color:var(--accent);flex-shrink:0}
+.p-row .icon svg{width:15px;height:15px}
+.p-row .t{min-width:0;flex:1}
+.p-row .name{font-size:.84rem;font-weight:500}
+.p-row .desc{font-size:.72rem;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p-empty{padding:34px;text-align:center;color:var(--text3);font-size:.82rem;display:none}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media(max-width:900px){
+  .grid, .chiprow{grid-template-columns:repeat(2,1fr)}
+  .pin-btn{width:32px;height:32px} /* alvo de toque maior — 44px é o ideal, 32px é o teto viável dentro do card sem brigar com o ícone */
+}
+@media(max-width:640px){
+  .wrap{padding:22px 16px 0}
+  .topline{margin-bottom:32px;padding-bottom:16px}
+  .hero{margin-bottom:36px}
+  .hero h1{max-width:none}
+  .search-pill{margin-top:24px;padding:14px 16px}
+  .search-pill kbd{display:none}
+  .section-head{margin:36px 0 16px;flex-wrap:wrap;gap:6px}
+  .grid{grid-template-columns:1fr;gap:12px}
+  .gcard{min-height:0;padding:20px}
+  .chiprow{grid-template-columns:1fr;gap:12px}
+  .mchip{min-height:0;padding:20px}
+  .dock-item{height:42px;padding:0 11px}
+  .palette{margin:0 16px;max-width:none}
+  .profile .txt{display:none}
+}
+</style>
 </head>
 <body>
 
-<div class="layout">
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <aside class="sidebar collapsed" id="sidebar">
-        <div class="sidebar-scroll">
-        <div class="nav-section-label" style="margin-top: 6px;">MENU</div>
-        <button class="nav-item active" data-name="home" data-label="Início" data-url="">
-            <i class="ph-light ph-house" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Início</span>
-        </button>
-        <div class="nav-section-label">CONSULTAS</div>
-        <button class="nav-item" data-name="carteiras" data-label="Carteira Recomendada" data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/">
-            <i class="ph-light ph-wallet" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Carteira Recomendada</span>
-        </button>
-        <button class="nav-item" data-name="fundos-aprovados" data-label="Fundos Aprovados" data-url="https://pabloads2020-lang.github.io/Fundos-Aprovados/">
-            <i class="ph-light ph-trend-up" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Fundos Aprovados</span>
-        </button>
-        <button class="nav-item" data-name="emissores" data-label="Emissores Bancários" data-url="https://pabloads2020-lang.github.io/Emissores-Bancarios/">
-            <i class="ph-light ph-bank" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Emissores Bancários</span>
-        </button>
-        <button class="nav-item" data-name="credito-privado" data-label="Crédito Privado" data-url="https://pabloads2020-lang.github.io/Credito-Privado/">
-            <i class="ph-light ph-credit-card" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Crédito Privado</span>
-        </button>
-        <button class="nav-item" data-name="conglomerado-consulta" data-label="Consulta Conglomerados" data-url="https://pabloads2020-lang.github.io/Consulta-Conglomerado/">
-            <i class="ph-light ph-buildings" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Consulta Conglomerados</span>
-        </button>
-        <button class="nav-item" data-name="patrimonio-clientes" data-label="Patrimônio de Clientes" data-url="https://pabloads2020-lang.github.io/Patrimonio-dos-clientes/">
-            <i class="ph-light ph-coins" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Patrimônio de Clientes</span>
-        </button>
-        <div class="nav-section-label">FERRAMENTAS</div>
-        <button class="nav-item" data-name="monitor-saida-fundos" data-label="Monitor de Saída — Fundos" data-url="https://pabloads2020-lang.github.io/Monitor-de-Saida-Fundos/">
-            <i class="ph-light ph-trend-down" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Monitor de Saída — Fundos</span>
-        </button>
-        <button class="nav-item" data-name="extrato-conta" data-label="Extrato Mensal Conta" data-url="https://pabloads2020-lang.github.io/Extrato-Mensal-Conta/">
-            <i class="ph-light ph-receipt" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Extrato Mensal Conta</span>
-        </button>
-        <button class="nav-item" data-name="rebalanceamento" data-label="Rebalanceamento" data-url="https://pabloads2020-lang.github.io/Rebalanceamento-2/">
-            <i class="ph-light ph-scales" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Rebalanceamento</span>
-        </button>
-        <button class="nav-item" data-name="extrato" data-label="Extrato Analítico" data-url="https://pabloads2020-lang.github.io/Extrato-Analitico/">
-            <i class="ph-light ph-magnifying-glass-plus" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Extrato Analítico</span>
-        </button>
-        <button class="nav-item" data-name="relatorio" data-label="Relatório Mensal" data-url="https://pabloads2020-lang.github.io/Relatorio-mensal/">
-            <i class="ph-light ph-file-text" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Relatório Mensal</span>
-        </button>
-        <button class="nav-item" data-name="ips" data-label="Gerador IPS" data-url="https://pabloads2020-lang.github.io/IPS/">
-            <i class="ph-light ph-clipboard-text" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Gerador IPS</span>
-        </button>
-        <button class="nav-item" data-name="calendario" data-label="Calendário de Vencimentos" data-url="https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/">
-            <i class="ph-light ph-calendar-blank" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Calendário de Vencimentos</span>
-        </button>
-        <button class="nav-item" data-name="conglomerado-fgc" data-label="Análise de Renda Fixa" data-url="https://pabloads2020-lang.github.io/Conglomerado-FGC/">
-            <i class="ph-light ph-chart-bar" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Análise de Renda Fixa</span>
-        </button>
-        <button class="nav-item" data-name="excel-renda-fixa-gmt" data-label="Excel Renda Fixa GMT" data-url="https://pabloads2020-lang.github.io/Excel-de-renda-fixa/">
-            <i class="ph-light ph-file-xls" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Excel Renda Fixa GMT</span>
-        </button>
-        <button class="nav-item" data-name="comparador-taxas" data-label="Comparador de Taxas" data-url="https://pabloads2020-lang.github.io/Comparador-de-taxas/">
-            <i class="ph-light ph-percent" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Comparador de Taxas</span>
-        </button>
-        <button class="nav-item" data-name="rentabilidade" data-label="Rentabilidade" data-url="https://pabloads2020-lang.github.io/Rentabilidade-mensal-acumulada/">
-            <i class="ph-light ph-chart-line-up" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Rentabilidade</span>
-        </button>
-        <button class="nav-item" data-name="aderencia-carteira" data-label="Aderência de Carteira" data-url="https://pabloads2020-lang.github.io/Aderencia-de-carteira/">
-            <i class="ph-light ph-target" style="min-width:56px;font-size:18px;text-align:center;"></i>
-            <span class="nav-item-label">Aderência de Carteira</span>
-        </button>
-        </div><!-- /sidebar-scroll -->
-        <div class="sidebar-footer">
-    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yh2vkLWrOQ89P0Z9tbaVWCYK-fpN09-euyU64ttgORw8cMgmmSgaDwbyS9UvG8ngrUVJgIntrMtOxnBYCBr1hAPkYQm2xUNrLsdI0hJb0I7Vjz1kgelN8b-IjTJHeuX8xLitouyZumU1cDb_5qciKeK8RKA0Cx3xVCCjv8C-iufLhbYahgAcI3Dkg2cXaQYUYbnnzeEsCQNUhqqYkTG3vsN9QMIX7ji7QQb4eTairjx02qTNg6dHVCLQO6PX3JONpAieSsBYMxulGQ"
-         alt="Voltar à página inicial"
-         onclick="window.location.href='index.html'"
-         style="cursor:pointer;"
-         title="Voltar à página inicial">
-    <div class="user-info">
-        <div class="user-name">Pablo B. Freire</div>
-        <div class="user-role">Criador</div>
+<div class="top-accent"></div>
+<div class="bg-decor"></div>
+
+<div class="wrap">
+
+  <div class="topline">
+    <div class="brandmark"><div class="mark">PBF</div><div class="word">Hub<span> Financeiro</span></div></div>
+    <div class="profile" tabindex="0"><div class="txt"><b>Pablo B. Freire</b>Criador · Consultor de Investimentos</div><a class="av-link" href="https://pabloads2020-lang.github.io/Dashboard-Ferramentas-Integradas/" title="Voltar à página de apresentação"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yh2vkLWrOQ89P0Z9tbaVWCYK-fpN09-euyU64ttgORw8cMgmmSgaDwbyS9UvG8ngrUVJgIntrMtOxnBYCBr1hAPkYQm2xUNrLsdI0hJb0I7Vjz1kgelN8b-IjTJHeuX8xLitouyZumU1cDb_5qciKeK8RKA0Cx3xVCCjv8C-iufLhbYahgAcI3Dkg2cXaQYUYbnnzeEsCQNUhqqYkTG3vsN9QMIX7ji7QQb4eTairjx02qTNg6dHVCLQO6PX3JONpAieSsBYMxulGQ" alt="Pablo B. Freire"></a></div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow"><span class="dot"></span>18 ferramentas ativas</div>
+    <h1><span class="hub">HUB</span><span class="divider"></span><span class="fin">Financeiro</span></h1>
+    <p class="hero-sub">Selecione uma ferramenta ou consulta para começar.</p>
+    <div class="search-pill" onclick="openPalette()">
+      <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="ph">Buscar entre as 18 ferramentas e consultas...</span>
+      <kbd>⌘K</kbd>
     </div>
-</div>
-    </aside>
+  </div>
 
-    <main class="main-content">
-        <div id="welcome-screen">
-            <div class="welcome-inner">
+  <div class="section-head">
+    <div class="lbl"><span class="num">01</span><h2>Ferramentas</h2></div>
+    <span>Fixe até 5 no dock para acesso rápido</span>
+  </div>
+  <div class="grid" id="toolGrid">
+    <div class="gcard" data-id="rebalanceamento" data-full-desc="Input: PDF do XPerformance. Carregue o PDF do XPerformance para avaliar a carteira e ver as sugestões de rebalanceamento de acordo com o perfil do cliente" data-url="https://pabloads2020-lang.github.io/Rebalanceamento-2/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v18M5 8l-3 6a4 4 0 0 0 8 0l-3-6zM19 8l-3 6a4 4 0 0 0 8 0l-3-6zM5 8h14M8 3h8"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="rebalanceamento"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Rebalanceamento</div><div class="desc">Aderência da carteira por classe de ativo, via XPerformance.</div><div class="plat">Pleno · Bequest</div></div>
+    <div class="gcard" data-id="aderencia" data-full-desc="Analise o nível de aderência da carteira dos clientes de acordo com o perfil de risco, a carteira recomendada e o retorno em % do CDI." data-url="https://pabloads2020-lang.github.io/Aderencia-de-carteira/" data-accent="pink" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="aderencia"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Aderência de Carteira</div><div class="desc">Perfil, carteira recomendada e retorno % do CDI.</div><div class="plat">Pleno · Bequest</div></div>
+    <div class="gcard" data-id="ips" data-full-desc="Input: Texto resumo da Anamnese. Gera o texto personalizado sobre o cliente a ser preenchido no documento de Política de Investimentos (IPS) considerando o perfil de risco, objetivos e horizonte de investimento." data-url="https://pabloads2020-lang.github.io/IPS/" data-accent="amber" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M7 3h10v4H7z"/><path d="M6 7h12v14H6z"/><path d="M9 12h6M9 15h6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="ips"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Gerador IPS</div><div class="desc">Política de Investimentos automática.</div><div class="plat">Pleno</div></div>
+    <div class="gcard" data-id="comparador" data-full-desc="Compare o retorno dos ativos de renda fixa com indexadores diferentes e descubra se o investimento no período alocado valeu a pena. A ferramenta considera o IR regressivo e taxas apuradas no Banco Central." data-url="https://pabloads2020-lang.github.io/Comparador-de-taxas/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M6 18L18 6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="comparador"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Comparador de Taxas</div><div class="desc">Retorno da renda fixa entre indexadores diferentes.</div><div class="plat">Pleno</div></div>
+    <div class="gcard" data-id="rendafixa" data-full-desc="Input: Relatório Posições (Excel da XP) e a planilha com nomes e códigos dos clientes. Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores aprovados." data-url="https://pabloads2020-lang.github.io/Conglomerado-FGC/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V9l5-5 5 5v10"/><circle cx="17" cy="16" r="3"/><path d="M17 13v6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="rendafixa"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Análise de Renda Fixa</div><div class="desc">Emissores aprovados/reprovados e limites do FGC.</div><div class="plat">Pleno</div></div>
+    <div class="gcard" data-id="excel" data-full-desc="Input: Carregue o excel de movimentações de renda fixa. A ferramenta ajuda a acompanhar ativos de renda fixa reprovados e sem cobertura dos clientes." data-url="https://pabloads2020-lang.github.io/Excel-de-renda-fixa/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9h16M4 14h16M9 4v16"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="excel"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Excel Renda Fixa GMT</div><div class="desc">Ativos reprovados e sem cobertura dos clientes.</div><div class="plat">Pleno</div></div>
+    <div class="gcard" data-id="relatorio" data-full-desc="Inputs: Resumo mensal do mercado e PDF XPerformance. Gere o acompanhamento mensal com o panorama de mercado (local e global) e o resultado detalhado da carteira do cliente por classe de ativo." data-url="https://pabloads2020-lang.github.io/Relatorio-mensal/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6M9 8h3"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="relatorio"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Relatório Mensal</div><div class="desc">Texto de acompanhamento mensal para clientes.</div><div class="plat">Pleno</div></div>
+    <div class="gcard" data-id="rentabilidade" data-full-desc="Carregue a base de rentabilidade mensal dos clientes e acompanhe o desempenho no mês, no ano e acumulado, comparado a CDI, IPCA e outros benchmarks, com gráfico interativo e exportação para Excel." data-url="https://pabloads2020-lang.github.io/Rentabilidade-mensal-acumulada/" data-accent="pink" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M7 15l4-5 3 3 5-7"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="rentabilidade"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Rentabilidade</div><div class="desc">Mensal e acumulada frente a CDI, IPCA e outros.</div><div class="plat">Pleno</div></div>
+    <div class="gcard" data-id="extratomensal" data-full-desc="Gera um extrato consolidado do fluxo financeiro mensal da conta do cliente — entradas e saídas. O resultado é um acompanhamento profissional da movimentação mensal da conta para ser enviado ao cliente." data-url="https://pabloads2020-lang.github.io/Extrato-Mensal-Conta/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="extratomensal"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Extrato Mensal Conta</div><div class="desc">Fluxo de entradas e saídas do mês.</div><div class="plat">Pleno</div></div>
+    <div class="gcard" data-id="calendario" data-full-desc="Inputs aba Vencimentos Renda Fixa: Relatório Posições (Excel da XP) e planilha com nomes e códigos dos clientes. Inputs Aba Vencimentos Fundos de Investimento: Relatório Movimentações Fundos (Excel da XP) e planilha com nomes e códigos dos clientes. Monitore os vencimentos (Renda Fixa, Tesouro e COE) e o fluxo de aplicações e resgates dos fundos de investimento." data-url="https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="1"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="calendario"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Calendário de Vencimentos</div><div class="desc">Vencimentos de renda fixa e fundos.</div><div class="plat">Pleno · Bequest</div></div>
+    <div class="gcard" data-id="extratoanalitico" data-full-desc="Insira os ativos e o caixa/aporte do cliente para avaliar a aderência à carteira recomendada e ver as sugestões de rebalanceamento por classe e por ativo individual." data-url="https://pabloads2020-lang.github.io/Extrato-Analitico/" data-accent="amber" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="M20 20l-5-5"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="extratoanalitico"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Extrato Analítico</div><div class="desc">Ativos do cliente comparados aos recomendados.</div><div class="plat">Pleno · Bequest</div></div>
+    <div class="gcard" data-id="monitor" data-full-desc="Rastreie quais clientes possuem fundos com recomendação de saída pelo comitê de alocações. Carregue o excel Relatório Posições da XP e a base de clientes com nome e código — o sistema identifica e exporta a lista de clientes expostos ao fundo selecionado." data-url="https://pabloads2020-lang.github.io/Monitor-de-Saida-Fundos/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9l8 6 8-6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="monitor"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><div class="name">Monitor de Saída — Fundos</div><div class="desc">Clientes com fundos recomendados para saída.</div><div class="plat">Pleno · Bequest</div></div>
+  </div>
 
-                <!-- Hero -->
-                <div class="welcome-hero">
-                    <!-- Topbar: saudação + avatar + toggle sidebar -->
-                    <div class="hero-topbar">
-                        <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Mostrar/ocultar menu lateral">
-                            <span class="stb-track">
-                                <span class="stb-thumb"></span>
-                            </span>
-                            <span class="stb-label" id="sidebarToggleLabel">Menu</span>
-                        </button>
-                    </div>
+  <div class="section-head">
+    <div class="lbl"><span class="num">02</span><h2>Consultas</h2></div>
+    <span>Consultas rápidas, sem abrir uma ferramenta completa</span>
+  </div>
+  <div class="chiprow">
+    <div class="mchip" data-id="carteirarecomendada" data-full-desc="Visualize as carteiras recomendadas pelo comitê de alocação, organizadas por perfil de risco — Conservador, Moderado e Arrojado." data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="carteirarecomendada"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Carteira Recomendada</span><div class="desc">Carteiras por perfil de risco.</div></div>
+    <div class="mchip" data-id="fundosaprovados" data-full-desc="Acesse a lista atualizada de fundos de investimento aprovados pelo research ou consulte individualmente pelo nome do fundo." data-url="https://pabloads2020-lang.github.io/Fundos-Aprovados/" data-accent="indigo" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V9l5-5 5 5v10"/><path d="M15 19v-6l5-4v10z"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="fundosaprovados"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Fundos Aprovados</span><div class="desc">Fundos aprovados pelo research.</div></div>
+    <div class="mchip" data-id="emissoresbancarios" data-full-desc="Consulte os emissores bancários aprovados e reprovados pelo research, com ratings das agências, scores internos e principais indicadores financeiros. Auxilia na seleção de emissores aprovados." data-url="https://pabloads2020-lang.github.io/Emissores-Bancarios/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-8h6v8"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="emissoresbancarios"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Emissores Bancários</span><div class="desc">Ratings, scores e indicadores.</div></div>
+    <div class="mchip" data-id="creditoprivado" data-full-desc="Consulte os emissores de crédito privado (debêntures, CRIs, CRAs) aprovados pelo research. Facilita a indicação de ativos de crédito privado para os clientes." data-url="https://pabloads2020-lang.github.io/Credito-Privado/" data-accent="pink" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="creditoprivado"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Crédito Privado</span><div class="desc">Emissores aprovados pelo research.</div></div>
+    <div class="mchip" data-id="conglomerados" data-full-desc="Identifique a qual conglomerado prudencial pertence qualquer participante do sistema financeiro. Base oficial do Banco Central do Brasil, com 1.059 participantes em mais de 200 conglomerados." data-url="https://pabloads2020-lang.github.io/Consulta-Conglomerado/" data-accent="amber" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 21V10l4-3 4 3v11"/><path d="M12 21V6l4-3 4 3v15"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="conglomerados"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Consulta Conglomerados</span><div class="desc">Conglomerado prudencial do BC.</div></div>
+    <div class="mchip" data-id="patrimonioclientes" data-full-desc="Input: Relatório Posições (Excel, aba posicao_total) e a planilha com código, nome e perfil dos clientes. Consulte o patrimônio (PL) consolidado de toda a carteira de clientes, filtre por faixa de valor — inclusive combinando várias faixas ao mesmo tempo — e por perfil de risco." data-url="https://pabloads2020-lang.github.io/Patrimonio-dos-clientes/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="patrimonioclientes"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Patrimônio de Clientes</span><div class="desc">PL consolidado por faixa e perfil.</div></div>
+  </div>
 
-                    <div class="welcome-wordmark">
-                    <span class="ww-hub">HUB</span>
-                    <span class="ww-bar"></span>
-                    <span class="ww-fin">Financeiro</span>
-                    </div>
-                    <p class="welcome-sub">Selecione uma ferramenta ou consulta para começar.</p>
-                </div>
-
-                <!-- Consultas -->
-                <div class="tools-group">
-                    <div class="section-divider">
-                    <span class="section-divider-label">Consultas</span>
-                    <span class="section-divider-line"></span>
-                    </div>
-                    <div class="tools-grid">
-                    <div class="tool-card" data-target="carteiras" data-full-desc="Visualize as carteiras recomendadas pelo comitê de alocação, organizadas por perfil de risco — Conservador, Moderado e Arrojado." data-badge="consulta" data-badge-label="Consulta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-wallet"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Carteira Recomendada</div></div></div><div class="tool-card-desc">Visualize as carteiras recomendadas pelo comitê de alocação.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></div>
-                    <div class="tool-card" data-target="fundos-aprovados" data-full-desc="Acesse a lista atualizada de fundos de investimento aprovados pelo research ou consulte individualmente pelo nome do fundo." data-badge="consulta" data-badge-label="Consulta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-trend-up"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Fundos Aprovados</div></div></div><div class="tool-card-desc">Consulte fundos aprovados pelo research.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></div>
-                    <div class="tool-card" data-target="emissores" data-full-desc="Consulte os emissores bancários aprovados e reprovados pelo research, com ratings das agências, scores internos e principais indicadores financeiros. Auxilia na seleção de emissores aprovados." data-badge="consulta" data-badge-label="Consulta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-bank"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Emissores Bancários</div></div></div><div class="tool-card-desc">Consulte ratings, scores, indicadores e emissores aprovados.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></div>
-                    <div class="tool-card" data-target="credito-privado" data-full-desc="Consulte os emissores de crédito privado (debêntures, CRIs, CRAs) aprovados pelo research. Facilita a indicação de ativos de crédito privado para os clientes." data-badge="consulta" data-badge-label="Consulta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-credit-card"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Crédito Privado</div></div></div><div class="tool-card-desc">Consulte emissores aprovados pelo research.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></div>
-                    <div class="tool-card" data-target="conglomerado-consulta" data-full-desc="Identifique a qual conglomerado prudencial pertence qualquer participante do sistema financeiro. Base oficial do Banco Central do Brasil, com 1.059 participantes em mais de 200 conglomerados." data-badge="consulta" data-badge-label="Consulta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-buildings"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Consulta Conglomerados</div></div></div><div class="tool-card-desc">Identifique o conglomerado prudencial de qualquer participante do BC.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></div>
-                    <div class="tool-card" data-target="patrimonio-clientes" data-full-desc="Input: Relatório Posições (Excel, aba posicao_total) e a planilha com código, nome e perfil dos clientes. Consulte o patrimônio (PL) consolidado de toda a carteira de clientes, filtre por faixa de valor — inclusive combinando várias faixas ao mesmo tempo — e por perfil de risco." data-badge="consulta" data-badge-label="Consulta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-coins"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Patrimônio de Clientes</div></div></div><div class="tool-card-desc">Consulte o PL consolidado da carteira de clientes por faixa de patrimônio e perfil.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge consulta">Consulta</div></div></div>
-                    </div>
-                </div>
-
-                <!-- Ferramentas -->
-                <div class="tools-group">
-                    <div class="section-divider">
-                    <span class="section-divider-label">Ferramentas</span>
-                    <span class="section-divider-line"></span>
-                    </div>
-                    <div class="tools-grid">
-                    <div class="tool-card" data-target="monitor-saida-fundos" data-full-desc="Rastreie quais clientes possuem fundos com recomendação de saída pelo comitê de alocações. Carregue o excel Relatório Posições da XP e a base de clientes com nome e código — o sistema identifica e exporta a lista de clientes expostos ao fundo selecionado." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-trend-down"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Monitor de Saída — Fundos</div></div></div><div class="tool-card-desc">Rastreie clientes com fundos recomendados para saída pelo comitê de alocações.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="extrato-conta" data-full-desc="Gera um extrato consolidado do fluxo financeiro mensal da conta do cliente — entradas e saídas. O resultado é um acompanhamento profissional da movimentação mensal da conta para ser enviado ao cliente." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-receipt"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Extrato Mensal Conta</div></div></div><div class="tool-card-desc">Gere um extrato do fluxo de saídas e entradas no mês.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="rebalanceamento" data-full-desc="Input: PDF do XPerformance. 
-
-Carregue o PDF do XPerformance para avaliar a carteira e ver as sugestões de rebalanceamento de acordo com o perfil do cliente" data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-scales"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Rebalanceamento</div></div></div><div class="tool-card-desc">Use o XPerformance para verificar a aderência da carteira por classe de ativo.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="extrato" data-full-desc="Insira os ativos e o caixa/aporte do cliente para avaliar a aderência à carteira recomendada e ver as sugestões de rebalanceamento por classe e por ativo individual." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-magnifying-glass-plus"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Extrato Analítico</div></div></div><div class="tool-card-desc">Compare os ativos do cliente com os ativos recomendados.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="relatorio" data-full-desc="Inputs: Resumo mensal do mercado e PDF XPerformance.
-
-Gere o acompanhamento mensal com o panorama de mercado (local e global) e o resultado detalhado da carteira do cliente por classe de ativo." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-file-text"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Relatório Mensal</div></div></div><div class="tool-card-desc">Texto de acompanhamento mensal para clientes.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="ips" data-full-desc="Input: Texto resumo da Anamnese.
-
-Gera o texto personalizado sobre o cliente a ser preenchido no documento de Política de Investimentos (IPS) considerando o perfil de risco, objetivos e horizonte de investimento." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-clipboard-text"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Gerador IPS</div></div></div><div class="tool-card-desc">Política de Investimentos automática.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="calendario" data-full-desc="Inputs aba Vencimentos Renda Fixa: Relatório Posições (Excel da XP) e planilha com nomes e códigos dos clientes. 
-
-Inputs Aba Vencimentos Fundos de Investimento: Relatório Movimentações Fundos (Excel da XP) e planilha com nomes e códigos dos clientes.
-
-Monitore os vencimentos (Renda Fixa, Tesouro e COE) e o fluxo de aplicações e resgates dos fundos de investimento." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-calendar-blank"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Calendário de Vencimentos</div></div></div><div class="tool-card-desc">Acompanhe os vencimentos de renda fixa e fundos.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="conglomerado-fgc" data-full-desc="Input: Relatório Posições (Excel da XP) e a planilha com nomes e códigos dos clientes.
-
-Monitore a exposição por conglomerado financeiro; cobertura do FGC e emissores aprovados." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-chart-bar"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Análise de Renda Fixa</div></div></div><div class="tool-card-desc">Consulte emissores aprovados/reprovados e limites do FGC.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="excel-renda-fixa-gmt" data-full-desc="Input: Carregue o excel de movimentações de renda fixa. 
-
-A ferramenta ajuda a acompanhar ativos de renda fixa reprovados e sem cobertura dos clientes." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-file-xls"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Excel Renda Fixa GMT</div></div></div><div class="tool-card-desc">Acompanhe ativos de renda fixa reprovados e sem cobertura dos clientes.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="comparador-taxas" data-full-desc="Compare o retorno dos ativos de renda fixa com indexadores diferentes e descubra se o investimento no período alocado valeu a pena. A ferramenta considera o IR regressivo e taxas apuradas no Banco Central." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-percent"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Comparador de Taxas</div></div></div><div class="tool-card-desc">Compare o retorno dos ativos de renda fixa com indexadores diferentes. </div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="rentabilidade" data-full-desc="Carregue a base de rentabilidade mensal dos clientes e acompanhe o desempenho no mês, no ano e acumulado, comparado a CDI, IPCA e outros benchmarks, com gráfico interativo e exportação para Excel." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-chart-line-up"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Rentabilidade</div></div></div><div class="tool-card-desc">Acompanhe a rentabilidade mensal e acumulada dos clientes frente a CDI, IPCA e outros benchmarks.</div><div class="tool-card-footer"><div class="tool-platform">Pleno</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    <div class="tool-card" data-target="aderencia-carteira" data-full-desc="Analise o nível de aderência da carteira dos clientes de acordo com o perfil de risco, a carteira recomendada e o retorno em % do CDI." data-badge="ferramenta" data-badge-label="Ferramenta"><div class="tool-card-header"><div class="tool-card-icon"><i class="ph-light ph-target"></i></div><div class="tool-card-header-info"><div class="tool-card-name">Aderência de Carteira</div></div></div><div class="tool-card-desc">Avalie a aderência da carteira do cliente ao perfil, à carteira recomendada e ao retorno % do CDI.</div><div class="tool-card-footer"><div class="tool-platform">Pleno | Bequest</div><div class="tool-badge ferramenta">Ferramenta</div></div></div>
-                    </div>
-                </div>
-
-                <!-- Assinatura do criador (centralizada) -->
-                <div class="creator-footer">
-                    <img class="creator-avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1Yh2vkLWrOQ89P0Z9tbaVWCYK-fpN09-euyU64ttgORw8cMgmmSgaDwbyS9UvG8ngrUVJgIntrMtOxnBYCBr1hAPkYQm2xUNrLsdI0hJb0I7Vjz1kgelN8b-IjTJHeuX8xLitouyZumU1cDb_5qciKeK8RKA0Cx3xVCCjv8C-iufLhbYahgAcI3Dkg2cXaQYUYbnnzeEsCQNUhqqYkTG3vsN9QMIX7ji7QQb4eTairjx02qTNg6dHVCLQO6PX3JONpAieSsBYMxulGQ" alt="Pablo B. Freire" onclick="window.location.href='index.html'" title="Voltar à página inicial">
-                    <div class="creator-name">Pablo B. Freire</div>
-                    <div class="creator-role">Criador · Consultor de Investimentos</div>
-                </div>
-
-            </div>
-        </div>
-
-        <div id="iframe-wrap">
-            <div id="iframe-loader">
-                <div style="text-align:center;"><div class="spinner"></div><div class="loader-label">Carregando...</div></div>
-            </div>
-            <iframe id="content-frame" src="about:blank" title="Ferramenta"></iframe>
-        </div>
-    </main>
 </div>
 
-<!-- Botão flutuante para abrir menu em mobile -->
-<button class="floating-menu-btn" id="floatingMenuBtn">
-    <i class="ph-light ph-list" style="font-size:22px;color:var(--text2);"></i>
-</button>
+<div class="dock-wrap">
+  <div class="dock" id="dock">
+    <div class="dock-empty-hint" id="dockHint">fixe um card acima →</div>
+    <div class="dock-sep"></div>
+    <div class="dock-item search" onclick="openPalette()"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span class="tip">Ver as 18 (⌘K)</span></div>
+  </div>
+</div>
+
+<!-- command palette: full catalog -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closePalette()">
+  <div class="palette">
+    <div class="palette-input-row">
+      <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="paletteInput" type="text" placeholder="Buscar entre as 18..." autocomplete="off">
+      <span class="palette-esc">esc</span>
+    </div>
+    <div class="palette-list" id="paletteList">
+      <div class="p-group" data-g="f">Ferramentas</div>
+      <div class="p-row" data-id="rebalanceamento" data-url="https://pabloads2020-lang.github.io/Rebalanceamento-2/" data-name="rebalanceamento xperformance aderencia classe ativo"><div class="icon" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v18M5 8l-3 6a4 4 0 0 0 8 0l-3-6zM19 8l-3 6a4 4 0 0 0 8 0l-3-6zM5 8h14M8 3h8"/></svg></div><div class="t"><div class="name">Rebalanceamento</div><div class="desc">Aderência por classe de ativo via XPerformance</div></div></div>
+      <div class="p-row" data-id="comparador" data-url="https://pabloads2020-lang.github.io/Comparador-de-taxas/" data-name="comparador de taxas renda fixa indexadores"><div class="icon" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><svg class="ic" viewBox="0 0 24 24"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M6 18L18 6"/></svg></div><div class="t"><div class="name">Comparador de Taxas</div><div class="desc">Retorno da renda fixa entre indexadores</div></div></div>
+      <div class="p-row" data-id="relatorio" data-url="https://pabloads2020-lang.github.io/Relatorio-mensal/" data-name="relatorio mensal texto acompanhamento clientes"><div class="icon" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6M9 8h3"/></svg></div><div class="t"><div class="name">Relatório Mensal</div><div class="desc">Texto de acompanhamento mensal</div></div></div>
+      <div class="p-row" data-id="aderencia" data-url="https://pabloads2020-lang.github.io/Aderencia-de-carteira/" data-name="aderencia de carteira perfil recomendada cdi"><div class="icon" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="t"><div class="name">Aderência de Carteira</div><div class="desc">Perfil, recomendada e retorno % do CDI</div></div></div>
+      <div class="p-row" data-id="ips" data-url="https://pabloads2020-lang.github.io/IPS/" data-name="gerador ips politica de investimentos automatica"><div class="icon" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M7 3h10v4H7z"/><path d="M6 7h12v14H6z"/><path d="M9 12h6M9 15h6"/></svg></div><div class="t"><div class="name">Gerador IPS</div><div class="desc">Política de Investimentos automática</div></div></div>
+      <div class="p-row" data-id="calendario" data-url="https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/" data-name="calendario de vencimentos renda fixa fundos"><div class="icon" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="1"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div><div class="t"><div class="name">Calendário de Vencimentos</div><div class="desc">Vencimentos de renda fixa e fundos</div></div></div>
+      <div class="p-row" data-id="rendafixa" data-url="https://pabloads2020-lang.github.io/Conglomerado-FGC/" data-name="analise de renda fixa emissores fgc"><div class="icon" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V9l5-5 5 5v10"/><circle cx="17" cy="16" r="3"/><path d="M17 13v6"/></svg></div><div class="t"><div class="name">Análise de Renda Fixa</div><div class="desc">Emissores aprovados/reprovados e limites do FGC</div></div></div>
+      <div class="p-row" data-id="excel" data-url="https://pabloads2020-lang.github.io/Excel-de-renda-fixa/" data-name="excel renda fixa gmt reprovados sem cobertura"><div class="icon" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9h16M4 14h16M9 4v16"/></svg></div><div class="t"><div class="name">Excel Renda Fixa GMT</div><div class="desc">Ativos reprovados e sem cobertura</div></div></div>
+      <div class="p-row" data-id="rentabilidade" data-url="https://pabloads2020-lang.github.io/Rentabilidade-mensal-acumulada/" data-name="rentabilidade mensal acumulada cdi ipca benchmark"><div class="icon" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M7 15l4-5 3 3 5-7"/></svg></div><div class="t"><div class="name">Rentabilidade</div><div class="desc">Mensal e acumulada frente a CDI, IPCA</div></div></div>
+      <div class="p-row" data-id="extratoanalitico" data-url="https://pabloads2020-lang.github.io/Extrato-Analitico/" data-name="extrato analitico compare ativos recomendados"><div class="icon" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><svg class="ic" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="M20 20l-5-5"/></svg></div><div class="t"><div class="name">Extrato Analítico</div><div class="desc">Ativos do cliente vs. recomendados</div></div></div>
+      <div class="p-row" data-id="extratomensal" data-url="https://pabloads2020-lang.github.io/Extrato-Mensal-Conta/" data-name="extrato mensal conta fluxo saidas entradas"><div class="icon" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></div><div class="t"><div class="name">Extrato Mensal Conta</div><div class="desc">Fluxo de entradas e saídas do mês</div></div></div>
+      <div class="p-row" data-id="monitor" data-url="https://pabloads2020-lang.github.io/Monitor-de-Saida-Fundos/" data-name="monitor de saida fundos comite alocacoes"><div class="icon" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9l8 6 8-6"/></svg></div><div class="t"><div class="name">Monitor de Saída — Fundos</div><div class="desc">Clientes com fundos para saída</div></div></div>
+
+      <div class="p-group" data-g="c">Consultas</div>
+      <div class="p-row" data-id="carteirarecomendada" data-url="https://pabloads2020-lang.github.io/Carteiras-recomendadas/" data-name="carteira recomendada comite alocacao"><div class="icon" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></div><div class="t"><div class="name">Carteira Recomendada</div><div class="desc">Carteiras por perfil de risco</div></div></div>
+      <div class="p-row" data-id="fundosaprovados" data-url="https://pabloads2020-lang.github.io/Fundos-Aprovados/" data-name="fundos aprovados research"><div class="icon" style="--accent:var(--indigo);--accent-bg:rgba(108,147,255,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M4 19V9l5-5 5 5v10"/><path d="M15 19v-6l5-4v10z"/></svg></div><div class="t"><div class="name">Fundos Aprovados</div><div class="desc">Fundos aprovados pelo research</div></div></div>
+      <div class="p-row" data-id="emissoresbancarios" data-url="https://pabloads2020-lang.github.io/Emissores-Bancarios/" data-name="emissores bancarios ratings scores indicadores"><div class="icon" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-8h6v8"/></svg></div><div class="t"><div class="name">Emissores Bancários</div><div class="desc">Ratings, scores e indicadores</div></div></div>
+      <div class="p-row" data-id="creditoprivado" data-url="https://pabloads2020-lang.github.io/Credito-Privado/" data-name="credito privado emissores aprovados"><div class="icon" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><div class="t"><div class="name">Crédito Privado</div><div class="desc">Emissores aprovados pelo research</div></div></div>
+      <div class="p-row" data-id="conglomerados" data-url="https://pabloads2020-lang.github.io/Consulta-Conglomerado/" data-name="consulta conglomerados prudencial bc"><div class="icon" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M4 21V10l4-3 4 3v11"/><path d="M12 21V6l4-3 4 3v15"/></svg></div><div class="t"><div class="name">Consulta Conglomerados</div><div class="desc">Conglomerado prudencial do BC</div></div></div>
+      <div class="p-row" data-id="patrimonioclientes" data-url="https://pabloads2020-lang.github.io/Patrimonio-dos-clientes/" data-name="patrimonio de clientes pl consolidado faixa perfil"><div class="icon" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></div><div class="t"><div class="name">Patrimônio de Clientes</div><div class="desc">PL consolidado por faixa e perfil</div></div></div>
+    </div>
+    <div class="p-empty" id="pEmpty">Nenhuma ferramenta encontrada.</div>
+  </div>
+</div>
 
 <script>
-    // ── Proteção contra sidebar duplicada ────
-    if (window.self !== window.top) {
-        try {
-            window.top.location.href = window.location.href;
-        } catch(e) {
-            window.parent.postMessage({ action: 'hubNavigate', target: 'home' }, '*');
-        }
-        document.documentElement.innerHTML = '';
-        throw new Error('Hub carregado em iframe – redirecionando para o pai.');
+const dock = document.getElementById('dock');
+const dockHint = document.getElementById('dockHint');
+const dockSep = dock.querySelector('.dock-sep');
+const MAX_PINS = 5;
+let pinned = []; // array of {id, accent, svg, name}
+
+const ICONS = {
+  rebalanceamento:{name:'Rebalanceamento', svg:'<path d="M12 3v18M5 8l-3 6a4 4 0 0 0 8 0l-3-6zM19 8l-3 6a4 4 0 0 0 8 0l-3-6zM5 8h14M8 3h8"/>'},
+  comparador:{name:'Comparador de Taxas', svg:'<circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M6 18L18 6"/>'},
+  relatorio:{name:'Relatório Mensal', svg:'<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h6M9 16h6M9 8h3"/>'},
+  aderencia:{name:'Aderência de Carteira', svg:'<path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6z"/><path d="M9 12l2 2 4-4"/>'},
+  ips:{name:'Gerador IPS', svg:'<path d="M7 3h10v4H7z"/><path d="M6 7h12v14H6z"/><path d="M9 12h6M9 15h6"/>'},
+  calendario:{name:'Calendário de Vencimentos', svg:'<rect x="4" y="5" width="16" height="16" rx="1"/><path d="M4 10h16M9 3v4M15 3v4"/>'},
+  rendafixa:{name:'Análise de Renda Fixa', svg:'<path d="M4 19V9l5-5 5 5v10"/><circle cx="17" cy="16" r="3"/><path d="M17 13v6"/>'},
+  excel:{name:'Excel Renda Fixa GMT', svg:'<rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9h16M4 14h16M9 4v16"/>'},
+  rentabilidade:{name:'Rentabilidade', svg:'<path d="M4 19V5M4 19h16"/><path d="M7 15l4-5 3 3 5-7"/>'},
+  extratoanalitico:{name:'Extrato Analítico', svg:'<circle cx="10" cy="10" r="6"/><path d="M20 20l-5-5"/>'},
+  extratomensal:{name:'Extrato Mensal Conta', svg:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>'},
+  monitor:{name:'Monitor de Saída — Fundos', svg:'<path d="M4 5h16v14H4z"/><path d="M4 9l8 6 8-6"/>'},
+  carteirarecomendada:{name:'Carteira Recomendada', svg:'<path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/>'},
+  fundosaprovados:{name:'Fundos Aprovados', svg:'<path d="M4 19V9l5-5 5 5v10"/><path d="M15 19v-6l5-4v10z"/>'},
+  emissoresbancarios:{name:'Emissores Bancários', svg:'<path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-8h6v8"/>'},
+  creditoprivado:{name:'Crédito Privado', svg:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>'},
+  conglomerados:{name:'Consulta Conglomerados', svg:'<path d="M4 21V10l4-3 4 3v11"/><path d="M12 21V6l4-3 4 3v15"/>'},
+  patrimonioclientes:{name:'Patrimônio de Clientes', svg:'<circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/>'}
+};
+const ACCENT_BG = {violet:'rgba(140,124,246,.16)', indigo:'rgba(108,147,255,.16)', teal:'rgba(51,214,176,.16)', pink:'rgba(241,120,176,.16)', amber:'rgba(247,185,85,.16)'};
+
+function renderDock(){
+  dock.querySelectorAll('.dock-item:not(.search)').forEach(el=>el.remove());
+  pinned.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'dock-item';
+    el.style.setProperty('--accent', `var(--${p.accent})`);
+    el.style.setProperty('--accent-bg', ACCENT_BG[p.accent]);
+    el.innerHTML = `<svg class="ic" viewBox="0 0 24 24">${p.svg}</svg><span class="tip">${p.name}</span>`;
+    // clicar no ícone do dock entra direto na ferramenta fixada
+    if(p.url){
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', () => { window.location.href = p.url; });
     }
+    dock.insertBefore(el, dockSep);
+  });
+  dockHint.style.display = pinned.length ? 'none' : 'block';
+}
 
-    const APPS = {
-        carteiras:         { url: "https://pabloads2020-lang.github.io/Carteiras-recomendadas/",    label: "Carteira Recomendada" },
-        rebalanceamento:   { url: "https://pabloads2020-lang.github.io/Rebalanceamento-2/",         label: "Rebalanceamento" },
-        extrato:           { url: "https://pabloads2020-lang.github.io/Extrato-Analitico/",         label: "Extrato Analítico" },
-        "extrato-conta":   { url: "https://pabloads2020-lang.github.io/Extrato-Mensal-Conta/",     label: "Extrato Mensal Conta" },
-        relatorio:         { url: "https://pabloads2020-lang.github.io/Relatorio-mensal/",          label: "Relatório Mensal" },
-        ips:               { url: "https://pabloads2020-lang.github.io/IPS/",                    label: "Gerador IPS" },
-        calendario:        { url: "https://pabloads2020-lang.github.io/Calendario-de-Vencimentos/", label: "Calendário de Vencimentos" },
-        emissores:         { url: "https://pabloads2020-lang.github.io/Emissores-Bancarios/",       label: "Emissores Bancários" },
-        "credito-privado": { url: "https://pabloads2020-lang.github.io/Credito-Privado/",           label: "Crédito Privado" },
-        "fundos-aprovados":{ url: "https://pabloads2020-lang.github.io/Fundos-Aprovados/",          label: "Fundos Aprovados" },
-        "conglomerado-consulta": { url: "https://pabloads2020-lang.github.io/Consulta-Conglomerado/", label: "Consulta Conglomerados" },
-        "patrimonio-clientes": { url: "https://pabloads2020-lang.github.io/Patrimonio-dos-clientes/", label: "Patrimônio de Clientes" },
-        "monitor-saida-fundos": { url: "https://pabloads2020-lang.github.io/Monitor-de-Saida-Fundos/", label: "Monitor de Saída — Fundos" },
-        "conglomerado-fgc":{ url: "https://pabloads2020-lang.github.io/Conglomerado-FGC/",             label: "Análise de Renda Fixa" },
-        "excel-renda-fixa-gmt": { url: "https://pabloads2020-lang.github.io/Excel-de-renda-fixa/", label: "Excel Renda Fixa GMT" },
-        "comparador-taxas": { url: "https://pabloads2020-lang.github.io/Comparador-de-taxas/", label: "Comparador de Taxas" },
-        rentabilidade: { url: "https://pabloads2020-lang.github.io/Rentabilidade-mensal-acumulada/", label: "Rentabilidade" },
-        "aderencia-carteira": { url: "https://pabloads2020-lang.github.io/Aderencia-de-carteira/", label: "Aderência de Carteira" },
-    };
-
-    let currentApp = null;
-    let loadTimeout = null;
-    const iframe = document.getElementById('content-frame');
-    const loader = document.getElementById('iframe-loader');
-    const iframeWrap = document.getElementById('iframe-wrap');
-    const welcome = document.getElementById('welcome-screen');
-    const navItems = document.querySelectorAll('.nav-item');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    const floatingBtn = document.getElementById('floatingMenuBtn');
-
-    function openMobileSidebar() {
-        sidebar.classList.add('mobile-open');
-        overlay.classList.add('active');
+function togglePin(id, accent, url, btn){
+  const idx = pinned.findIndex(p=>p.id===id);
+  if(idx>-1){
+    pinned.splice(idx,1);
+    btn.classList.remove('pinned');
+  } else {
+    if(pinned.length >= MAX_PINS){
+      dock.classList.add('dock-shake');
+      setTimeout(()=>dock.classList.remove('dock-shake'), 300);
+      return;
     }
+    pinned.push({id, accent, url, svg:ICONS[id].svg, name:ICONS[id].name});
+    btn.classList.add('pinned');
+  }
+  renderDock();
+}
 
-    function closeMobileSidebar() {
-        sidebar.classList.remove('mobile-open');
-        overlay.classList.remove('active');
-    }
+document.querySelectorAll('.pin-btn').forEach(btn=>{
+  btn.addEventListener('click', e=>{
+    e.stopPropagation();
+    const card = btn.closest('.gcard, .mchip');
+    togglePin(card.dataset.id, card.dataset.accent, card.dataset.url, btn);
+  });
+});
 
-    // Botão flutuante (mobile)
-    floatingBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (sidebar.classList.contains('mobile-open')) {
-            closeMobileSidebar();
-        } else {
-            openMobileSidebar();
-        }
-    });
+// pin the first four by default so the dock isn't empty on load
+['rebalanceamento','comparador','relatorio','calendario'].forEach(id=>{
+  const btn = document.querySelector(`.pin-btn[data-icon="${id}"]`);
+  const card = btn.closest('.gcard');
+  pinned.push({id, accent:card.dataset.accent, url:card.dataset.url, svg:ICONS[id].svg, name:ICONS[id].name});
+  btn.classList.add('pinned');
+});
+renderDock();
 
-    overlay.addEventListener('click', closeMobileSidebar);
+document.body.style.paddingBottom = '150px';
 
-    function setActive(name) {
-        navItems.forEach(b => b.classList.toggle('active', b.dataset.name === name));
-    }
+const overlay = document.getElementById('overlay');
+const pInput = document.getElementById('paletteInput');
+const pRows = [...document.querySelectorAll('.p-row')];
+const pGroups = [...document.querySelectorAll('.p-group')];
+const pEmpty = document.getElementById('pEmpty');
 
-    function showHome() {
-        if (currentApp === 'home') return;
-        currentApp = 'home';
-        iframe.src = 'about:blank';
-        iframeWrap.style.display = 'none';
-        welcome.style.display = 'block';
-        loader.style.opacity = '0';
-        loader.style.pointerEvents = 'none';
-        setActive('home');
-        localStorage.removeItem('lastApp');
-        closeMobileSidebar();
-    }
+function openPalette(){ overlay.classList.add('open'); pInput.value=''; filterPalette(); setTimeout(()=>pInput.focus(),50); }
+function closePalette(){ overlay.classList.remove('open'); }
 
-    function loadApp(name) {
-        if (currentApp === name) return;
-        const app = APPS[name];
-        if (!app) return;
-        currentApp = name;
-        welcome.style.display = 'none';
-        iframeWrap.style.display = 'flex';
-        loader.style.opacity = '1';
-        loader.style.pointerEvents = 'auto';
-        iframe.style.opacity = '0.4';
-        if (loadTimeout) clearTimeout(loadTimeout);
-        loadTimeout = setTimeout(() => {
-            loader.style.opacity = '0';
-            loader.style.pointerEvents = 'none';
-            iframe.style.opacity = '1';
-        }, 12000);
-        iframe.src = app.url;
-        setActive(name);
-        localStorage.setItem('lastApp', name);
-        closeMobileSidebar();
-    }
+function visiblePRows(){ return pRows.filter(r=>!r.classList.contains('hidden')); }
 
-    iframe.onload = () => {
-        if (loadTimeout) clearTimeout(loadTimeout);
-        loader.style.opacity = '0';
-        loader.style.pointerEvents = 'none';
-        iframe.style.opacity = '1';
-    };
+function movePaletteSelection(delta){
+  const vis = visiblePRows();
+  if(!vis.length) return;
+  let idx = vis.findIndex(r=>r.classList.contains('sel'));
+  vis.forEach(r=>r.classList.remove('sel'));
+  idx = idx === -1 ? (delta > 0 ? 0 : vis.length - 1) : Math.max(0, Math.min(vis.length - 1, idx + delta));
+  vis[idx].classList.add('sel');
+  vis[idx].scrollIntoView({block:'nearest'});
+}
 
-    navItems.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const name = btn.dataset.name;
-            if (name === 'home') showHome();
-            else loadApp(name);
-        });
-    });
-    // listener from tools
-    window.addEventListener('message', (e) => {
-        if (!e.data || e.data.action !== 'hubNavigate') return;
-        const target = e.data.target;
-        if (target === 'home') {
-            showHome();
-        } else if (target && APPS[target]) {
-            loadApp(target);
-        }
-    });
+function goToPaletteRow(row){
+  if(row && row.dataset.url) window.location.href = row.dataset.url;
+}
 
-    document.querySelectorAll('.tool-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-            if (e.target.closest('.tool-info-btn')) return;
-            loadApp(card.dataset.target);
-        });
-    });
+pRows.forEach(r=>{
+  r.addEventListener('click', () => goToPaletteRow(r));
+  r.addEventListener('mouseenter', () => { pRows.forEach(x=>x.classList.remove('sel')); r.classList.add('sel'); });
+});
 
-    // ── Modal de detalhes ────────────────────────────────────────────────────
-    // Cria overlay + modal no DOM
-    const modalOverlay = document.createElement('div');
-    modalOverlay.className = 'tool-modal-overlay';
-    modalOverlay.innerHTML = `
-        <div class="tool-modal" role="dialog" aria-modal="true">
-            <div class="modal-header">
-                <div class="modal-icon" id="mIcon"></div>
-                <div>
-                    <div class="modal-title" id="mTitle"></div>
-                    <div class="modal-sub" id="mSub"></div>
-                </div>
-            </div>
-            <div class="modal-divider"></div>
-            <div class="modal-body" id="mBody"></div>
-            <div class="modal-footer">
-                <div id="mBadge"></div>
-                <div style="display:flex;gap:8px;">
-                    <button class="close-modal-btn" id="mClose">Fechar</button>
-                    <button class="open-tool-btn" id="mOpen">
-                        <i class="ph-light ph-arrow-square-out" style="font-size:14px;pointer-events:none;"></i>
-                        Abrir ferramenta
-                    </button>
-                </div>
-            </div>
+document.addEventListener('keydown', e=>{
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openPalette(); }
+  if(!overlay.classList.contains('open')) return;
+  if(e.key==='Escape'){ closePalette(); return; }
+  if(e.key==='ArrowDown'){ e.preventDefault(); movePaletteSelection(1); }
+  if(e.key==='ArrowUp'){ e.preventDefault(); movePaletteSelection(-1); }
+  if(e.key==='Enter'){ e.preventDefault(); goToPaletteRow(pRows.find(r=>r.classList.contains('sel'))); }
+});
+
+function filterPalette(){
+  const q = pInput.value.trim().toLowerCase();
+  let any = false;
+  pRows.forEach(r=>{ const m = r.dataset.name.includes(q); r.classList.toggle('hidden', !m); r.classList.remove('sel'); if(m) any=true; });
+  pGroups.forEach(g=>{
+    const groupRows = g.nextElementSibling ? [] : [];
+  });
+  // toggle group headers based on whether any following row (until next group) is visible
+  let cur = null;
+  document.querySelectorAll('#paletteList > *').forEach(el=>{
+    if(el.classList.contains('p-group')){ cur = el; cur._hasVisible=false; }
+    else if(el.classList.contains('p-row') && !el.classList.contains('hidden')){ if(cur) cur._hasVisible = true; }
+  });
+  pGroups.forEach(g=> g.classList.toggle('hidden', !g._hasVisible));
+  pEmpty.style.display = any ? 'none' : 'block';
+  // seleciona a primeira linha visível — Enter já funciona sem precisar tocar em seta antes
+  const firstVisible = visiblePRows()[0];
+  if(firstVisible) firstVisible.classList.add('sel');
+}
+pInput.addEventListener('input', filterPalette);
+</script>
+
+<script>
+/* Botão "i" + modal de detalhes — réplica do comportamento do arquivo
+   original (tool-info-btn / tool-modal-overlay). Reaproveita ICONS e
+   ACCENT_BG já declarados no primeiro <script> (mesmo escopo global de
+   página — não precisa redeclarar). */
+(function(){
+  const modalOverlay = document.createElement('div');
+  modalOverlay.className = 'tool-modal-overlay';
+  modalOverlay.innerHTML = `
+    <div class="tool-modal type-ferramenta" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <div class="modal-icon" id="miIcon"></div>
+        <div>
+          <div class="modal-title" id="miTitle"></div>
+          <div class="modal-sub" id="miSub"></div>
         </div>
-    `;
-    document.body.appendChild(modalOverlay);
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-body" id="miBody"></div>
+      <div class="modal-footer">
+        <div class="modal-badge" id="miBadge"></div>
+        <div style="display:flex;gap:8px;">
+          <button class="close-modal-btn" id="miClose">Fechar</button>
+          <button class="open-tool-btn" id="miOpen">Abrir ferramenta</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(modalOverlay);
 
-    let modalTarget = null;
+  let targetUrl = null;
 
-    function openModal(card) {
-        modalTarget = card.dataset.target;
-        const isConsulta   = card.dataset.badge === 'consulta';
-        const accentColor  = isConsulta ? '#2980B9' : 'var(--amber)';
-        const accentColorI = isConsulta ? '#5DADE2' : 'var(--amber)';
+  function openInfoModal(card){
+    const isConsulta = card.classList.contains('mchip');
+    const modal = modalOverlay.querySelector('.tool-modal');
+    modal.classList.toggle('type-consulta', isConsulta);
+    modal.classList.toggle('type-ferramenta', !isConsulta);
 
-        const iconEl    = card.querySelector('.tool-card-icon i');
-        const iconClass = iconEl ? iconEl.className : 'ph-light ph-circle';
-        document.getElementById('mIcon').innerHTML = `<i class="${iconClass}" style="font-size:18px;color:${accentColorI};"></i>`;
-        document.getElementById('mTitle').textContent = card.querySelector('.tool-card-name')?.textContent || '';
-        document.getElementById('mSub').textContent   = card.querySelector('.tool-platform')?.textContent || '';
-        document.getElementById('mBody').textContent  = card.getAttribute('data-full-desc') || card.querySelector('.tool-card-desc')?.textContent || '';
-        const badgeEl = card.querySelector('.tool-badge');
-        document.getElementById('mBadge').innerHTML = badgeEl ? badgeEl.outerHTML : '';
+    const iconData = (typeof ICONS !== 'undefined') ? ICONS[card.dataset.id] : null;
+    document.getElementById('miIcon').innerHTML = iconData
+      ? `<svg class="ic" viewBox="0 0 24 24">${iconData.svg}</svg>` : '';
+    document.getElementById('miTitle').textContent = card.querySelector('.name')?.textContent || '';
 
-        // Borda superior e botão "Abrir" no tom do tipo
-        const modal   = modalOverlay.querySelector('.tool-modal');
-        modal.style.borderTopColor = accentColor;
-        const openBtn = document.getElementById('mOpen');
-        openBtn.style.borderColor = accentColor;
-        openBtn.style.background  = isConsulta ? 'rgba(41,128,185,.12)' : 'rgba(224,172,44,.1)';
-        openBtn.style.color       = accentColorI;
+    const platEl = card.querySelector('.plat');
+    document.getElementById('miSub').textContent = platEl ? platEl.textContent : (isConsulta ? 'Consulta' : 'Ferramenta');
 
-        modalOverlay.classList.add('open');
+    const badgeEl = document.getElementById('miBadge');
+    badgeEl.className = 'modal-badge ' + (isConsulta ? 'consulta' : 'ferramenta');
+    badgeEl.textContent = isConsulta ? 'Consulta' : 'Ferramenta';
+
+    document.getElementById('miBody').textContent = card.dataset.fullDesc || card.querySelector('.desc')?.textContent || '';
+
+    targetUrl = card.dataset.url || null;
+    const openBtn = document.getElementById('miOpen');
+    openBtn.style.display = targetUrl ? 'flex' : 'none';
+
+    modalOverlay.classList.add('open');
+  }
+  function closeInfoModal(){ modalOverlay.classList.remove('open'); targetUrl = null; }
+
+  document.getElementById('miClose').addEventListener('click', closeInfoModal);
+  document.getElementById('miOpen').addEventListener('click', () => {
+    if(targetUrl) window.location.href = targetUrl;
+  });
+  modalOverlay.addEventListener('click', e => { if(e.target === modalOverlay) closeInfoModal(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeInfoModal(); });
+
+  document.querySelectorAll('.gcard, .mchip').forEach(card => {
+    // botão "i" — vai para dentro do mesmo grupo do pin, lado a lado
+    const btn = document.createElement('button');
+    btn.className = 'info-btn';
+    btn.setAttribute('aria-label', 'Informações');
+    btn.textContent = 'i';
+    btn.addEventListener('click', e => { e.stopPropagation(); openInfoModal(card); });
+    const actions = card.querySelector('.card-actions');
+    if(actions) actions.appendChild(btn); else card.appendChild(btn);
+
+    // clique no card inteiro (fora do pin e do "i") entra na ferramenta de verdade
+    const url = card.dataset.url;
+    if(url){
+      card.addEventListener('click', () => { window.location.href = url; });
     }
+  });
+})();
+</script>
 
-    function closeModal() {
-        modalOverlay.classList.remove('open');
-        modalTarget = null;
-    }
-
-    document.getElementById('mClose').addEventListener('click', closeModal);
-    document.getElementById('mOpen').addEventListener('click', () => {
-        const t = modalTarget;
-        closeModal();
-        if (t) loadApp(t);
-    });
-    modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-    // Injeta botão "i" em cada card
-    document.querySelectorAll('.tool-card').forEach(card => {
-        const btn = document.createElement('button');
-        btn.className = 'tool-info-btn';
-        btn.setAttribute('aria-label', 'Informações');
-        btn.textContent = 'i';
-        btn.addEventListener('click', e => { e.stopPropagation(); openModal(card); });
-        card.appendChild(btn);
-    });
-
-    showHome();
-
-    // ── Sidebar toggle ────────────────────────────────────────────────────────
-    const sidebarEl   = document.getElementById('sidebar');
-    const toggleBtn   = document.getElementById('sidebarToggleBtn');
-    // Lê preferência salva; padrão = OCULTO (abertura mais clean)
-    const initVisible = localStorage.getItem('hubSidebarOpen') === 'true';
-
-    function setSidebar(visible, save) {
-        if (visible) {
-            sidebarEl.classList.remove('collapsed');
-            toggleBtn.classList.add('active');
-        } else {
-            sidebarEl.classList.add('collapsed');
-            toggleBtn.classList.remove('active');
-        }
-        if (save !== false) localStorage.setItem('hubSidebarOpen', visible);
-    }
-
-    // Aplica estado inicial sem animação (evita flash e slide desnecessário)
-    sidebarEl.style.transition = 'none';
-    setSidebar(initVisible, false);
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => { sidebarEl.style.transition = ''; });
-    });
-
-    toggleBtn.addEventListener('click', () => {
-        setSidebar(sidebarEl.classList.contains('collapsed'));
-    });
+<script>
+/* Ajuste cosmético e aditivo — não interfere na lógica acima.
+   ⌘ é specific de macOS; a maior parte dos assessores usa Windows,
+   então o atalho deve refletir a tecla real do teclado deles. */
+(function(){
+  const isMac = /Mac|iPod|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+  if(isMac) return;
+  document.querySelectorAll('kbd').forEach(function(k){
+    if(k.textContent.trim() === '⌘K') k.textContent = 'Ctrl K';
+  });
+  document.querySelectorAll('.dock-item .tip').forEach(function(t){
+    if(t.textContent.includes('⌘K')) t.textContent = t.textContent.replace('⌘K', 'Ctrl K');
+  });
+})();
 </script>
 </body>
 </html>
