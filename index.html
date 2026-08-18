@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
     <title>HUB Financeiro | Pleno</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg:     #0d0f17;
+            --bg:     #07080B;
             --bg2:    #141720;
             --border: #2a2e3f;
             --text:   #e1e3ef;
@@ -23,9 +23,19 @@
             height: 100%;
             min-height: 100vh;
             background: var(--bg);
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
             color: var(--text);
             overflow: hidden;
+        }
+
+        /* grão sutil de ruído, igual ao dashboard */
+        body::after {
+            content: '';
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+            background-size: 3px 3px;
+            -webkit-mask-image: radial-gradient(1200px 700px at 50% -10%, #000 0%, transparent 70%);
+                    mask-image: radial-gradient(1200px 700px at 50% -10%, #000 0%, transparent 70%);
         }
 
         /* ── CANVAS ── */
@@ -55,7 +65,7 @@
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            border: 1px solid rgba(245,200,66,.22);
+            border: 1px solid rgba(245,200,66,.14);
             border-radius: 100px;
             padding: 5px 14px 5px 10px;
             font-size: 0.68rem;
@@ -96,6 +106,7 @@
             margin-bottom: 22px;
         }
         .wm-hub {
+            font-family: 'Space Grotesk', sans-serif;
             font-size: clamp(3.4rem, 10vw, 6.2rem);
             font-weight: 800;
             letter-spacing: -.05em;
@@ -110,6 +121,7 @@
             flex-shrink: 0;
         }
         .wm-fin {
+            font-family: 'Space Grotesk', sans-serif;
             font-size: clamp(3.4rem, 10vw, 6.2rem);
             font-weight: 800;
             letter-spacing: -.05em;
@@ -140,20 +152,23 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: var(--amber);
-            color: #1c1100;
-            font-family: 'DM Sans', sans-serif;
+            background: rgba(245,200,66,.045);
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
+            border: 1px solid rgba(245,200,66,.14);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 4px 16px -12px rgba(224,172,44,.18);
+            color: var(--gold);
+            font-family: 'Inter', sans-serif;
             font-size: 0.88rem;
-            font-weight: 700;
-            border: none;
-            border-radius: 10px;
-            padding: 13px 26px;
+            font-weight: 600;
+            border-radius: 14px;
+            padding: 13px 28px;
             cursor: pointer;
             text-decoration: none;
-            transition: background .15s, transform .15s;
+            transition: background .2s, border-color .2s, transform .15s;
             letter-spacing: .01em;
         }
-        .cta:hover { background: var(--gold); transform: translateY(-2px); }
+        .cta:hover { background: rgba(245,200,66,.08); border-color: rgba(245,200,66,.22); transform: translateY(-1px); }
         .cta svg { transition: transform .2s; }
         .cta:hover svg { transform: translateX(3px); }
 
@@ -213,9 +228,6 @@
       
     <a href="dashboard.html" class="cta">
         Acessar o painel
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
     </a>
     </div>
 
@@ -235,7 +247,7 @@ const ctx = canvas.getContext('2d');
 
 const GOLD  = [245, 200, 66];
 const DIM   = [42,  46,  63];
-const BG    = [13,  15,  23];
+const BG    = [7,   8,   11];
 
 let W, H, particles, lines;
 
