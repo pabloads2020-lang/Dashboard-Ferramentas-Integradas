@@ -378,12 +378,12 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
   </div>
 
   <div class="hero">
-    <div class="hero-eyebrow"><span class="dot"></span>18 ferramentas ativas</div>
+    <div class="hero-eyebrow"><span class="dot"></span>19 ferramentas ativas</div>
     <h1><span class="hub">HUB</span><span class="divider"></span><span class="fin">Financeiro</span></h1>
     <p class="hero-sub">Selecione uma ferramenta ou consulta para começar.</p>
     <div class="search-pill" onclick="openPalette()">
       <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <span class="ph">Buscar entre as 18 ferramentas e consultas...</span>
+      <span class="ph">Buscar entre as 19 ferramentas e consultas...</span>
       <kbd>⌘K</kbd>
     </div>
   </div>
@@ -418,6 +418,7 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
 <div class="mchip" data-id="creditoprivado" data-full-desc="Consulte os emissores de crédito privado (debêntures, CRIs, CRAs) aprovados pelo research. Facilita a indicação de ativos de crédito privado para os clientes." data-url="https://pabloads2020-lang.github.io/Credito-Privado/" data-accent="pink" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="creditoprivado"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Crédito Privado</span><div class="desc">Emissores aprovados pelo research.</div><div class="plat">Pleno · Bequest</div></div>
 <div class="mchip" data-id="conglomerados" data-full-desc="Identifique a qual conglomerado prudencial pertence qualquer participante do sistema financeiro. Base oficial do Banco Central do Brasil, com 1.059 participantes em mais de 200 conglomerados." data-url="https://pabloads2020-lang.github.io/Consulta-Conglomerado/" data-accent="amber" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><path d="M4 21V10l4-3 4 3v11"/><path d="M12 21V6l4-3 4 3v15"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="conglomerados"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Consulta Conglomerados</span><div class="desc">Conglomerado prudencial do BC.</div><div class="plat">Pleno · Bequest</div></div>
 <div class="mchip" data-id="patrimonioclientes" data-full-desc="Input: Relatório Posições (Excel, aba posicao_total) e a planilha com código, nome e perfil dos clientes. Consulte o patrimônio (PL) consolidado de toda a carteira de clientes, filtre por faixa de valor — inclusive combinando várias faixas ao mesmo tempo — e por perfil de risco." data-url="https://pabloads2020-lang.github.io/Patrimonio-dos-clientes/" data-accent="teal" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="patrimonioclientes"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Patrimônio de Clientes</span><div class="desc">PL consolidado por faixa e perfil.</div><div class="plat">Pleno</div></div>
+<div class="mchip" data-id="vencimentofora" data-full-desc="Input: planilha Excel. Consulte os vencimentos de ativos de clientes fora da XP. Os dados ficam salvos apenas no navegador do usuário." data-url="https://pabloads2020-lang.github.io/Vencimento-fora/" data-accent="violet" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><div class="top"><div class="icon"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="14" rx="1"/><path d="M3 10h13"/><path d="M7 3v5M12 3v5"/><path d="M17 3h4v4"/><path d="M21 3l-6 6"/></svg></div><div class="card-actions"><button class="pin-btn" data-icon="vencimentofora"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5L21 10l-5 4.5L17.5 21 12 17.5 6.5 21 8 14.5 3 10l6.5-1.5z"/></svg></button></div></div><span class="name">Vencimentos Fora da XP</span><div class="desc">Ativos de clientes fora da XP e seus vencimentos.</div><div class="plat">Pleno</div></div>
   </div>
 
 </div>
@@ -426,7 +427,7 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
   <div class="dock" id="dock">
     <div class="dock-empty-hint" id="dockHint">fixe um card acima →</div>
     <div class="dock-sep"></div>
-    <div class="dock-item search" onclick="openPalette()"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span class="tip">Ver as 18 (⌘K)</span></div>
+    <div class="dock-item search" onclick="openPalette()"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span class="tip">Ver as 19 (⌘K)</span></div>
   </div>
 </div>
 
@@ -435,7 +436,7 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
   <div class="palette">
     <div class="palette-input-row">
       <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="paletteInput" type="text" placeholder="Buscar entre as 18..." autocomplete="off">
+      <input id="paletteInput" type="text" placeholder="Buscar entre as 19..." autocomplete="off">
       <span class="palette-esc">esc</span>
     </div>
     <div class="palette-list" id="paletteList">
@@ -461,6 +462,7 @@ svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.6;str
       <div class="p-row" data-id="creditoprivado" data-url="https://pabloads2020-lang.github.io/Credito-Privado/" data-name="credito privado emissores aprovados"><div class="icon" style="--accent:var(--pink);--accent-bg:rgba(241,120,176,.14)"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></div><div class="t"><div class="name">Crédito Privado</div><div class="desc">Emissores aprovados pelo research</div></div></div>
       <div class="p-row" data-id="conglomerados" data-url="https://pabloads2020-lang.github.io/Consulta-Conglomerado/" data-name="consulta conglomerados prudencial bc"><div class="icon" style="--accent:var(--amber);--accent-bg:rgba(247,185,85,.14)"><svg class="ic" viewBox="0 0 24 24"><path d="M4 21V10l4-3 4 3v11"/><path d="M12 21V6l4-3 4 3v15"/></svg></div><div class="t"><div class="name">Consulta Conglomerados</div><div class="desc">Conglomerado prudencial do BC</div></div></div>
       <div class="p-row" data-id="patrimonioclientes" data-url="https://pabloads2020-lang.github.io/Patrimonio-dos-clientes/" data-name="patrimonio de clientes pl consolidado faixa perfil"><div class="icon" style="--accent:var(--teal);--accent-bg:rgba(51,214,176,.14)"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg></div><div class="t"><div class="name">Patrimônio de Clientes</div><div class="desc">PL consolidado por faixa e perfil</div></div></div>
+      <div class="p-row" data-id="vencimentofora" data-url="https://pabloads2020-lang.github.io/Vencimento-fora/" data-name="vencimentos fora da xp ativos clientes"><div class="icon" style="--accent:var(--violet);--accent-bg:rgba(140,124,246,.14)"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="14" rx="1"/><path d="M3 10h13"/><path d="M7 3v5M12 3v5"/><path d="M17 3h4v4"/><path d="M21 3l-6 6"/></svg></div><div class="t"><div class="name">Vencimentos Fora da XP</div><div class="desc">Ativos de clientes fora da XP</div></div></div>
     </div>
     <div class="p-empty" id="pEmpty">Nenhuma ferramenta encontrada.</div>
   </div>
@@ -489,7 +491,8 @@ const ICONS = {
   emissoresbancarios:{name:'Emissores Bancários', svg:'<path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-8h6v8"/>'},
   creditoprivado:{name:'Crédito Privado', svg:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>'},
   conglomerados:{name:'Consulta Conglomerados', svg:'<path d="M4 21V10l4-3 4 3v11"/><path d="M12 21V6l4-3 4 3v15"/>'},
-  patrimonioclientes:{name:'Patrimônio de Clientes', svg:'<circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/>'}
+  patrimonioclientes:{name:'Patrimônio de Clientes', svg:'<circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/>'},
+  vencimentofora:{name:'Vencimentos Fora da XP', svg:'<rect x="3" y="6" width="13" height="14" rx="1"/><path d="M3 10h13"/><path d="M7 3v5M12 3v5"/><path d="M17 3h4v4"/><path d="M21 3l-6 6"/>'}
 };
 const ACCENT_BG = {violet:'rgba(140,124,246,.16)', indigo:'rgba(108,147,255,.16)', teal:'rgba(51,214,176,.16)', pink:'rgba(241,120,176,.16)', amber:'rgba(247,185,85,.16)'};
 
